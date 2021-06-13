@@ -5,6 +5,9 @@
 
 E-care is centered towards achieving SDGs goal number three (good health and well being). This would be achieved through the two key features of the app namely; Health record management  which provide solution to hospital record mismanagement which has in turn led to loss of several lives and rural-connect    focuses on extending good health care to rural dwellers by connecting the rural community health care providers with their senior counterparts at urban health centers closest to them, so as to receive guidance in handling emergencies and other critical conditions.
 
+<h2><bold>Design</bold></h2>
+
+Design was done using figma. Here is the figma link - https://www.figma.com/file/ZRwCf0RVsuwgmyD5ewN8rC/E-CARE?node-id=4%3A42
 
 <h2><bold>Contribution guide</bold></h2>
 
