@@ -65,37 +65,39 @@ class _OnboardingState extends State<Onboarding> {
               itemCount: contents.length,
               itemBuilder: (context, index) => Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: SvgPicture.asset(
-                        contents[index].image,
-                        height: 400,
-                        fit: BoxFit.fitWidth,
+                child: Expanded(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: SvgPicture.asset(
+                          contents[index].image,
+                          height: MediaQuery.of(context).size.height / 2.3,
+                          fit: BoxFit.fitWidth,
+                        ),
                       ),
-                    ),
-                    Text(
-                      contents[index].title,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w800,
+                      Text(
+                        contents[index].title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      contents[index].description,
-                      textAlign: TextAlign.center,
-                      maxLines: 4,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w300,
+                      SizedBox(
+                        height: 20,
                       ),
-                    ),
-                  ],
+                      Text(
+                        contents[index].description,
+                        textAlign: TextAlign.center,
+                        maxLines: 4,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
