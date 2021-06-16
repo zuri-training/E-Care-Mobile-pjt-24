@@ -1,5 +1,7 @@
 import 'package:e_care_mobile/models/onboarding_model.dart';
+import 'package:e_care_mobile/screens/book_appointment.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
+import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

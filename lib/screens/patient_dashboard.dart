@@ -1,3 +1,5 @@
+import 'package:e_care_mobile/screens/book_appointment.dart';
+import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:flutter/material.dart';
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -127,25 +129,30 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        helpbuilder(
-                          context,
-                          Icon(
-                            CarbonIcons.reminder_medical,
-                            size: 40,
-                            color: Color(0xff6305B1),
-                          ),
-                          Text(
-                            'Book an',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
+                        GestureDetector(
+                          child: helpbuilder(
+                            context,
+                            IconButton(
+                              icon: Icon(
+                                CarbonIcons.reminder_medical,
+                                size: 40,
+                              ),
+                              onPressed: _move,
+                              color: Color(0xff6305B1),
                             ),
-                          ),
-                          Text(
-                            'Appointment',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
+                            Text(
+                              'Book an',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              'Appointment',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                         ),
@@ -154,10 +161,13 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         ),
                         helpbuilder(
                           context,
-                          Icon(
-                            FontAwesomeIcons.handHoldingMedical,
-                            color: Color(0xff6305B1),
-                            size: 40,
+                          IconButton(
+                            icon: Icon(
+                              FontAwesomeIcons.handHoldingMedical,
+                              color: Color(0xff6305B1),
+                              size: 40,
+                            ),
+                            //onPressed: _requestmedic,
                           ),
                           Text(
                             'Request',
@@ -179,10 +189,13 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         ),
                         helpbuilder(
                           context,
-                          Icon(
-                            FontAwesomeIcons.fileMedical,
-                            color: Color(0xff6305B1),
-                            size: 40,
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              FontAwesomeIcons.fileMedical,
+                              color: Color(0xff6305B1),
+                              size: 40,
+                            ),
                           ),
                           Text(
                             'View',
@@ -353,8 +366,8 @@ class _PatientDashboardState extends State<PatientDashboard> {
     );
   }
 
-  Row helpbuilder(
-      BuildContext context, Icon icon, Text firstLine, Text SecondLine) {
+  Row helpbuilder(BuildContext context, IconButton iconButton, Text firstLine,
+      Text SecondLine) {
     return Row(
       children: [
         Container(
@@ -371,10 +384,10 @@ class _PatientDashboardState extends State<PatientDashboard> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(70, 20, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(54, 20, 20, 0),
                     child: Row(
                       children: [
-                        icon,
+                        iconButton,
                       ],
                     ),
                   ),
@@ -382,7 +395,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     height: MediaQuery.of(context).size.height / 50,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 50),
+                    padding: const EdgeInsets.only(left: 48),
                     child: Row(
                       children: [
                         firstLine,
@@ -405,71 +418,81 @@ class _PatientDashboardState extends State<PatientDashboard> {
       ],
     );
   }
-}
 
-Row doctorsbuilder(
-  BuildContext context,
-  Text doctorname,
-  Text availability,
-  Text timeanddate,
-) {
-  return Row(
-    children: [
-      Container(
-        height: MediaQuery.of(context).size.height / 3,
-        width: MediaQuery.of(context).size.width / 2,
-        child: GestureDetector(
-          onTap: () {},
-          child: Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            color: Color(0xffFFE5C4),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(80, 40, 20, 0),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                      ),
-                    ],
+  Row doctorsbuilder(
+    BuildContext context,
+    Text doctorname,
+    Text availability,
+    Text timeanddate,
+  ) {
+    return Row(
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.height / 3,
+          width: MediaQuery.of(context).size.width / 2,
+          child: GestureDetector(
+            onTap: () {},
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              color: Color(0xffFFE5C4),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(80, 40, 20, 0),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height / 50,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 54),
-                  child: Row(
-                    children: [
-                      doctorname,
-                    ],
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 50,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 60, top: 20),
-                  child: Row(
-                    children: [
-                      availability,
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 54),
+                    child: Row(
+                      children: [
+                        doctorname,
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30, top: 10),
-                  child: Row(
-                    children: [
-                      timeanddate,
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 60, top: 20),
+                    child: Row(
+                      children: [
+                        availability,
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30, top: 10),
+                    child: Row(
+                      children: [
+                        timeanddate,
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
+
+  void _move() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => BookAppointment()));
+  }
+
+  // void _requestmedic() {
+  //   Navigator.of(context)
+  //       .push(MaterialPageRoute(builder: (context) => RequestMedicalAdvice()));
+  // }
 }
