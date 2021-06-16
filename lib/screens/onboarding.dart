@@ -127,10 +127,10 @@ class _OnboardingState extends State<Onboarding> {
                 ),
               ),
               onPressed: () {
-                if (currentIndex == contents.length - 1) {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ResetPassword()));
-                }
+                // if (currentIndex == contents.length - 1) {
+                //   Navigator.of(context).push(
+                //       MaterialPageRoute(builder: (context) => ResetPassword()));
+                // }
                 _controller.nextPage(
                   duration: Duration(
                     microseconds: 10,
