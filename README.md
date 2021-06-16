@@ -23,4 +23,3 @@ E-care is centered towards achieving SDGs goal number three (good health and wel
 8. To make sure there are no conflicts: git pull upstream develop
 9. Push changes to your new branch: git push origin your-current-branch-name
 10. Create a pull request to the develop branch
-
