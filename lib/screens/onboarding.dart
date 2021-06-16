@@ -1,5 +1,6 @@
 import 'package:e_care_mobile/models/onboarding_model.dart';
 import 'package:e_care_mobile/screens/book_appointment.dart';
+import 'package:e_care_mobile/screens/medical_history_form.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:e_care_mobile/screens/reset_password.dart';
@@ -127,10 +128,10 @@ class _OnboardingState extends State<Onboarding> {
                 ),
               ),
               onPressed: () {
-                // if (currentIndex == contents.length - 1) {
-                //   Navigator.of(context).push(
-                //       MaterialPageRoute(builder: (context) => ResetPassword()));
-                // }
+                if (currentIndex == contents.length - 1) {
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (context) => MedicalHistoryForm()));
+                }
                 _controller.nextPage(
                   duration: Duration(
                     microseconds: 10,
