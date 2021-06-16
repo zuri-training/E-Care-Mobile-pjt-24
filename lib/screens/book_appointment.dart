@@ -14,7 +14,7 @@ class _BookAppointmentState extends State<BookAppointment> {
   DateTime _selectedDate;
   List<String> _doctors = [
     'Dr. Emma',
-    'Dr. John',
+    'Dr. Johns',
   ];
   String _selectedDoctors; // Option 2
   @override

@@ -162,6 +162,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         helpbuilder(
                           context,
                           IconButton(
+                            onPressed: () {},
                             icon: Icon(
                               FontAwesomeIcons.handHoldingMedical,
                               color: Color(0xff6305B1),
