@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key key}) : super(key: key);
@@ -27,12 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Colors.amber.shade50,
       body: Center(
-        child: Text(
-          'E-care',
-          style: TextStyle(
-            fontSize: 20,
-          ),
-        ),
+        child: SvgPicture.asset('assets/images/logo.svg'),
       ),
     );
   }
