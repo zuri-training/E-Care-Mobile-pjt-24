@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:e_care_mobile/models/patient.dart';
 import 'package:http/http.dart' as http;
 

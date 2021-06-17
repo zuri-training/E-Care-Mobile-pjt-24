@@ -13,13 +13,14 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^0.19.1
+  http: ^0.13.3
   font_awesome_flutter: ^9.1.0
   carbon_icons: ^0.0.1
   
 
 
   cupertino_icons: ^1.0.2
-  http: ^0.13.3
+  hexcolor: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -35,7 +36,8 @@ flutter:
   assets:
     - assets/images/
 
-  
+
+
   fonts:
     - family: Inter
       fonts:
