@@ -1,3 +1,4 @@
+import 'package:e_care_mobile/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -412,7 +413,7 @@ class _SignupState extends State<Signup> {
           ]),
           SizedBox(height: 20.0),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('Do not have an account?',
+            Text('Already have an account?',
                 style: TextStyle(
                   fontSize: _textSize,
                 )),
@@ -420,9 +421,9 @@ class _SignupState extends State<Signup> {
             InkWell(
                 onTap: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Signup()));
+                      .push(MaterialPageRoute(builder: (context) => Login()));
                 },
-                child: Text('Sign up',
+                child: Text('Login',
                     style: TextStyle(
                       color: _purple,
                       fontSize: _textSize,

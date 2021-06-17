@@ -1,3 +1,5 @@
+import 'package:carbon_icons/carbon_icons.dart';
+import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'models/chatUsersModel.dart';
 import 'widgets/conversationList.dart';
@@ -91,6 +93,67 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Color(0xff6305B1),
+        selectedLabelStyle: TextStyle(
+          fontSize: 16,
+        ),
+        showUnselectedLabels: true,
+        showSelectedLabels: true,
+        unselectedLabelStyle: TextStyle(
+          fontSize: 16,
+        ),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white,
+        items: [
+          BottomNavigationBarItem(
+            label: '',
+            icon: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PatientDashboard()));
+              },
+              child: Container(
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                child: Icon(
+                  CarbonIcons.home,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.height / 20,
+                ),
+              ),
+            ),
+          ),
+          BottomNavigationBarItem(
+            label: '',
+            icon: GestureDetector(
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => ChatPage()));
+              },
+              child: Container(
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                child: Icon(
+                  CarbonIcons.chat_bot,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.height / 20,
+                ),
+              ),
+            ),
+          ),
+          BottomNavigationBarItem(
+            label: '',
+            icon: Container(
+              padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: Icon(
+                CarbonIcons.settings,
+                color: Colors.white,
+                size: MediaQuery.of(context).size.height / 20,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

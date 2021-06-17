@@ -13,8 +13,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^0.19.1
+  http: ^0.13.3
   font_awesome_flutter: ^9.1.0
-  carbon_icons: ^0.0.1+2
+  carbon_icons: ^0.0.1
+  
 
 
   cupertino_icons: ^1.0.2
