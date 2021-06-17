@@ -18,6 +18,7 @@ dependencies:
 
 
   cupertino_icons: ^1.0.2
+  hexcolor: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -33,7 +34,8 @@ flutter:
   assets:
     - assets/images/
 
-  
+
+
   fonts:
     - family: Inter
       fonts:
