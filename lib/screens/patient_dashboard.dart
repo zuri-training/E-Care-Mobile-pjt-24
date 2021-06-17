@@ -1,3 +1,5 @@
+import 'package:e_care_mobile/chat/chart_page.dart';
+import 'package:e_care_mobile/medical/view_medical_advice.dart';
 import 'package:e_care_mobile/screens/book_appointment.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:flutter/material.dart';
@@ -162,13 +164,12 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         helpbuilder(
                           context,
                           IconButton(
-                            onPressed: () {},
+                            onPressed: _requestmedic,
                             icon: Icon(
                               FontAwesomeIcons.handHoldingMedical,
                               color: Color(0xff6305B1),
                               size: 40,
                             ),
-                            //onPressed: _requestmedic,
                           ),
                           Text(
                             'Request',
@@ -191,7 +192,10 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         helpbuilder(
                           context,
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ViewMedicalAdvice()));
+                            },
                             icon: Icon(
                               FontAwesomeIcons.fileMedical,
                               color: Color(0xff6305B1),
@@ -342,12 +346,18 @@ class _PatientDashboardState extends State<PatientDashboard> {
           ),
           BottomNavigationBarItem(
             label: '',
-            icon: Container(
-              padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-              child: Icon(
-                CarbonIcons.chat_bot,
-                color: Colors.white,
-                size: MediaQuery.of(context).size.height / 20,
+            icon: GestureDetector(
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => ChatPage()));
+              },
+              child: Container(
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                child: Icon(
+                  CarbonIcons.chat_bot,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.height / 20,
+                ),
               ),
             ),
           ),
@@ -492,8 +502,8 @@ class _PatientDashboardState extends State<PatientDashboard> {
         .push(MaterialPageRoute(builder: (context) => BookAppointment()));
   }
 
-  // void _requestmedic() {
-  //   Navigator.of(context)
-  //       .push(MaterialPageRoute(builder: (context) => RequestMedicalAdvice()));
-  // }
+  void _requestmedic() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => RequestMedicalAdvice()));
+  }
 }

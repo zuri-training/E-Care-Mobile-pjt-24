@@ -4,6 +4,7 @@ import 'package:e_care_mobile/screens/medical_history_form.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:e_care_mobile/screens/reset_password.dart';
+import 'package:e_care_mobile/screens/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -129,8 +130,8 @@ class _OnboardingState extends State<Onboarding> {
               ),
               onPressed: () {
                 if (currentIndex == contents.length - 1) {
-                  // Navigator.of(context).push(MaterialPageRoute(
-                  //     builder: (context) => MedicalHistoryForm()));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => Signup()));
                 }
                 _controller.nextPage(
                   duration: Duration(
