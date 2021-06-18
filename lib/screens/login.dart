@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:page_transition/page_transition.dart';
 import 'signup.dart';
 import 'reset_password.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -285,8 +286,13 @@ class _LoginState extends State<Login> {
                                           fontWeight: FontWeight.w500))))),*/
               child: GestureDetector(
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => PatientDashboard()));
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: PatientDashboard(),
+                      duration: Duration(seconds: 3),
+                      childCurrent: Login(),
+                      type: PageTransitionType.leftToRightJoined));
             },
             child: Container(
                 height: 48.0,
@@ -319,8 +325,12 @@ class _LoginState extends State<Login> {
             SizedBox(width: 5.0),
             InkWell(
                 onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ResetPassword()));
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: ResetPassword(),
+                          duration: Duration(seconds: 3),
+                          type: PageTransitionType.bottomToTop));
                 },
                 child: Text('Here',
                     style: TextStyle(
@@ -337,8 +347,12 @@ class _LoginState extends State<Login> {
             SizedBox(width: 5.0),
             InkWell(
                 onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Signup()));
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: Signup(),
+                          duration: Duration(seconds: 3),
+                          type: PageTransitionType.rightToLeftWithFade));
                 },
                 child: Text('Sign up',
                     style: TextStyle(

@@ -5,6 +5,8 @@ import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:flutter/material.dart';
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 
 class PatientDashboard extends StatefulWidget {
   const PatientDashboard({Key key}) : super(key: key);
@@ -444,10 +446,11 @@ class _PatientDashboardState extends State<PatientDashboard> {
           child: GestureDetector(
             onTap: () {},
             child: Card(
+              clipBehavior: Clip.hardEdge,
               elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
+              shape: StadiumBorder(
+                  // borderRadius: BorderRadius.circular(30),
+                  ),
               color: Color(0xffFFE5C4),
               child: Column(
                 children: [

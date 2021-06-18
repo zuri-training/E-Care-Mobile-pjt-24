@@ -2,6 +2,7 @@ import 'package:e_care_mobile/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:page_transition/page_transition.dart';
 import 'signup.dart';
 import 'reset_password.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -402,8 +403,12 @@ class _SignupState extends State<Signup> {
             SizedBox(width: 5.0),
             InkWell(
                 onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ResetPassword()));
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: ResetPassword(),
+                          duration: Duration(seconds: 3),
+                          type: PageTransitionType.fade));
                 },
                 child: Text('Here',
                     style: TextStyle(
@@ -420,8 +425,12 @@ class _SignupState extends State<Signup> {
             SizedBox(width: 5.0),
             InkWell(
                 onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Login()));
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: Login(),
+                          duration: Duration(seconds: 3),
+                          type: PageTransitionType.bottomToTop));
                 },
                 child: Text('Login',
                     style: TextStyle(

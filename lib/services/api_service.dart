@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:e_care_mobile/models/patient.dart';
 import 'package:http/http.dart' as http;
 
+//api link
+var url = 'https://harvest-rigorous-bambiraptor.glitch.me/';
+
 Future<Patient> registerPatient(
   //these are the user registration fields
   String userId,
@@ -14,7 +17,7 @@ Future<Patient> registerPatient(
   //make a post request, basically trying to send the values to the server
   final response = await http.post(
     Uri.parse(
-      'http://localhost:5000/api/v1/patient/create',
+      '{$url}/api/v1/patient/create',
     ),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',

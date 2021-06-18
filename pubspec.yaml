@@ -17,10 +17,16 @@ dependencies:
   font_awesome_flutter: ^9.1.0
   carbon_icons: ^0.0.1
   
+  
 
 
   cupertino_icons: ^1.0.2
   hexcolor: ^2.0.4
+  animated_splash_screen: ^1.1.0
+  animations: ^2.0.0
+  page_transition: ^2.0.1-nullsafety.0
+  bouncing_widget: ^2.0.0
+  flutter_bounce: ^1.1.0
 
 dev_dependencies:
   flutter_test:
