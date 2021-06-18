@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'signup.dart';
+import 'login.dart';
 import 'reset_password.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Signup extends StatefulWidget {
   @override
@@ -14,7 +18,35 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   final formKey = new GlobalKey<FormState>();
 
+  // Image variable
+  File _image;
+  final picker = ImagePicker();
+
+  // variable to check if file was uploaded
+  bool _isFileUploaded = false;
+
+  Future getImage() async {
+    final pickedFile = dropdownValue == 'Camera'
+        ? await picker.getImage(source: ImageSource.camera)
+        : await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        _isFileUploaded = true;
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  // Store Patient date of birth
+  DateTime _dob;
+  final df = new DateFormat('dd-MM-yyyy');
+  final TextEditingController _controller = TextEditingController();
   static const double figureHeight = 250;
+
+  String dropdownValue = 'One';
 
   Color _purple = HexColor("#6305B1");
   Color _purpleText = HexColor("#8237C1");
@@ -24,12 +56,42 @@ class _SignupState extends State<Signup> {
   Color _grey = HexColor("#828282");
   Color _lightGrey = HexColor("#BDBDBD");
 
+  // Text field container height
+  double _textFieldHeight = 48;
+
+  // Thickness of Text fields
+  double _textFieldBorderWidth = 2;
+
   // Text size
-  double _textSize = 16;
+  double _textSize = 14;
+
+  // Text field box shadow
+  Color _textFieldShadow = Color.fromRGBO(0, 0, 0, 0.5);
 
   // variable to store if password is visible or not
   bool _obscureText = true;
 
+  /*@override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      final String text = _controller.text.toLowerCase();
+      _controller.value = _controller.value.copyWith(
+        text: 'dob.toString()',
+        selection:
+            TextSelection(baseOffset: text.length, extentOffset: text.length),
+        composing: TextRange.empty,
+      );
+      print(_dob);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+*/
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -41,100 +103,6 @@ class _SignupState extends State<Signup> {
   }
 
   _buildSignupForm() {
-    /*return Padding(
-      padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-      child: ListView(
-        children: [
-          SizedBox(height: 75.0),
-          Container(
-              height: 125.0,
-              width: 200.0,
-              child: Stack(
-                children: [
-                  Text('Signup',
-                      style: TextStyle(fontFamily: 'Trueno', fontSize: 60.0)),
-                  //Dot placement
-                  Positioned(
-                      top: 62.0,
-                      left: 200.0,
-                      child: Container(
-                          height: 10.0,
-                          width: 10.0,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: _purple)))
-                ],
-              )),
-          SizedBox(height: 25.0),
-          TextFormField(
-            decoration: InputDecoration(
-                labelText: 'EMAIL',
-                labelStyle: TextStyle(
-                    fontFamily: 'Trueno',
-                    fontSize: 12.0,
-                    color: Colors.grey.withOpacity(0.5)),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _purple),
-                )),
-            /*onChanged: (value) {
-    this.email = value;
-    },
-    validator: (value) =>
-    value.isEmpty ? 'Email is required' : validateEmail(value)*/
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-                labelText: 'PASSWORD',
-                labelStyle: TextStyle(
-                    fontFamily: 'Trueno',
-                    fontSize: 12.0,
-                    color: Colors.grey.withOpacity(0.5)),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _purple),
-                )),
-            obscureText: true,
-            /*onChanged: (value) {
-                this.password = value;
-              },
-              validator: (value) =>
-              value.isEmpty ? 'Password is required' : null*/
-          ),
-          SizedBox(height: 50.0),
-          GestureDetector(
-            /*onTap: () {
-          if (checkFields())
-            AuthService().signUp(email, password).then((userCreds) {
-              Navigator.of(context).pop();
-            }).catchError((e) {
-              ErrorHandler().errorDialog(context, e);
-            });
-        },*/
-            child: Container(
-                height: 50.0,
-                child: Material(
-                    borderRadius: BorderRadius.circular(25.0),
-                    shadowColor: Colors.deepPurpleAccent,
-                    color: _purple,
-                    elevation: 7.0,
-                    child: Center(
-                        child: Text('SIGN UP',
-                            style: TextStyle(
-                                color: Colors.white, fontFamily: 'Trueno'))))),
-          ),
-          SizedBox(height: 20.0),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            InkWell(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Go back',
-                    style: TextStyle(
-                        color: _purple,
-                        fontFamily: 'Trueno',
-                        decoration: TextDecoration.underline)))
-          ])
-        ],
-      ),
-    );*/
     return SingleChildScrollView(
       //width: MediaQuery.of(context).size.width,
       /*CustomPaint(
@@ -152,7 +120,7 @@ class _SignupState extends State<Signup> {
                 textAlign: TextAlign.start,
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 56)),
           ),
-          SizedBox(height: 32.0),
+          /*SizedBox(height: 32.0),
           Container(
               width: MediaQuery.of(context).size.width,
               height: 48,
@@ -214,16 +182,16 @@ class _SignupState extends State<Signup> {
               indent: 24,
               color: Colors.black,
             )),
-          ]),
+          ]),*/
           SizedBox(height: 40.0),
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text('Email',
+            child: Text('Patients Full Name',
                 style: TextStyle(
                     fontSize: _textSize, fontWeight: FontWeight.w500)),
           ),
           Container(
-              height: 48.0,
+              height: _textFieldHeight,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8),
@@ -233,40 +201,180 @@ class _SignupState extends State<Signup> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.5),
+                      color: _textFieldShadow,
                       offset: Offset(0, 4),
                       blurRadius: 4)
                 ],
                 color: Color.fromRGBO(255, 255, 255, 1),
+                border: Border.all(
+                  color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
+                  width: _textFieldBorderWidth,
+                ),
               ),
-              child: TextField(
-                decoration: InputDecoration(
-                    hintText: 'myemail@gmail.com',
-                    //labelText: 'Email',
-                    hintStyle: TextStyle(
-                        color: Colors.black.withOpacity(0.2),
-                        fontSize: _textSize),
-                    isDense: true,
-                    counterText: "",
-                    contentPadding: EdgeInsets.all(10.0),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                        /*borderRadius:
-                                new BorderRadius.circular(10.0),*/
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TextField(
+                  decoration: InputDecoration(
+                      hintText: 'e.g Amaka Ayobami',
+                      //labelText: 'Email',
+                      hintStyle: TextStyle(
+                          color: Colors.black.withOpacity(0.2),
+                          fontSize: _textSize),
+                      isDense: true,
+                      counterText: "",
+                      contentPadding: EdgeInsets.all(10.0),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          /*borderRadius:
+                                  new BorderRadius.circular(10.0),*/
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomRight: Radius.circular(8)),
+                          borderSide: BorderSide.none)),
+                  /*onChanged: (value) {
+                            this.email = value;
+                          },
+                          validator: (value) =>
+                          value.isEmpty ? 'Email is required' : validateEmail(value)*/
+                  textAlign: TextAlign.start,
+                  maxLines: 1,
+                  maxLength: 20,
+                  // controller: _locationNameTextController,
+                ),
+              )),
+          SizedBox(height: 25.0),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text('Patients Date of Birth',
+                style: TextStyle(
+                    fontSize: _textSize, fontWeight: FontWeight.w500)),
+          ),
+          Container(
+              height: _textFieldHeight,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(0),
+                  bottomLeft: Radius.circular(0),
+                  bottomRight: Radius.circular(8),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                      color: _textFieldShadow,
+                      offset: Offset(0, 4),
+                      blurRadius: 4)
+                ],
+                color: Color.fromRGBO(255, 255, 255, 1),
+                border: Border.all(
+                  color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
+                  width: _textFieldBorderWidth,
+                ),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TextField(
+                  focusNode: AlwaysDisabledFocusNode(),
+                  controller: _controller,
+                  decoration: InputDecoration(
+                      hintText: 'e.g Amaka Ayobami',
+                      //labelText: 'Email',
+                      hintStyle: TextStyle(
+                          color: Colors.black.withOpacity(0.2),
+                          fontSize: _textSize),
+                      isDense: true,
+                      counterText: "",
+                      contentPadding: EdgeInsets.all(10.0),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          /*borderRadius:
+                            new BorderRadius.circular(10.0),*/
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomRight: Radius.circular(8)),
+                          borderSide: BorderSide.none)),
+                  onTap: () {
+                    _selectDate(context);
+                  },
+
+                  /*onChanged: (value) {
+                      this.email = value;
+                    },
+                    validator: (value) =>
+                    value.isEmpty ? 'Email is required' : validateEmail(value)*/
+                  textAlign: TextAlign.start,
+                  maxLines: 1,
+                  maxLength: 20,
+                  // controller: _locationNameTextController,
+                ),
+              )),
+          SizedBox(height: 25.0),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text('Email',
+                style: TextStyle(
+                    fontSize: _textSize, fontWeight: FontWeight.w500)),
+          ),
+          Container(
+              height: _textFieldHeight,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(0),
+                  bottomLeft: Radius.circular(0),
+                  bottomRight: Radius.circular(8),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                      color: _textFieldShadow,
+                      offset: Offset(0, 4),
+                      blurRadius: 4)
+                ],
+                color: Color.fromRGBO(255, 255, 255, 1),
+                border: Border.all(
+                  color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
+                  width: _textFieldBorderWidth,
+                ),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TextField(
+                  decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(8),
                             bottomRight: Radius.circular(8)),
-                        borderSide: BorderSide.none)),
-                /*onChanged: (value) {
-                          this.email = value;
-                        },
-                        validator: (value) =>
-                        value.isEmpty ? 'Email is required' : validateEmail(value)*/
-                textAlign: TextAlign.start,
-                maxLines: 1,
-                maxLength: 20,
-                // controller: _locationNameTextController,
+                        borderSide: BorderSide(color: _purple),
+                      ),
+                      hintText: 'myemail@gmail.com',
+                      //labelText: 'Email',
+                      hintStyle: TextStyle(
+                          color: Colors.black.withOpacity(0.2),
+                          fontSize: _textSize),
+                      isDense: true,
+                      counterText: "",
+                      contentPadding: EdgeInsets.all(10.0),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          /*borderRadius:
+                                  new BorderRadius.circular(10.0),*/
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomRight: Radius.circular(8)),
+                          borderSide: BorderSide.none)),
+                  /*onChanged: (value) {
+                            this.email = value;
+                          },
+                          validator: (value) =>
+                          value.isEmpty ? 'Email is required' : validateEmail(value)*/
+                  textAlign: TextAlign.start,
+                  maxLines: 1,
+                  maxLength: 20,
+                  // controller: _locationNameTextController,
+                ),
               )),
           SizedBox(height: 25.0),
           Padding(
@@ -276,7 +384,7 @@ class _SignupState extends State<Signup> {
                     fontSize: _textSize, fontWeight: FontWeight.w500)),
           ),
           Container(
-            height: 48.0,
+            height: _textFieldHeight,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8),
@@ -286,11 +394,15 @@ class _SignupState extends State<Signup> {
               ),
               boxShadow: [
                 BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.5),
+                    color: _textFieldShadow,
                     offset: Offset(0, 4),
                     blurRadius: 4)
               ],
               color: Color.fromRGBO(255, 255, 255, 1),
+              border: Border.all(
+                color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
+                width: _textFieldBorderWidth,
+              ),
             ),
             child: TextField(
               obscureText: _obscureText,
@@ -339,20 +451,156 @@ class _SignupState extends State<Signup> {
               // controller: _locationNameTextController,
             ),
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: Checkbox(checkColor: _purple, value: false),
-            ),
-            Expanded(
-              child: Text("Stay logged In",
-                  style: TextStyle(
-                      fontSize: _textSize,
-                      fontWeight: FontWeight.w500,
-                      color: _purple)),
-            ),
-          ]),
-          SizedBox(height: 40.0),
+          SizedBox(height: 36.0),
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Add a Profile Picture',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Color.fromRGBO(0, 0, 0, 1),
+                          fontFamily: 'Inter',
+                          fontSize: 16,
+                          letterSpacing:
+                              0 /*percentages not used in flutter. defaulting to zero*/,
+                          fontWeight: FontWeight.w500,
+                          height: 1),
+                    ),
+                  ),
+                  //SizedBox(width: 2.0),
+                  Expanded(
+                      child: Container(
+                          margin: EdgeInsets.only(left: 8.0),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              hint: _isFileUploaded
+                                  ? Center(
+                                      child: Expanded(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(4),
+                                                topRight: Radius.circular(4),
+                                                bottomLeft: Radius.circular(4),
+                                                bottomRight: Radius.circular(4),
+                                              ),
+                                              color: Color.fromRGBO(
+                                                  206, 205, 205, 1)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text('Change Photo',
+                                                //textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color: Color.fromRGBO(
+                                                        23, 43, 77, 1),
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 14,
+                                                    letterSpacing:
+                                                        0 /*percentages not used in flutter. defaulting to zero*/,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    height: 1)),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(4),
+                                            topRight: Radius.circular(4),
+                                            bottomLeft: Radius.circular(4),
+                                            bottomRight: Radius.circular(4),
+                                          ),
+                                          color:
+                                              Color.fromRGBO(206, 205, 205, 1)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'Choose a photo',
+                                          //textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color:
+                                                  Color.fromRGBO(23, 43, 77, 1),
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              letterSpacing:
+                                                  0 /*percentages not used in flutter. defaulting to zero*/,
+                                              fontWeight: FontWeight.normal,
+                                              height: 1),
+                                        ),
+                                      ),
+                                    ),
+                              iconSize: 0,
+                              isExpanded: true,
+                              elevation: 16,
+                              focusColor: _lightGold,
+                              style: TextStyle(color: HexColor("#172B4D")),
+                              /*underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                            ),*/
+                              onChanged: (newValue) {
+                                setState(() {
+                                  dropdownValue = newValue;
+                                });
+                                getImage();
+                              },
+                              items: <String>[
+                                'Camera',
+                                'Upload Picture',
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ))),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Visibility(
+                      visible: _isFileUploaded ? true : false,
+                      child: Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _image = null;
+                              _isFileUploaded = false;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text('Delete',
+                                //textAlign: TextAlign.end,
+                                style: TextStyle(color: Colors.red)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              _isFileUploaded
+                  ? Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: CircleAvatar(
+                        backgroundImage: FileImage(_image),
+                        backgroundColor: Colors.transparent,
+                        radius: 64,
+                      ),
+                    )
+                  : SizedBox(
+                      height: 0,
+                    )
+            ],
+          ),
+          SizedBox(height: _isFileUploaded ? 30.0 : 48.0),
           GestureDetector(
               /*onTap: () {
                         if (checkFields()) AuthService().signIn(email, password, context);
@@ -394,25 +642,7 @@ class _SignupState extends State<Signup> {
                               fontWeight: FontWeight.w500))))),
           SizedBox(height: 25.0),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('Forgot Password?',
-                style: TextStyle(
-                  fontSize: _textSize,
-                )),
-            SizedBox(width: 5.0),
-            InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ResetPassword()));
-                },
-                child: Text('Here',
-                    style: TextStyle(
-                        color: _purple,
-                        fontSize: _textSize,
-                        decoration: TextDecoration.underline)))
-          ]),
-          SizedBox(height: 20.0),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('Do not have an account?',
+            Text('Already have an account?',
                 style: TextStyle(
                   fontSize: _textSize,
                 )),
@@ -420,9 +650,9 @@ class _SignupState extends State<Signup> {
             InkWell(
                 onTap: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Signup()));
+                      .push(MaterialPageRoute(builder: (context) => Login()));
                 },
-                child: Text('Sign up',
+                child: Text('Sign in',
                     style: TextStyle(
                       color: _purple,
                       fontSize: _textSize,
@@ -433,4 +663,50 @@ class _SignupState extends State<Signup> {
       ),
     );
   }
+
+  _selectDate(BuildContext context) async {
+    DateTime newSelectedDate = await DatePicker.showDatePicker(context,
+        showTitleActions: true,
+        minTime: DateTime(1900, 1, 1),
+        maxTime: DateTime.now(), onChanged: (date) {
+      print('change $date');
+    }, onConfirm: (date) {
+      _dob = date;
+      print('confirm $date');
+    }, currentTime: DateTime.now(), locale: LocaleType.en);
+
+    /*showDatePicker(
+        context: context,
+        initialDate: _dob != null ? _dob : DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2040),
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: ThemeData.dark().copyWith(
+              colorScheme: ColorScheme.dark(
+                primary: Colors.deepPurple,
+                onPrimary: Colors.white,
+                surface: Colors.blueGrey,
+                onSurface: Colors.yellow,
+              ),
+              dialogBackgroundColor: Colors.blue[500],
+            ),
+            child: child,
+          );
+        });*/
+
+    print(newSelectedDate);
+    if (newSelectedDate != null) {
+      _dob = newSelectedDate;
+      _controller
+        ..text = DateFormat.yMMMd().format(_dob)
+        ..selection = TextSelection.fromPosition(TextPosition(
+            offset: _controller.text.length, affinity: TextAffinity.upstream));
+    }
+  }
+}
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
 }
