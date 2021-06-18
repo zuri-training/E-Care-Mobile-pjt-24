@@ -9,6 +9,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:page_transition/page_transition.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -342,12 +343,6 @@ class _SignupState extends State<Signup> {
                 alignment: Alignment.centerLeft,
                 child: TextField(
                   decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            bottomRight: Radius.circular(8)),
-                        borderSide: BorderSide(color: _purple),
-                      ),
                       hintText: 'myemail@gmail.com',
                       //labelText: 'Email',
                       hintStyle: TextStyle(
@@ -649,8 +644,12 @@ class _SignupState extends State<Signup> {
             SizedBox(width: 5.0),
             InkWell(
                 onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Login()));
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: Login(),
+                          duration: Duration(seconds: 3),
+                          type: PageTransitionType.bottomToTop));
                 },
                 child: Text('Sign in',
                     style: TextStyle(
