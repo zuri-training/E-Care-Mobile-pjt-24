@@ -7,6 +7,7 @@ import 'package:e_care_mobile/screens/reset_password.dart';
 import 'package:e_care_mobile/screens/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:page_transition/page_transition.dart';
 
 class Onboarding extends StatefulWidget {
   const Onboarding({Key key}) : super(key: key);
@@ -130,8 +131,12 @@ class _OnboardingState extends State<Onboarding> {
               ),
               onPressed: () {
                 if (currentIndex == contents.length - 1) {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Signup()));
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          duration: Duration(seconds: 5),
+                          child: Signup(),
+                          type: PageTransitionType.rightToLeftWithFade));
                 }
                 _controller.nextPage(
                   duration: Duration(
