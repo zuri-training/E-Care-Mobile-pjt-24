@@ -615,7 +615,7 @@ class _SignupState extends State<Signup> {
                                           fontSize: _textSize,
                                           fontWeight: FontWeight.w500))))),*/
               child: Container(
-                  height: 48.0,
+                  height: _textFieldHeight,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(8),
@@ -623,6 +623,12 @@ class _SignupState extends State<Signup> {
                       bottomLeft: Radius.circular(0),
                       bottomRight: Radius.circular(8),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                          color: _textFieldShadow,
+                          offset: Offset(0, 4),
+                          blurRadius: 4)
+                    ],
                     color: Color.fromRGBO(99, 5, 177, 1),
                     gradient: LinearGradient(
                         begin: Alignment(6.123234262925839e-17, 1),
