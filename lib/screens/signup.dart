@@ -1,7 +1,13 @@
+import 'package:e_care_mobile/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'login.dart';
+
+import 'package:page_transition/page_transition.dart';
+import 'signup.dart';
+
 import 'reset_password.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -653,11 +659,41 @@ class _SignupState extends State<Signup> {
                   Navigator.push(
                       context,
                       PageTransition(
+
                           child: Login(),
                           duration: Duration(seconds: 3),
                           type: PageTransitionType.bottomToTop));
                 },
                 child: Text('Sign in',
+
+                          child: ResetPassword(),
+                          duration: Duration(seconds: 3),
+                          type: PageTransitionType.fade));
+                },
+                child: Text('Here',
+                    style: TextStyle(
+                        color: _purple,
+                        fontSize: _textSize,
+                        decoration: TextDecoration.underline)))
+          ]),
+          SizedBox(height: 20.0),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text('Already have an account?',
+                style: TextStyle(
+                  fontSize: _textSize,
+                )),
+            SizedBox(width: 5.0),
+            InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: Login(),
+                          duration: Duration(seconds: 3),
+                          type: PageTransitionType.bottomToTop));
+                },
+                child: Text('Login',
+
                     style: TextStyle(
                       color: _purple,
                       fontSize: _textSize,

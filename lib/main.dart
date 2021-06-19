@@ -20,11 +20,10 @@ class MyApp extends StatelessWidget {
           // unselectedWidgetColor: Colors.black,
         ),
         debugShowCheckedModeBanner: false,
-        /*initialRoute: '/',
-      routes: {
-        '/': (context) => SplashScreen(),
-        'onboarding': (context) => Onboarding()
-      },*/
-        home: ChatScreen());
+        initialRoute: '/',
+        routes: {
+          '/': (context) => SplashScreen(),
+          'onboarding': (context) => Onboarding()
+        });
   }
 }
