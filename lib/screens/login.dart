@@ -26,15 +26,20 @@ class _LoginState extends State<Login> {
   Color _grey = HexColor("#828282");
   Color _lightGrey = HexColor("#BDBDBD");
 
+  // Text field container height
+  double _textFieldHeight = 48;
+
+  // Thickness of Text fields
+  double _textFieldBorderWidth = 2;
+
   // Text size
-  double _textSize = 16;
+  double _textSize = 14;
+
+  // Text field box shadow
+  Color _textFieldShadow = Color.fromRGBO(0, 0, 0, 0.5);
 
   // variable to store if password is visible or not
   bool _obscureText = true;
-
-  //final String assetName = 'assets/images/vector.svg';
-  /*final Widget svg =
-      SvgPicture.asset('assets/images/vector.svg', semanticsLabel: 'Acme Logo');*/
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +70,11 @@ class _LoginState extends State<Login> {
                 textAlign: TextAlign.start,
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 56)),
           ),
+
+          /*SizedBox(height: 32.0),
+
           SizedBox(height: 32.0),
+
           Container(
               width: MediaQuery.of(context).size.width,
               height: 48,
@@ -127,8 +136,13 @@ class _LoginState extends State<Login> {
               indent: 24,
               color: Colors.black,
             )),
+
+          ]),*/
+          SizedBox(height: 60.0),
+
           ]),
           SizedBox(height: 40.0),
+
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text('Email',
@@ -136,7 +150,11 @@ class _LoginState extends State<Login> {
                     fontSize: _textSize, fontWeight: FontWeight.w500)),
           ),
           Container(
+
+              height: _textFieldHeight,
+
               height: 48.0,
+
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8),
@@ -146,11 +164,52 @@ class _LoginState extends State<Login> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.5),
+
+                      color: _textFieldShadow,
+              color: Color.fromRGBO(0, 0, 0, 0.5),
+
                       offset: Offset(0, 4),
                       blurRadius: 4)
                 ],
                 color: Color.fromRGBO(255, 255, 255, 1),
+
+                border: Border.all(
+                  color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
+                  width: _textFieldBorderWidth,
+                ),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TextField(
+                  decoration: InputDecoration(
+                      hintText: 'myemail@gmail.com',
+                      //labelText: 'Email',
+                      hintStyle: TextStyle(
+                          color: Colors.black.withOpacity(0.2),
+                          fontSize: _textSize),
+                      isDense: true,
+                      counterText: "",
+                      contentPadding: EdgeInsets.all(10.0),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          /*borderRadius:
+                                  new BorderRadius.circular(10.0),*/
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomRight: Radius.circular(8)),
+                          borderSide: BorderSide.none)),
+                  /*onChanged: (value) {
+                            this.email = value;
+                          },
+                          validator: (value) =>
+                          value.isEmpty ? 'Email is required' : validateEmail(value)*/
+                  textAlign: TextAlign.start,
+                  maxLines: 1,
+                  maxLength: 20,
+                  // controller: _locationNameTextController,
+                ),
+
               ),
               child: TextField(
                 decoration: InputDecoration(
@@ -180,6 +239,7 @@ class _LoginState extends State<Login> {
                 maxLines: 1,
                 maxLength: 20,
                 // controller: _locationNameTextController,
+
               )),
           SizedBox(height: 25.0),
           Padding(
@@ -189,7 +249,11 @@ class _LoginState extends State<Login> {
                     fontSize: _textSize, fontWeight: FontWeight.w500)),
           ),
           Container(
+
+            height: _textFieldHeight,
+
             height: 48.0,
+
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8),
@@ -199,11 +263,21 @@ class _LoginState extends State<Login> {
               ),
               boxShadow: [
                 BoxShadow(
+
+                    color: _textFieldShadow,
+
                     color: Color.fromRGBO(0, 0, 0, 0.5),
+
                     offset: Offset(0, 4),
                     blurRadius: 4)
               ],
               color: Color.fromRGBO(255, 255, 255, 1),
+
+              border: Border.all(
+                color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
+                width: _textFieldBorderWidth,
+              ),
+
             ),
             child: TextField(
               obscureText: _obscureText,
@@ -284,6 +358,36 @@ class _LoginState extends State<Login> {
                                           color: Colors.white,
                                           fontSize: _textSize,
                                           fontWeight: FontWeight.w500))))),*/
+
+              child: Container(
+                  height: _textFieldHeight,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      topRight: Radius.circular(0),
+                      bottomLeft: Radius.circular(0),
+                      bottomRight: Radius.circular(8),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                          color: _textFieldShadow,
+                          offset: Offset(0, 4),
+                          blurRadius: 4)
+                    ],
+                    color: Color.fromRGBO(99, 5, 177, 1),
+                    gradient: LinearGradient(
+                        begin: Alignment(6.123234262925839e-17, 1),
+                        end: Alignment(-1, 6.123234262925839e-17),
+                        colors: [HexColor("#4C15D3"), HexColor("#6305B1")]),
+                  ),
+                  child: Center(
+                      child: Text('SIGN IN',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: _textSize,
+                              fontWeight: FontWeight.w500))))),
+          SizedBox(height: 30.0),
+
               child: GestureDetector(
             onTap: () {
               Navigator.push(
@@ -317,6 +421,7 @@ class _LoginState extends State<Login> {
                             fontWeight: FontWeight.w500)))),
           )),
           SizedBox(height: 25.0),
+
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text('Forgot Password?',
                 style: TextStyle(
@@ -334,9 +439,16 @@ class _LoginState extends State<Login> {
                 },
                 child: Text('Here',
                     style: TextStyle(
+
+                      color: _purple,
+                      fontSize: _textSize,
+                      //decoration: TextDecoration.underline
+                    )))
+
                         color: _purple,
                         fontSize: _textSize,
                         decoration: TextDecoration.underline)))
+
           ]),
           SizedBox(height: 20.0),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
