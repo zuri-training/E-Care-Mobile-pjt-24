@@ -7,7 +7,8 @@ import 'medical/view_medical_advice.dart';
 import 'chat/chatDetailPage.dart';
 import 'chat/chat_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
