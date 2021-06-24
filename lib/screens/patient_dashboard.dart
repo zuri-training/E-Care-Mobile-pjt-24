@@ -1,6 +1,7 @@
 import 'package:e_care_mobile/chat/chart_page.dart';
 import 'package:e_care_mobile/medical/view_medical_advice.dart';
 import 'package:e_care_mobile/screens/book_appointment.dart';
+import 'package:e_care_mobile/screens/profile/profile_page.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:flutter/material.dart';
 import 'package:carbon_icons/carbon_icons.dart';
@@ -35,13 +36,15 @@ class _PatientDashboardState extends State<PatientDashboard> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width / 1.5,
                       ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.menu,
-                          size: MediaQuery.of(context).size.width / 10,
-                        ),
-                        onPressed: () {},
-                      ),
+                      // IconButton(
+                      //   icon: Icon(
+                      //     Icons.menu,
+                      //     size: MediaQuery.of(context).size.width / 10,
+                      //   ),
+                      //   onPressed: () {
+                      //
+                      //   },
+                      // ),
                     ],
                   ),
                   SizedBox(
@@ -365,12 +368,21 @@ class _PatientDashboardState extends State<PatientDashboard> {
           ),
           BottomNavigationBarItem(
             label: '',
-            icon: Container(
-              padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-              child: Icon(
-                CarbonIcons.settings,
-                color: Colors.white,
-                size: MediaQuery.of(context).size.height / 20,
+            icon: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(),
+                  ),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                child: Icon(
+                  CarbonIcons.settings,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.height / 20,
+                ),
               ),
             ),
           ),

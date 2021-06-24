@@ -4,7 +4,7 @@ import 'package:e_care_mobile/screens/medical_history_form.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:e_care_mobile/screens/reset_password.dart';
-import 'package:e_care_mobile/services/api.dart';
+import 'package:e_care_mobile/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,13 +31,13 @@ class _OnboardingState extends State<Onboarding> {
     OnboardingModel(
       title: 'Rural-connect',
       description:
-      'healthcare professionals can share requests for medical advice amongst one another.',
+          'healthcare professionals can share requests for medical advice amongst one another.',
       image: 'assets/images/screentwo.svg',
     ),
     OnboardingModel(
       title: 'Book Appointments',
       description:
-      ' patients can see the time when a particular doctor will be available and then, book an appointment with that doctor',
+          ' patients can see the time when a particular doctor will be available and then, book an appointment with that doctor',
       image: 'assets/images/screenthree.svg',
     ),
   ];
@@ -132,7 +132,7 @@ class _OnboardingState extends State<Onboarding> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 contents.length,
-                    (index) => buildDots(index, context),
+                (index) => buildDots(index, context),
               ),
             ),
           ),
