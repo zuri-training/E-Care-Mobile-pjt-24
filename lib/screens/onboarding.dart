@@ -4,12 +4,10 @@ import 'package:e_care_mobile/screens/medical_history_form.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:e_care_mobile/screens/reset_password.dart';
-import 'package:e_care_mobile/services/api.dart';
+import 'package:e_care_mobile/screens/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'login.dart';
-import 'signup.dart';
+import 'package:page_transition/page_transition.dart';
 
 class Onboarding extends StatefulWidget {
   const Onboarding({Key key}) : super(key: key);
@@ -19,8 +17,6 @@ class Onboarding extends StatefulWidget {
 }
 
 class _OnboardingState extends State<Onboarding> {
-  SharedPreferences sharedPreferences;
-
   List<OnboardingModel> contents = [
     OnboardingModel(
       title: 'Hospital Record Management',
@@ -31,13 +27,13 @@ class _OnboardingState extends State<Onboarding> {
     OnboardingModel(
       title: 'Rural-connect',
       description:
-      'healthcare professionals can share requests for medical advice amongst one another.',
+          'healthcare professionals can share requests for medical advice amongst one another.',
       image: 'assets/images/screentwo.svg',
     ),
     OnboardingModel(
       title: 'Book Appointments',
       description:
-      ' patients can see the time when a particular doctor will be available and then, book an appointment with that doctor',
+          ' patients can see the time when a particular doctor will be available and then, book an appointment with that doctor',
       image: 'assets/images/screenthree.svg',
     ),
   ];
@@ -55,20 +51,6 @@ class _OnboardingState extends State<Onboarding> {
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  checkLoginStatus() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString("token") == null) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => Login()),
-          (Route<dynamic> route) => false);
-    } else {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) => PatientDashboard()),
-          (Route<dynamic> route) => false);
-    }
   }
 
   int currentIndex = 0;
@@ -132,7 +114,7 @@ class _OnboardingState extends State<Onboarding> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 contents.length,
-                    (index) => buildDots(index, context),
+                (index) => buildDots(index, context),
               ),
             ),
           ),
@@ -149,10 +131,12 @@ class _OnboardingState extends State<Onboarding> {
               ),
               onPressed: () {
                 if (currentIndex == contents.length - 1) {
-                  //AuthService().handleAuthStr();
-                  /*Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Signup()));*/
-                  checkLoginStatus();
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          duration: Duration(seconds: 5),
+                          child: Signup(),
+                          type: PageTransitionType.rightToLeftWithFade));
                 }
                 _controller.nextPage(
                   duration: Duration(
