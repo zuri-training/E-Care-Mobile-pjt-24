@@ -1,16 +1,12 @@
 import 'dart:ui';
 
-import 'package:dio/dio.dart';
-import 'package:e_care_mobile/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'signup.dart';
 import 'reset_password.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'patient_dashboard.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -20,10 +16,6 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final formKey = new GlobalKey<FormState>();
   static const double figureHeight = 250;
-  bool _isLoading = false;
-
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   Color _purple = HexColor("#6305B1");
   Color _purpleText = HexColor("#8237C1");
@@ -48,37 +40,14 @@ class _LoginState extends State<Login> {
   // variable to store if password is visible or not
   bool _obscureText = true;
 
-  //To check fields during submit
-  checkFields() {
-    final form = formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      return true;
-    }
-    return false;
-  }
-
-  //To Validate email
-  String validateEmail(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value))
-      return 'Enter Valid Email';
-    else
-      return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
         body: Container(
-      //height: MediaQuery.of(context).size.height,
-      //width: MediaQuery.of(context).size.width,
-      child: _isLoading
-          ? CircularProgressIndicator()
-          : Form(key: formKey, child: _buildLoginForm(context)),
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: Form(key: formKey, child: _buildLoginForm(context)),
     ));
   }
 
@@ -170,7 +139,7 @@ class _LoginState extends State<Login> {
                 style: TextStyle(
                     fontSize: _textSize, fontWeight: FontWeight.w500)),
           ),
-          /*Container(
+          Container(
               height: _textFieldHeight,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
@@ -222,62 +191,6 @@ class _LoginState extends State<Login> {
                   maxLength: 20,
                   // controller: _locationNameTextController,
                 ),
-              )),*/
-          Container(
-              height: _textFieldHeight,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  topRight: Radius.circular(0),
-                  bottomLeft: Radius.circular(0),
-                  bottomRight: Radius.circular(8),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                      color: _textFieldShadow,
-                      offset: Offset(0, 4),
-                      blurRadius: 4)
-                ],
-                color: Color.fromRGBO(255, 255, 255, 1),
-                border: Border.all(
-                  color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
-                  width: _textFieldBorderWidth,
-                ),
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                      hintText: 'myemail@gmail.com',
-                      //labelText: 'Email',
-                      hintStyle: TextStyle(
-                          color: Colors.black.withOpacity(0.2),
-                          fontSize: _textSize),
-                      isDense: true,
-                      counterText: "",
-                      contentPadding: EdgeInsets.all(10.0),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                          /*borderRadius:
-                                  new BorderRadius.circular(10.0),*/
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              bottomRight: Radius.circular(8)),
-                          borderSide: BorderSide.none)),
-                  onChanged: (value) {
-                    //this.fullName = value;
-                  },
-                  validator: (value) => validateEmail(value),
-                  //value.isEmpty || value.contains(new RegExp(r'^[a-zA-Z]+$')) || value.contains(' ')? 'Name is required' : null,
-                  /*value.isEmpty ? 'Name is required' : value.contains(
-                      new RegExp(r'^[a-zA-Z\-\s]+$')) ? null : "Enter a valid name",*/
-                  textAlign: TextAlign.start,
-                  maxLines: 1,
-                  maxLength: 20,
-                  // controller: _locationNameTextController,
-                ),
               )),
           SizedBox(height: 25.0),
           Padding(
@@ -286,7 +199,7 @@ class _LoginState extends State<Login> {
                 style: TextStyle(
                     fontSize: _textSize, fontWeight: FontWeight.w500)),
           ),
-          /*Container(
+          Container(
             height: _textFieldHeight,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
@@ -308,7 +221,6 @@ class _LoginState extends State<Login> {
               ),
             ),
             child: TextField(
-              controller: _passwordController,
               obscureText: _obscureText,
               enableSuggestions: false,
               autocorrect: false,
@@ -354,75 +266,6 @@ class _LoginState extends State<Login> {
               maxLength: 20,
               // controller: _locationNameTextController,
             ),
-          ),*/
-          Container(
-            height: _textFieldHeight,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(0),
-                bottomLeft: Radius.circular(0),
-                bottomRight: Radius.circular(8),
-              ),
-              boxShadow: [
-                BoxShadow(
-                    color: _textFieldShadow,
-                    offset: Offset(0, 4),
-                    blurRadius: 4)
-              ],
-              color: Color.fromRGBO(255, 255, 255, 1),
-              border: Border.all(
-                color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
-                width: _textFieldBorderWidth,
-              ),
-            ),
-            child: TextFormField(
-              controller: _passwordController,
-              obscureText: _obscureText,
-              enableSuggestions: false,
-              autocorrect: false,
-              decoration: InputDecoration(
-                  hintText: 'Password',
-                  //icon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                        _obscureText == true
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        size: 24.0,
-                        color: Colors.grey),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  ),
-                  //labelText: 'Email',
-                  hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.2),
-                      fontSize: _textSize),
-                  isDense: true,
-                  counterText: "",
-                  contentPadding: EdgeInsets.all(10.0),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      /*borderRadius:
-                                new BorderRadius.circular(10.0),*/
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          bottomRight: Radius.circular(8)),
-                      borderSide: BorderSide.none)),
-              onChanged: (value) {
-                //this.email = value;
-              },
-              validator: (value) =>
-                  value.isEmpty ? 'Password is required' : null,
-              textAlign: TextAlign.start,
-              maxLines: 1,
-              maxLength: 20,
-              // controller: _locationNameTextController,
-            ),
           ),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
             Padding(
@@ -439,17 +282,9 @@ class _LoginState extends State<Login> {
           ]),
           SizedBox(height: 40.0),
           GestureDetector(
-              onTap: () {
-                print(_emailController.text);
-                print(_passwordController.text);
-                if (_emailController.text != '' &&
-                    _passwordController.text != '') {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  loginUser(_emailController.text, _passwordController.text);
-                }
-              },
+            /*onTap: () {
+                        if (checkFields()) AuthService().signIn(email, password, context);
+                      },*/
               /*child: Container(
                           height: 48.0,
                           child: Material(
@@ -540,48 +375,6 @@ class _LoginState extends State<Login> {
         ]),
       ),
     );
-  }
-
-  loginUser(String email, String password) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    var dio = Dio();
-    var formData = FormData.fromMap({
-      'email': email,
-      'password': password,
-    });
-    var response = await dio.post(
-        'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/login',
-        data: {
-          'email': email,
-          'password': password,
-        });
-    var jsonResponse;
-
-    if (response.statusCode == 200) {
-      //print('Response status: ${response.statusCode}');
-      //print('Response body: ${response.body}');
-      jsonResponse = response.data;
-      if (jsonResponse != null) {
-        setState(() {
-          _isLoading = false;
-        });
-        print(jsonResponse['data']['token']);
-        // Store token in shared prefs to keep user signed in
-        sharedPreferences.setString("token", jsonResponse['data']['token']);
-        //print(sharedPreferences.get(key));
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-                builder: (BuildContext context) => PatientDashboard()),
-            (Route<dynamic> route) => false);
-      } else {
-        // TODO HANDLE ERROR AND DISPLAY MESSAGE TO UI
-        setState(() {
-          _isLoading = false;
-        });
-        print(response.data);
-      }
-    }
   }
 }
 
