@@ -1,6 +1,7 @@
 import 'package:e_care_mobile/screens/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'screens/onboarding.dart';
+import 'screens/verify_email.dart';
 import 'screens/login.dart';
 import 'medical/view_medical_advice.dart';
 import 'chat/chatDetailPage.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => SplashScreen(),
-          'onboarding': (context) => Onboarding()
+          'onboarding': (context) => Onboarding(),
         });
   }
 }
