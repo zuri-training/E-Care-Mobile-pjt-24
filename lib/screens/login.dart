@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:e_care_mobile/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'signup.dart';
@@ -20,11 +21,21 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final formKey = new GlobalKey<FormState>();
   static const double figureHeight = 250;
+
+  // Network request ongoing
   bool _isLoading = false;
 
+  // User wants to remain logged in app
+  bool _stayLoggedIn = true;
+
+  // auto validate text fields
+  bool _autoValidate = false;
+
+  // Text form field controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Colors
   Color _purple = HexColor("#6305B1");
   Color _purpleText = HexColor("#8237C1");
   Color _gold = HexColor("#F8B25A");
@@ -45,7 +56,7 @@ class _LoginState extends State<Login> {
   // Text field box shadow
   Color _textFieldShadow = Color.fromRGBO(0, 0, 0, 0.5);
 
-  // variable to store if password is visible or not
+  // Hide password
   bool _obscureText = true;
 
   //To check fields during submit
@@ -55,6 +66,9 @@ class _LoginState extends State<Login> {
       form.save();
       return true;
     }
+    setState(() {
+      _autoValidate = true;
+    });
     return false;
   }
 
@@ -64,7 +78,7 @@ class _LoginState extends State<Login> {
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value))
-      return 'Enter Valid Email';
+      return 'Enter a Valid Email';
     else
       return null;
   }
@@ -74,11 +88,16 @@ class _LoginState extends State<Login> {
     // TODO: implement build
     return Scaffold(
         body: Container(
-      //height: MediaQuery.of(context).size.height,
-      //width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
       child: _isLoading
-          ? CircularProgressIndicator()
-          : Form(key: formKey, child: _buildLoginForm(context)),
+          ? Center(child: CircularProgressIndicator())
+          : Form(
+              key: formKey,
+              autovalidateMode: _autoValidate
+                  ? AutovalidateMode.always
+                  : AutovalidateMode.disabled,
+              child: _buildLoginForm(context)),
     ));
   }
 
@@ -224,7 +243,7 @@ class _LoginState extends State<Login> {
                 ),
               )),*/
           Container(
-              height: _textFieldHeight,
+            //height: _textFieldHeight,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8),
@@ -232,51 +251,59 @@ class _LoginState extends State<Login> {
                   bottomLeft: Radius.circular(0),
                   bottomRight: Radius.circular(8),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                      color: _textFieldShadow,
-                      offset: Offset(0, 4),
-                      blurRadius: 4)
-                ],
-                color: Color.fromRGBO(255, 255, 255, 1),
-                border: Border.all(
-                  color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
-                  width: _textFieldBorderWidth,
-                ),
               ),
-              child: Align(
-                alignment: Alignment.centerLeft,
+              child: Theme(
+                data: Theme.of(context).copyWith(primaryColor: _purple),
                 child: TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                      hintText: 'myemail@gmail.com',
-                      //labelText: 'Email',
-                      hintStyle: TextStyle(
-                          color: Colors.black.withOpacity(0.2),
-                          fontSize: _textSize),
-                      isDense: true,
-                      counterText: "",
-                      contentPadding: EdgeInsets.all(10.0),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                          /*borderRadius:
-                                  new BorderRadius.circular(10.0),*/
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              bottomRight: Radius.circular(8)),
-                          borderSide: BorderSide.none)),
-                  onChanged: (value) {
-                    //this.fullName = value;
-                  },
+                    prefixIcon: const Icon(Icons.email),
+                    hintText: 'myemail@gmail.com',
+                    //labelText: 'Email',
+                    hintStyle: TextStyle(
+                        color: Colors.black.withOpacity(0.2),
+                        fontSize: _textSize),
+                    isDense: true,
+                    counterText: "",
+                    contentPadding: EdgeInsets.all(10.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomRight: Radius.circular(8)),
+                      borderSide: BorderSide(
+                          color: Colors.red, width: _textFieldBorderWidth),
+                    ),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(8)),
+                        borderSide: BorderSide(
+                            color: _purple,
+                            style: BorderStyle.solid,
+                            width: _textFieldBorderWidth)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(8)),
+                        borderSide: BorderSide(
+                            color: _purple,
+                            style: BorderStyle.solid,
+                            width: _textFieldBorderWidth)),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(8)),
+                        borderSide: BorderSide(
+                            color: _purple,
+                            style: BorderStyle.solid,
+                            width: _textFieldBorderWidth)),
+                  ),
                   validator: (value) => validateEmail(value),
-                  //value.isEmpty || value.contains(new RegExp(r'^[a-zA-Z]+$')) || value.contains(' ')? 'Name is required' : null,
-                  /*value.isEmpty ? 'Name is required' : value.contains(
-                      new RegExp(r'^[a-zA-Z\-\s]+$')) ? null : "Enter a valid name",*/
                   textAlign: TextAlign.start,
                   maxLines: 1,
                   maxLength: 20,
-                  // controller: _locationNameTextController,
                 ),
               )),
           SizedBox(height: 25.0),
@@ -286,77 +313,8 @@ class _LoginState extends State<Login> {
                 style: TextStyle(
                     fontSize: _textSize, fontWeight: FontWeight.w500)),
           ),
-          /*Container(
-            height: _textFieldHeight,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(0),
-                bottomLeft: Radius.circular(0),
-                bottomRight: Radius.circular(8),
-              ),
-              boxShadow: [
-                BoxShadow(
-                    color: _textFieldShadow,
-                    offset: Offset(0, 4),
-                    blurRadius: 4)
-              ],
-              color: Color.fromRGBO(255, 255, 255, 1),
-              border: Border.all(
-                color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
-                width: _textFieldBorderWidth,
-              ),
-            ),
-            child: TextField(
-              controller: _passwordController,
-              obscureText: _obscureText,
-              enableSuggestions: false,
-              autocorrect: false,
-              decoration: InputDecoration(
-                  hintText: 'Password',
-                  //icon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                        _obscureText == true
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        size: 24.0,
-                        color: Colors.grey),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  ),
-                  //labelText: 'Email',
-                  hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.2),
-                      fontSize: _textSize),
-                  isDense: true,
-                  counterText: "",
-                  contentPadding: EdgeInsets.all(10.0),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    /*borderRadius:
-                                new BorderRadius.circular(10.0),*/
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          bottomRight: Radius.circular(8)),
-                      borderSide: BorderSide.none)),
-              /*onChanged: (value) {
-                          this.email = value;
-                        },
-                        validator: (value) =>
-                        value.isEmpty ? 'Email is required' : validateEmail(value)*/
-              textAlign: TextAlign.start,
-              maxLines: 1,
-              maxLength: 20,
-              // controller: _locationNameTextController,
-            ),
-          ),*/
           Container(
-            height: _textFieldHeight,
+            //height: _textFieldHeight,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8),
@@ -364,26 +322,28 @@ class _LoginState extends State<Login> {
                 bottomLeft: Radius.circular(0),
                 bottomRight: Radius.circular(8),
               ),
-              boxShadow: [
+              /*boxShadow: [
                 BoxShadow(
                     color: _textFieldShadow,
                     offset: Offset(0, 4),
                     blurRadius: 4)
-              ],
-              color: Color.fromRGBO(255, 255, 255, 1),
-              border: Border.all(
+              ],*/
+              //color: Color.fromRGBO(255, 255, 255, 1),
+              /*border: Border.all(
                 color: /*Color.fromRGBO(77, 77, 77, 1)*/ _purple,
                 width: _textFieldBorderWidth,
-              ),
+              ),*/
             ),
-            child: TextFormField(
-              controller: _passwordController,
-              obscureText: _obscureText,
-              enableSuggestions: false,
-              autocorrect: false,
-              decoration: InputDecoration(
+            child: Theme(
+              data: Theme.of(context).copyWith(primaryColor: _purple),
+              child: TextFormField(
+                controller: _passwordController,
+                obscureText: _obscureText,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: InputDecoration(
                   hintText: 'Password',
-                  //icon: const Icon(Icons.lock),
+                  prefixIcon: const Icon(Icons.lock),
                   suffixIcon: IconButton(
                     icon: Icon(
                         _obscureText == true
@@ -406,28 +366,62 @@ class _LoginState extends State<Login> {
                   contentPadding: EdgeInsets.all(10.0),
                   filled: true,
                   fillColor: Colors.white,
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        bottomRight: Radius.circular(8)),
+                    borderSide: BorderSide(
+                        color: Colors.red, width: _textFieldBorderWidth),
+                  ),
                   border: OutlineInputBorder(
-                      /*borderRadius:
-                                new BorderRadius.circular(10.0),*/
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(8),
                           bottomRight: Radius.circular(8)),
-                      borderSide: BorderSide.none)),
-              onChanged: (value) {
-                //this.email = value;
-              },
-              validator: (value) =>
-                  value.isEmpty ? 'Password is required' : null,
-              textAlign: TextAlign.start,
-              maxLines: 1,
-              maxLength: 20,
-              // controller: _locationNameTextController,
+                      borderSide: BorderSide(
+                          color: _purple,
+                          style: BorderStyle.solid,
+                          width: _textFieldBorderWidth)),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomRight: Radius.circular(8)),
+                      borderSide: BorderSide(
+                          color: _purple,
+                          style: BorderStyle.solid,
+                          width: _textFieldBorderWidth)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomRight: Radius.circular(8)),
+                      borderSide: BorderSide(
+                          color: _purple,
+                          style: BorderStyle.solid,
+                          width: _textFieldBorderWidth)),
+                ),
+                validator: (value) => value.isEmpty
+                    ? 'Password is required'
+                    : value.length < 6
+                        ? 'Password must be at least 6 characters'
+                        : null,
+                textAlign: TextAlign.start,
+                maxLines: 1,
+                maxLength: 20,
+              ),
             ),
           ),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(0.0),
-              child: Checkbox(checkColor: _purple, value: false),
+              child: Checkbox(
+                  checkColor: Colors.white,
+                  activeColor: _purple,
+                  value: _stayLoggedIn,
+                  onChanged: (bool newValue) {
+                    setState(() {
+                      print(newValue);
+                      _stayLoggedIn = newValue;
+                    });
+                  }),
             ),
             Expanded(
               child: Text("Stay logged In",
@@ -442,8 +436,9 @@ class _LoginState extends State<Login> {
               onTap: () {
                 print(_emailController.text);
                 print(_passwordController.text);
-                if (_emailController.text != '' &&
-                    _passwordController.text != '') {
+                if (/*_emailController.text != '' &&
+                    _passwordController.text != ''*/
+                    checkFields()) {
                   setState(() {
                     _isLoading = true;
                   });
@@ -511,7 +506,6 @@ class _LoginState extends State<Login> {
                     style: TextStyle(
                       color: _purple,
                       fontSize: _textSize,
-                      //decoration: TextDecoration.underline
                     )))
           ]),
           SizedBox(height: 20.0),
@@ -534,7 +528,6 @@ class _LoginState extends State<Login> {
                     style: TextStyle(
                       color: _purple,
                       fontSize: _textSize,
-                      //decoration: TextDecoration.underline
                     )))
           ])
         ]),
@@ -550,6 +543,10 @@ class _LoginState extends State<Login> {
       'email': email,
       'password': password,
     });
+    dio.options.connectTimeout = 50000;
+    dio.options.receiveTimeout = 30000;
+    dio.options.sendTimeout = 30000;
+
     var response = await dio.post(
         'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/login',
         data: {
@@ -567,9 +564,11 @@ class _LoginState extends State<Login> {
           _isLoading = false;
         });
         print(jsonResponse['data']['token']);
-        // Store token in shared prefs to keep user signed in
-        sharedPreferences.setString("token", jsonResponse['data']['token']);
-        //print(sharedPreferences.get(key));
+
+        if (_stayLoggedIn == true) {
+          // Store token in shared prefs to keep user signed in
+          sharedPreferences.setString("token", jsonResponse['data']['token']);
+        }
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
                 builder: (BuildContext context) => PatientDashboard()),
