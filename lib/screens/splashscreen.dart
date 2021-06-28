@@ -1,11 +1,17 @@
 import 'dart:async';
 
+import 'package:e_care_mobile/providers/user_provider.dart';
+import 'package:e_care_mobile/userData/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
 
+import 'package:provider/provider.dart';
+
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key key}) : super(key: key);
+  final User user;
+
+  const SplashScreen({Key key, @required this.user}) : super(key: key);
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -57,6 +63,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<UserProvider>(context).setUser(widget.user);
     return Scaffold(
       body: MainImage(
         animation: _animation,

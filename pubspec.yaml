@@ -36,8 +36,10 @@ dependencies:
   bouncing_widget: ^2.0.0
   flutter_bounce: ^1.1.0
   provider: ^5.0.0
+  rxdart: ^0.27.1
+  equatable: ^2.0.3
   form_field_validator: ^1.1.0
-
+  delayed_display: ^2.0.0
 
 dev_dependencies:
   flutter_test:

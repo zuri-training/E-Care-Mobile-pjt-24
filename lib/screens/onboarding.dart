@@ -4,7 +4,7 @@ import 'package:e_care_mobile/screens/medical_history_form.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:e_care_mobile/screens/reset_password.dart';
-import 'package:e_care_mobile/services/api_service.dart';
+import 'package:e_care_mobile/util/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';

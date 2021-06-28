@@ -1,9 +1,13 @@
-import 'package:e_care_mobile/services/api_service.dart';
+import 'package:e_care_mobile/Authentication/auth_provider.dart';
+import 'package:e_care_mobile/userData/user.dart';
+import 'package:e_care_mobile/util/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
+import 'otp_form.dart';
 import 'reset_password.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -15,6 +19,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:e_care_mobile/services/api.dart';
 import 'package:e_care_mobile/models/signup_model.dart';
 import 'package:dio/dio.dart';
+import 'package:e_care_mobile/providers/user_provider.dart';
+import 'package:e_care_mobile/providers/auth.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -173,20 +179,65 @@ class _SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider auth = Provider.of<AuthProvider>(context);
     // TODO: implement build
     return Scaffold(
         body: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            child: _isLoading
+            child:
+                /*_isLoading
                 ? Center(child: CircularProgressIndicator())
                 : Form(
                     key: formKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    child: _buildSignupForm())));
+                    child: _buildSignupForm())*/
+                auth.registeredInStatus == Status.Registering
+                    ? Center(child: CircularProgressIndicator())
+                    : auth.registeredInStatus == Status.Registered
+                        ? Text('registered')
+                        : auth.registeredInStatus == Status.Error
+                            ? Center(child: Text(auth.failure.toString()))
+                            : Form(
+                                key: formKey,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                child: _buildSignupForm())));
   }
 
   _buildSignupForm() {
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+    var ewUser = () async {
+      final response = await auth.signUp(
+        _emailController.text,
+        _passwordController.text,
+        _patientFirstNameController.text,
+        _patientSurnameController.text,
+        _dateController.text,
+      );
+
+      if (response['status']) {
+        print('it worked');
+        User user = response['user'];
+        Provider.of<UserProvider>(context, listen: false).setUser(user);
+        Navigator.pushReplacementNamed(context, '/otpForm');
+      } else {
+        print(response);
+        // todo implement animation
+        /*Flushbar(
+          title: "Failed Login",
+          message: response['message']['message'].toString(),
+          duration: Duration(seconds: 3),
+        ).show(context);*/
+      }
+    };
+    var loading = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        CircularProgressIndicator(),
+        Text(" Authenticating ... Please wait")
+      ],
+    );
     return SingleChildScrollView(
       //width: MediaQuery.of(context).size.width,
       /*CustomPaint(
@@ -299,7 +350,7 @@ class _SignupState extends State<Signup> {
                           fontFamily: 'Inter',
                           fontSize: 16,
                           letterSpacing:
-                          0 /*percentages not used in flutter. defaulting to zero*/,
+                              0 /*percentages not used in flutter. defaulting to zero*/,
                           fontWeight: FontWeight.w500,
                           height: 1),
                     ),
@@ -312,6 +363,31 @@ class _SignupState extends State<Signup> {
                             child: DropdownButton<String>(
                               hint: _isFileUploaded
                                   ? Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(4),
+                                      topRight: Radius.circular(4),
+                                      bottomLeft: Radius.circular(4),
+                                      bottomRight: Radius.circular(4),
+                                    ),
+                                    color:
+                                    Color.fromRGBO(206, 205, 205, 1)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('Change Photo',
+                                      //textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(
+                                              23, 43, 77, 1),
+                                          fontFamily: 'Poppins',
+                                          fontSize: 14,
+                                          letterSpacing:
+                                          0 /*percentages not used in flutter. defaulting to zero*/,
+                                          fontWeight: FontWeight.normal,
+                                          height: 1)),
+                                ),
+                                    )
+                                  : Container(
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(4),
@@ -323,46 +399,21 @@ class _SignupState extends State<Signup> {
                                               Color.fromRGBO(206, 205, 205, 1)),
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: Text('Change Photo',
-                                            //textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Color.fromRGBO(
-                                                    23, 43, 77, 1),
-                                                fontFamily: 'Poppins',
-                                                fontSize: 14,
-                                                letterSpacing:
-                                                    0 /*percentages not used in flutter. defaulting to zero*/,
-                                                fontWeight: FontWeight.normal,
-                                                height: 1)),
+                                        child: Text(
+                                          'Choose a photo',
+                                          //textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color:
+                                                  Color.fromRGBO(23, 43, 77, 1),
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              letterSpacing:
+                                                  0 /*percentages not used in flutter. defaulting to zero*/,
+                                              fontWeight: FontWeight.normal,
+                                              height: 1),
+                                        ),
                                       ),
-                                    )
-                                  : Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(4),
-                                            topRight: Radius.circular(4),
-                                            bottomLeft: Radius.circular(4),
-                                            bottomRight: Radius.circular(4),
-                                          ),
-                                          color:
-                                    Color.fromRGBO(206, 205, 205, 1)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Choose a photo',
-                                    //textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color:
-                                        Color.fromRGBO(23, 43, 77, 1),
-                                        fontFamily: 'Poppins',
-                                        fontSize: 14,
-                                        letterSpacing:
-                                        0 /*percentages not used in flutter. defaulting to zero*/,
-                                        fontWeight: FontWeight.normal,
-                                        height: 1),
-                                  ),
-                                ),
-                              ),
+                                    ),
                               iconSize: 0,
                               isExpanded: true,
                               elevation: 16,
@@ -413,34 +464,31 @@ class _SignupState extends State<Signup> {
               ),
               _isFileUploaded
                   ? Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: CircleAvatar(
-                  backgroundImage: FileImage(_image),
-                  backgroundColor: Colors.transparent,
-                  radius: 64,
-                ),
-              )
+                      padding: const EdgeInsets.all(16.0),
+                      child: CircleAvatar(
+                        backgroundImage: FileImage(_image),
+                        backgroundColor: Colors.transparent,
+                        radius: 64,
+                      ),
+                    )
                   : SizedBox(
-                height: 0,
-              )
+                      height: 0,
+                    )
             ],
           ),
           SizedBox(height: _isFileUploaded ? 30.0 : 48.0),
-          GestureDetector(
-              onTap: () {
-                if (checkFields()) {
-                  setState(() {
+          auth.loggedInStatus == Status.Authenticating
+              ? loading
+              : GestureDetector(
+                  onTap: () {
+                    if (checkFields()) {
+                      /*setState(() {
                     _isLoading = true;
-                  });
-                  createUser(
-                      _patientFirstNameController.text,
-                      _patientSurnameController.text,
-                      _emailController.text,
-                      _dateController.text,
-                      _passwordController.text,
-                      _image);
-                }
-              },
+                  });*/
+                      //newUser();
+                      ewUser();
+                    }
+                  },
               /*child: Container(
                           height: 48.0,
                           child: Material(
@@ -524,7 +572,7 @@ class _SignupState extends State<Signup> {
       },
     );
   }*/
-  // Container for patient's full name and email fields
+  // Container for patient's full name
   Container textSection(
       String hintText, TextEditingController controller, String title) {
     return Container(
@@ -542,6 +590,7 @@ class _SignupState extends State<Signup> {
             data: Theme.of(context).copyWith(primaryColor: _purple),
             child: TextFormField(
               controller: controller,
+              keyboardType: TextInputType.name,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.person),
                 hintText: hintText,
@@ -617,6 +666,7 @@ class _SignupState extends State<Signup> {
             data: Theme.of(context).copyWith(primaryColor: _purple),
             child: TextFormField(
               controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.email),
                 hintText: 'myemail@gmail.com',
@@ -663,7 +713,7 @@ class _SignupState extends State<Signup> {
               validator: (value) => validateEmail(value),
               textAlign: TextAlign.start,
               maxLines: 1,
-              maxLength: 20,
+              //maxLength: 20,
               // controller: _locationNameTextController,
             ),
           ),
@@ -899,6 +949,46 @@ class _SignupState extends State<Signup> {
       print(response.data);
     }
   }
+
+  //var authService;
+  /*newUser() async {
+    var authService = new AuthService();
+    var response = await authService.signUp(
+      _emailController.text,
+      _passwordController.text,
+      _patientFirstNameController.text,
+      _patientSurnameController.text,
+      _dateController.text,
+    );
+
+    var jsonResponse;
+    print(response);
+    //if (response.statusCode == 200) {
+      //print('Response status: ${response.statusCode}');
+      //print('Response body: ${response.body}');
+      jsonResponse = response;
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        print(jsonResponse['data']['token']);
+        // Store token in shared prefs to keep user signed in
+        //sharedPreferences.setString("token", jsonResponse['data']['token']);
+        //sharedPreferences.setString("token", jsonResponse['data']['patientId']);
+        //print(sharedPreferences.get(key));
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => OtpForm()),
+            (Route<dynamic> route) => false);
+      }
+    /*} else {
+      // TODO HANDLE ERROR AND DISPLAY MESSAGE TO UI
+      //print('404 there');
+      setState(() {
+        _isLoading = false;
+      });
+      print(response.data);
+    }*/
+  }*/
 
   // Date picker
   _selectDate(BuildContext context) async {

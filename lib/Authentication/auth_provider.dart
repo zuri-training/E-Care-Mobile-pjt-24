@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-enum Status {
+enum Statuss {
   NotLoggedIn,
   NotRegistered,
   LoggedIn,
@@ -10,4 +10,4 @@ enum Status {
   LoggedOut,
 }
 
-class AuthProvider with ChangeNotifier {}
+class AuthProviders with ChangeNotifier {}
