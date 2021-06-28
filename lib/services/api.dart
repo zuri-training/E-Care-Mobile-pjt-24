@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:e_care_mobile/screens/login.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:e_care_mobile/models/signup_model.dart';
 import 'dart:convert';
 import '../util/api_service.dart';
+import 'package:e_care_mobile/util/AppException.dart';
 
 // Creates a new patient user
 class AuthService {
@@ -90,7 +92,7 @@ class AuthService {
   }*/
 
   // Create user
-  Future<dynamic> signUp(String email, String password, String firstname,
+  /*Future<dynamic> signUp(String email, String password, String firstname,
       String lastname, String dob) async {
     var dios = Dio();
     try {
@@ -172,14 +174,14 @@ class AuthService {
       // then throw an exception.
       throw Exception('Failed to create album.');
     }*/
-  }
+  }*/
 
   // Activate user
-  Future<dynamic> activateUser(otp) async {
+  /*Future<dynamic> activateUser(otp) async {
     try {
-      var response = await dio.post(
+      var response = await dio.get(
           'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/activate-patient-account/$otp',
-          data: null);
+          );
       print('api: $response');
       return response?.data;
     } on DioError catch (e) {
@@ -194,6 +196,21 @@ class AuthService {
         //print(e.request);
         print(e.message);
       }
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+  }*/
+
+  Future<dynamic> activateUser(otp) async {
+    try {
+      var response = await http.get(
+        Uri.parse(
+            'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/activate-patient-account/$otp'),
+      );
+      print('api: $response');
+      return _returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
     }
   }
 
@@ -236,6 +253,92 @@ class AuthService {
         //print(e.request);
         print(e.message);
       }
+    }
+  }
+
+  Future<dynamic> login(String email, String password) async {
+    try {
+      Map data = {
+        "email": email,
+        "password": password,
+      };
+      var response = await http.post(
+          Uri.parse(
+              'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/login'),
+          body: data);
+      var res = response.body;
+      print('ddasd; $res');
+      //return response?.body;
+      return _returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    /*Map data = {
+      'email': email,
+      'password': password
+    };
+    var response = await http.post(
+      Uri.parse(ApiUrl.login),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+      }),
+    );
+    if (response.statusCode == 201) {
+      // If the server did return a 201 CREATED response,
+      // then parse the JSON.
+      return json.decode(response?.body);
+    } else {
+      // If the server did not return a 201 CREATED response,
+      // then throw an exception.
+      throw Exception('Failed to create album.');
+    }*/
+  }
+
+  dynamic _returnResponse(http.Response response) {
+    //var result;
+    switch (response.statusCode) {
+      case 200:
+        // If the server did return a 200 CREATED response,
+        // then parse the JSON.
+        var responseJson = json.decode(response.body.toString());
+        print('api.dart:  $responseJson');
+        return responseJson;
+      case 400:
+        throw BadRequestException(response.body.toString());
+
+      case 401:
+      case 403:
+        throw UnauthorisedException(response.body.toString());
+      case 500:
+      default:
+        throw FetchDataException(
+            'Error occured while Communication with Server with StatusCode : ${response.reasonPhrase}');
+    }
+  }
+
+  Future<dynamic> register(String email, String password, String firstname,
+      String lastname, String dob) async {
+    try {
+      Map data = {
+        'email': email,
+        'password': password,
+        'firstname': firstname,
+        'lastname': lastname,
+        'dob': dob,
+      };
+      var response = await http.post(
+          Uri.parse(
+              'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/create'),
+          body: data);
+
+      // TODO Implement _returnResponse for register
+      return _returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
     }
   }
 }

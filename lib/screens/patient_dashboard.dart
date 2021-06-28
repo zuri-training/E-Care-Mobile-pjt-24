@@ -3,11 +3,14 @@ import 'package:e_care_mobile/medical/view_medical_advice.dart';
 import 'package:e_care_mobile/screens/book_appointment.dart';
 import 'package:e_care_mobile/screens/profile/profile_page.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
+import 'package:e_care_mobile/userData/user.dart';
 import 'package:flutter/material.dart';
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:e_care_mobile/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class PatientDashboard extends StatefulWidget {
   const PatientDashboard({Key key}) : super(key: key);
