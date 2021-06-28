@@ -130,6 +130,42 @@ class _OtpFormState extends State<OtpForm> {
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
+    activateUser() async {
+      AuthService authInfo = AuthService();
+      //SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+      print('getUser');
+      var response = await auth.activate(_otp);
+      print(response);
+      /*if (response != null) {
+      setState(() {
+        //_isLoading = false;
+      });
+      print(response['data']['token']);
+
+
+      Provider.of<UserProvider>(context, listen: false).setUser(user);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (BuildContext context) => PatientDashboard()),
+          (Route<dynamic> route) => false);
+    }*/
+      if (response != null) {
+        User user = response['user'];
+        Provider.of<UserProvider>(context, listen: false).setUser(user);
+        Future.delayed(Duration(milliseconds: 4000)).then(
+            (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
+      } else {
+        print(response);
+        // todo implement animation
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: const Duration(seconds: 5),
+          content: Text(auth.failure.toString()),
+        ));
+      }
+    }
+
+    print(auth.verifiedStatus);
     return Scaffold(
       body: Padding(
         padding:
