@@ -203,14 +203,18 @@ class AuthService {
 
   Future<dynamic> activateUser(otp) async {
     try {
-      var response = await http.get(
-        Uri.parse(
-            'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/activate-patient-account/$otp'),
-      );
+      var response = await http
+          .get(
+            Uri.parse(
+                'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/activate-patient-account/$otp'),
+          )
+          .timeout(Duration(seconds: 30));
       print('api: $response');
       return _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');
+    } on TimeoutException {
+      throw TimeException();
     }
   }
 
@@ -218,41 +222,31 @@ class AuthService {
   Future<dynamic> forgotPassword(String email) async {
     String url = ApiUrl.forgotPassword + '/$email';
     try {
-      var response = await dio.post(url, data: null);
-      return response?.data;
-    } on DioError catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e.response != null) {
-        print(e.response.data);
-        //print(e.response.headers);
-        //print(e.response.request);
-      } else {
-        // Something happened in setting up or sending the request that triggered an Error
-        //print(e.request);
-        print(e.message);
-      }
+      var response = await http
+          .get(
+            Uri.parse(url),
+          )
+          .timeout(Duration(seconds: 30));
+      return _returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    } on TimeoutException {
+      throw TimeException();
     }
   }
 
   // forgot password
   Future<dynamic> resetPassword(String token, String newPassword) async {
     try {
-      var response = await dio.post(ApiUrl.resetPassword,
-          data: {'token': token, 'newPassword': newPassword});
-      return response?.data;
-    } on DioError catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e.response != null) {
-        print(e.response.data);
-        //print(e.response.headers);
-        //print(e.response.request);
-      } else {
-        // Something happened in setting up or sending the request that triggered an Error
-        //print(e.request);
-        print(e.message);
-      }
+      var response = await http.post(Uri.parse(ApiUrl.resetPassword), body: {
+        'token': token,
+        'newPassword': newPassword
+      }).timeout(Duration(seconds: 30));
+      return _returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    } on TimeoutException {
+      throw TimeException();
     }
   }
 
@@ -262,16 +256,20 @@ class AuthService {
         "email": email,
         "password": password,
       };
-      var response = await http.post(
-          Uri.parse(
-              'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/login'),
-          body: data);
+      var response = await http
+          .post(
+              Uri.parse(
+                  'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/login'),
+              body: data)
+          .timeout(Duration(seconds: 30));
       var res = response.body;
       print('ddasd; $res');
       //return response?.body;
       return _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');
+    } on TimeoutException {
+      throw TimeException();
     }
     /*Map data = {
       'email': email,
@@ -300,6 +298,7 @@ class AuthService {
 
   dynamic _returnResponse(http.Response response) {
     //var result;
+    var res = json.decode(response.body.toString());
     switch (response.statusCode) {
       case 200:
         // If the server did return a 200 CREATED response,
@@ -312,7 +311,7 @@ class AuthService {
 
       case 401:
       case 403:
-        throw UnauthorisedException(response.body.toString());
+        throw UnauthorisedException(res['err']);
       case 500:
       default:
         throw FetchDataException(
@@ -330,15 +329,41 @@ class AuthService {
         'lastname': lastname,
         'dob': dob,
       };
-      var response = await http.post(
-          Uri.parse(
-              'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/create'),
-          body: data);
+      var response = await http
+          .post(
+              Uri.parse(
+                  'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/create'),
+              body: data)
+          .timeout(Duration(seconds: 30));
+      /*var aa = response.body;
+      var bb = jsonDecode(response.body);
+      var kl = bb['err'];
+      print('api res $kl');*/
 
       // TODO Implement _returnResponse for register
       return _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');
+    } on TimeoutException {
+      throw TimeException();
+    }
+  }
+
+  /// Get patient data
+  Future<dynamic> getPatients(patientId) async {
+    try {
+      var response = await http
+          .get(
+            Uri.parse(
+                'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/activate-patient-account/$patientId'),
+          )
+          .timeout(Duration(seconds: 30));
+      print('api: $response');
+      return _returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    } on TimeoutException {
+      throw TimeException();
     }
   }
 }

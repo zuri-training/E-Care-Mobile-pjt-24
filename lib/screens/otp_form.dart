@@ -1,11 +1,9 @@
 import 'package:e_care_mobile/providers/auth.dart';
-import 'package:e_care_mobile/screens/patient_dashboard.dart';
-import 'package:e_care_mobile/services/api.dart';
+import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/userData/user.dart';
 import 'package:e_care_mobile/util/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 final otpInputDecoration = InputDecoration(
@@ -91,68 +89,22 @@ class _OtpFormState extends State<OtpForm> {
     return false;
   }
 
-  activateUser() async {
-    AuthService authInfo = AuthService();
-    //SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    print('getUser');
-    var response = await authInfo.activateUser(_otp);
-    print(response);
-    /*if (response != null) {
-      setState(() {
-        //_isLoading = false;
-      });
-      print(response['data']['token']);
-
-
-      Provider.of<UserProvider>(context, listen: false).setUser(user);
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) => PatientDashboard()),
-          (Route<dynamic> route) => false);
-    }*/
-    if (response['status']) {
-      User user = response['user'];
-      Provider.of<UserProvider>(context, listen: false).setUser(user);
-      Future.delayed(Duration(milliseconds: 4000)).then(
-          (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
-    } else {
-      print(response);
-      // todo implement animation
-      /*Flushbar(
-          title: "Failed Login",
-          message: response['message']['message'].toString(),
-          duration: Duration(seconds: 3),
-        ).show(context);*/
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
-    activateUser() async {
-      AuthService authInfo = AuthService();
-      //SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    UserProvider userDat = Provider.of<UserProvider>(context);
+    var userEmail = userDat.user.email;
 
+    // Activate Email
+    activateUser() async {
       print('getUser');
       var response = await auth.activate(_otp);
       print(response);
-      /*if (response != null) {
-      setState(() {
-        //_isLoading = false;
-      });
-      print(response['data']['token']);
-
-
-      Provider.of<UserProvider>(context, listen: false).setUser(user);
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) => PatientDashboard()),
-          (Route<dynamic> route) => false);
-    }*/
       if (response != null) {
         User user = response['user'];
-        Provider.of<UserProvider>(context, listen: false).setUser(user);
+        Future.delayed(Duration.zero, () async {
+          Provider.of<UserProvider>(context, listen: false).setUser(user);
+        });
         Future.delayed(Duration(milliseconds: 4000)).then(
             (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
       } else {
@@ -162,10 +114,16 @@ class _OtpFormState extends State<OtpForm> {
           duration: const Duration(seconds: 5),
           content: Text(auth.failure.toString()),
         ));
+        Future.delayed(Duration(milliseconds: 4000))
+            .then((value) => auth.delayOtp());
       }
     }
 
-    print(auth.verifiedStatus);
+    changeEmail() {
+      auth.delay();
+      Navigator.pushReplacementNamed(context, '/signUp');
+    }
+
     return Scaffold(
       body: Padding(
         padding:
@@ -182,7 +140,9 @@ class _OtpFormState extends State<OtpForm> {
                         child: onComplete("Email Verified", Icons.check_circle,
                             Colors.green.shade700))
                     : auth.verifiedStatus == Status.Error
-                        ? Center(child: Text(auth.failure.toString()))
+                        ? Center(
+                            child: onFailure(auth.failure.toString(),
+                                Icons.cancel, Colors.red.shade700))
                         : Center(
                             child: Form(
                               key: formKey,
@@ -191,7 +151,7 @@ class _OtpFormState extends State<OtpForm> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Icon(
-                                      Icons.verified_user,
+                                      Icons.mark_email_unread_rounded,
                                       color: _purple,
                                       size: 128.0,
                                     ),
@@ -212,7 +172,7 @@ class _OtpFormState extends State<OtpForm> {
                                     Visibility(
                                       visible: _isVisible ? true : false,
                                       child: Text(
-                                          'Please Enter the 5 digit code sent to aconalexx@gmail.com',
+                                          'Please Enter the 5 digit code sent to $userEmail',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontSize: 20,
@@ -352,40 +312,6 @@ class _OtpFormState extends State<OtpForm> {
                                             MediaQuery.of(context).size.width,
                                         child: ElevatedButton(
                                             onPressed: () {
-                                              /*setState(() {
-                                  _isVisible=false;});
-                                Future.delayed(Duration(milliseconds: 2000)).then((_) {
-                                  setState(() {
-                                    _myWidget=/*Icon(
-                                    Icons.check_circle,
-                                    size:48,
-                                    color: _purple,
-                                  );*/Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.check_circle,
-                                          size:88,
-                                          color: Colors.green.shade700,
-                                        ),
-                                        ClipRect(
-                                          child: SizedBox(
-                                            //width: 150,
-                                            child: Opacity(
-                                                opacity: 1,
-                                                child: Text(
-                                                  "Verification Successful",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: Colors.green.shade800, fontSize: 24),
-                                                )),
-                                          ),
-                                        )
-                                      ],
-                                    );;
-                                  });
-                                });*/
                                               if (checkFields()) {
                                                 otpCode();
                                                 activateUser();
@@ -412,11 +338,17 @@ class _OtpFormState extends State<OtpForm> {
                                           Text('Not aconalexx@gmail.com?',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(fontSize: 12)),
-                                          Text(' Change email',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: HexColor("#6305B1"))),
+                                          GestureDetector(
+                                            onTap: () {
+                                              changeEmail();
+                                            },
+                                            child: Text(' Change email',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color:
+                                                        HexColor("#6305B1"))),
+                                          ),
                                         ],
                                       ),
                                     ),

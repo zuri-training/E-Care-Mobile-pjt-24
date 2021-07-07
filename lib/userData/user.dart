@@ -11,7 +11,7 @@ class User {
     this.firstname,
     this.surname,
     this.email,
-    String dob,
+    this.dob,
     this.token,
   });
 

@@ -1,8 +1,6 @@
 import 'package:delayed_display/delayed_display.dart';
-import 'package:e_care_mobile/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:provider/provider.dart';
 
 InputDecoration buildDecoration(Color _purple, double _textFieldBorderWidth,
     double _textSize, IconData iconData, String hint, bool obscure,
@@ -98,6 +96,7 @@ Widget onComplete(String info, IconData iconData, Color color) {
         size: 88,
         color: color,
       ),
+      SizedBox(height: 12),
       DelayedDisplay(
         delay: Duration(seconds: 1),
         child: ClipRect(
@@ -115,14 +114,60 @@ Widget onComplete(String info, IconData iconData, Color color) {
       ),
       SizedBox(height: 16),
       DelayedDisplay(
-          delay: Duration(seconds: 2),
-          child: info == "Login Success"
-              ? CircularProgressIndicator()
-              : GestureDetector(
-                  onTap: () {
-                    print('i was tapped');
-                  },
-                  child: Text('Try again')))
+          delay: Duration(seconds: 2), child: CircularProgressIndicator())
     ],
+  );
+}
+
+Widget onFailure(String info, IconData iconData, Color color) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: <Widget>[
+      Icon(
+        iconData,
+        size: 88,
+        color: color,
+      ),
+      SizedBox(height: 12),
+      ClipRect(
+        child: SizedBox(
+          //width: 150,
+          child: Opacity(
+              opacity: 1,
+              child: Text(
+                info,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: color, fontSize: 24),
+              )),
+        ),
+      ),
+      /*SizedBox(height: 16),
+      Text(
+        'Try another email',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: color, fontSize: 24),
+      )*/
+    ],
+  );
+}
+
+//To Validate email
+String validateEmail(String value) {
+  Pattern pattern =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  RegExp regex = new RegExp(pattern);
+  if (!regex.hasMatch(value))
+    return 'Enter a Valid Email';
+  else
+    return null;
+}
+
+// Component for header of respective fields
+Padding textHeaders(String title) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 8.0),
+    child: Text(title,
+        style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500)),
   );
 }

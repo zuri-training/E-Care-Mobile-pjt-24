@@ -7,6 +7,7 @@ import 'package:e_care_mobile/screens/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Authentication/auth_provider.dart';
 import 'screens/onboarding.dart';
 import 'screens/verify_email.dart';
@@ -26,10 +27,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   Color _purple = HexColor("#6305B1");
 
+  asd() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String patientId = prefs.getString("patientId");
+    String firstname = prefs.getString("firstname");
+    String surname = prefs.getString("surname");
+    String email = prefs.getString("email");
+    String token = prefs.getString("token");
+    print('$patientId $firstname $surname $email $token ');
+    print('sdg');
+  }
+
+  users(context) {
+    UserPreferences().getUser().then((value) {
+      //Provider.of<UserProvider>(context).setUser(value);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // get User data
     Future<User> getUserData() => UserPreferences().getUser();
+    asd();
+    users(context);
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
@@ -45,6 +65,9 @@ class MyApp extends StatelessWidget {
             home: FutureBuilder(
                 future: getUserData(),
                 builder: (context, snapshot) {
+                  //print('f');
+                  //print(getUserData().then((value) => Provider.of<UserProvider>(context).setUser(value)));
+
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:
                     case ConnectionState.waiting:
@@ -52,11 +75,12 @@ class MyApp extends StatelessWidget {
                     default:
                       if (snapshot.hasError)
                         return Text('Error: ${snapshot.error}');
-                      else if (snapshot.data.token == null)
-                        return SplashScreen(user: snapshot.data);
                       else
+                        /*if (snapshot.data.token == null)*/
+                        return SplashScreen(user: snapshot.data);
+                    /*else
                         UserPreferences().removeUser();
-                      return PatientDashboard();
+                      return PatientDashboard();*/
                   }
                 }),
             //initialRoute: '/',
@@ -65,6 +89,7 @@ class MyApp extends StatelessWidget {
               'onboarding': (context) => Onboarding(),
               '/dashboard': (context) => PatientDashboard(),
               '/otpForm': (context) => OtpForm(),
+              '/signUp': (context) => Signup(),
             }));
   }
 }

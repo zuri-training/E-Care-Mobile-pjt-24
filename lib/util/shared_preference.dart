@@ -10,12 +10,13 @@ class UserPreferences {
     prefs.setString("firstname", user.firstname);
     prefs.setString("surname", user.surname);
     prefs.setString("email", user.email);
+    prefs.setString("dob", user.dob);
     prefs.setString("token", user.token);
 
     print("object prefere");
     print(user.token);
 
-    return prefs.commit();
+    //return prefs.commit();
   }
 
   Future<User> getUser() async {
@@ -25,6 +26,7 @@ class UserPreferences {
     String firstname = prefs.getString("firstname");
     String surname = prefs.getString("surname");
     String email = prefs.getString("email");
+    String dob = prefs.getString("dob");
     String token = prefs.getString("token");
 
     return User(
@@ -32,6 +34,7 @@ class UserPreferences {
       firstname: firstname,
       surname: surname,
       email: email,
+      dob: dob,
       token: token,
     );
   }
@@ -39,10 +42,11 @@ class UserPreferences {
   void removeUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    //prefs.remove("name");
+    prefs.remove("patientId");
     prefs.remove("firstname");
     prefs.remove("surname");
     prefs.remove("email");
+    prefs.remove("dob");
     prefs.remove("token");
   }
 

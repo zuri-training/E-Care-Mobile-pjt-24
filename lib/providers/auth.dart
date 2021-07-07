@@ -1,16 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/services/api.dart';
 import 'package:e_care_mobile/util/AppException.dart';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:e_care_mobile/userData/user.dart';
-import 'package:e_care_mobile/util/api_service.dart';
 import 'package:e_care_mobile/util/shared_preference.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum Status {
@@ -31,6 +29,8 @@ class AuthProvider with ChangeNotifier {
   Status _loggedInStatus = Status.NotLoggedIn;
   Status _registeredInStatus = Status.NotRegistered;
   Status _verifiedStatus = Status.Initial;
+  Status _passwordStatus = Status.Initial;
+  Status _resetPasswordStatus = Status.Initial;
 
   Status get loggedInStatus => _loggedInStatus;
 
@@ -38,14 +38,18 @@ class AuthProvider with ChangeNotifier {
 
   Status get verifiedStatus => _verifiedStatus;
 
-  Status _state = Status.Initial;
+  Status get passwordStatus => _passwordStatus;
+
+  Status get resetPasswordStatus => _resetPasswordStatus;
+
+  /*Status _state = Status.Initial;
 
   Status get state => _state;
 
-  void setState(Status state) {
+  void _setState(Status state) {
     _state = state;
     notifyListeners();
-  }
+  }*/
 
   var dio = Dio();
   var authService = AuthService();
@@ -190,14 +194,19 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Login
   Future<Map<String, dynamic>> signIn(String email, String password) async {
     var result;
-    //_loggedInStatus = Status.Authenticating;
-    _state = Status.Loading;
+    // Set login status to authenticating
+    _loggedInStatus = Status.Authenticating;
+    //_state = Status.Loading;
+    // Notify Listeners
     notifyListeners();
     try {
+      // Login Request with email and password
       var response = await authService.login(email, password);
-
+      print('auth response: $response');
+      // Store token from response
       var token = response['data']['token'];
 
       print('auth.dart:  $token');
@@ -207,20 +216,26 @@ class AuthProvider with ChangeNotifier {
       print('user email: $dd');
 
       Map<String, dynamic> userData = {
-        'patientId': user.patientId,
-        'firstname': user.firstname,
-        'surname': user.surname,
-        'email': user.email,
-        'dob': user.dob,
+        'patientId': 'qwerty', //user.patientId,
+        'firstname': 'alex', //user.firstname,
+        'surname': 'okani', //user.surname,
+        'email': 'aconalexx@gmail.com', //user.email,
+        'dob': '12 July, 2018', //user.dob,
         'token': token
       };
 
       // store user data in user object
       User authUser = User.fromJson(userData);
-      // save using shared prefs
-      //UserPreferences().saveUser(authUser);
-      //_loggedInStatus = Status.LoggedIn;
-      _state = Status.Completed;
+      if (_stayLoggedIn) {
+        // save using shared prefs
+        UserPreferences().saveUser(authUser);
+      }
+
+      // Change login status to logged in
+      _loggedInStatus = Status.LoggedIn;
+      //_state = Status.Completed;
+
+      // Notify Listeners
       notifyListeners();
       //print(responseJson);
       result = {'status': true, 'message': 'Successful', 'user': authUser};
@@ -228,8 +243,8 @@ class AuthProvider with ChangeNotifier {
     } on AppException catch (e) {
       _setFailure(e);
       print(e);
-      //_loggedInStatus = Status.Error;
-      _state = Status.Error;
+      _loggedInStatus = Status.Error;
+      //_state = Status.Error;
       notifyListeners();
       result = {
         'status': false,
@@ -252,6 +267,7 @@ class AuthProvider with ChangeNotifier {
           await authService.register(email, password, firstname, surname, dob);
       //var responseJson = json.decode(response['data']);
       //print('auth.dart json:  $responseJson');
+      print('res: $response');
 
       var patientId = response['data'];
 
@@ -267,10 +283,11 @@ class AuthProvider with ChangeNotifier {
 
       // store user data in user object
       User authUser = User.fromJson(userData);
-      print(authUser.token);
+      //print('token $(authUser.token)');
       // save using shared prefs
       //print('auth user $authUser');
-      //]UserPreferences().saveUser(authUser);
+      UserPreferences().saveUser(authUser);
+      //Provider.of<UserProvider>(context, listen: false).setUser(user);
 
       _registeredInStatus = Status.Registered;
       notifyListeners();
@@ -280,29 +297,169 @@ class AuthProvider with ChangeNotifier {
         'message': 'Successfully registered',
         'user': authUser
       };
+
+      return result;
+    } on AppException catch (e) {
+      _setFailure(e);
+      result = {
+        'status': false,
+        'message': e,
+        //'data': responseData
+      };
+      print('result: $result');
+      print('failure: $failure');
+      _registeredInStatus = Status.Error;
+      notifyListeners();
+    }
+
+    //return result;
+  }
+
+  Future<Map<String, dynamic>> activate(String otp) async {
+    var result;
+    print('ok o');
+    _verifiedStatus = Status.Loading;
+    notifyListeners();
+    try {
+      print('im here');
+      var response = await authService.activateUser(otp);
+      //var responseJson = json.decode(response['data']);
+      //print('auth.dart json:  $responseJson');
+
+      var token = response['data'].toString();
+
+      print('auth.dart:  $token');
+      User user = UserProvider().user;
+      var userEmail = user.email;
+      /*print('user $user');
+      print('user email: $dd');*/
+
+      Map<String, dynamic> userData = {
+        'patientId': user.patientId.toString(),
+        'firstname': user.firstname,
+        'surname': user.surname,
+        'email': user.email,
+        'dob': user.dob,
+        'token': token.toString()
+      };
+
+      // store user data in user object
+      User authUser = User.fromJson(userData);
+      print(authUser.firstname);
+      print(authUser.token);
+
+      // save using shared prefs
+      UserPreferences().saveUser(authUser);
+      /*// Shared preference instance
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // Save token in shared prefs
+      prefs.setString("token", token);
+      print(UserPreferences().getUser());*/
+      // Verification Successful
+      _verifiedStatus = Status.Completed;
+      // Notify Listeners
+      notifyListeners();
+      result = {
+        'status': true,
+        'message': 'Successfully verified',
+        'email': userEmail
+      };
       return result;
     } on AppException catch (e) {
       _setFailure(e);
       print(e);
       result = {
         'status': false,
-        'message': 'Registration failed',
+        'message': e,
         //'data': responseData
       };
-      _registeredInStatus = Status.Error;
+      // Verification failed
+      _verifiedStatus = Status.Error;
+      // Notify Listeners
       notifyListeners();
     }
-
-    return result;
   }
 
-  Future<Map<String, dynamic>> activate(String otp) async {
+  Future<Map<String, dynamic>> forgotPassword(String email) async {
     var result;
+    print('ok o');
+    _passwordStatus = Status.Loading;
+    notifyListeners();
+    try {
+      print('im here');
+      var response = await authService.forgotPassword(email);
+      //var responseJson = json.decode(response['data']);
+      print('auth.dart :  $response');
+
+      // Reset Successful
+      _passwordStatus = Status.Completed;
+      // Notify Listeners
+      notifyListeners();
+      result = {
+        'status': true,
+        'message': 'Successfully verified',
+        'email': 'userEmail'
+      };
+      return result;
+    } on AppException catch (e) {
+      _setFailure(e);
+      print(e);
+      result = {
+        'status': false,
+        'message': e,
+        //'data': responseData
+      };
+      // Verification failed
+      _passwordStatus = Status.Error;
+      // Notify Listeners
+      notifyListeners();
+    }
+  }
+
+  Future<Map<String, dynamic>> changePassword(
+      String token, String password) async {
+    var result;
+    print('ok o');
+    _resetPasswordStatus = Status.Loading;
+    notifyListeners();
+    try {
+      print('im here');
+      var response = await authService.resetPassword(token, password);
+      print('auth.dart :  $response');
+
+      // Reset Successful
+      _resetPasswordStatus = Status.Completed;
+      // Notify Listeners
+      notifyListeners();
+      result = {
+        'status': true,
+        'message': 'Successfully verified',
+        'email': 'userEmail'
+      };
+      return result;
+    } on AppException catch (e) {
+      _setFailure(e);
+      print(e);
+      result = {
+        'status': false,
+        'message': e,
+        //'data': responseData
+      };
+      // Verification failed
+      _resetPasswordStatus = Status.Error;
+      // Notify Listeners
+      notifyListeners();
+    }
+  }
+
+  /*Future<Map<String, dynamic>> getPatientData(String patientId) async {
+    var result;
+    print('ok o');
     _verifiedStatus = Status.Loading;
     notifyListeners();
     try {
       print('im here');
-      var response = await authService.activateUser(otp);
+      var response = await authService.getPatients(patientId);
       //var responseJson = json.decode(response['data']);
       //print('auth.dart json:  $responseJson');
 
@@ -356,5 +513,100 @@ class AuthProvider with ChangeNotifier {
     }
 
     return result;
+  }*/
+  /*Future<bool> usersLogin() async {
+    //var authService = new AuthService();
+    final response = await auth.signIn(
+      _emailController.text,
+      _passwordController.text,
+    );
+    print('response: $response');
+
+    if (response != null) {
+      User user = response['user'];
+      /*String token = response['user'];
+        User use = Provider.of<UserProvider>(context, listen: false).user;
+        Map<String, dynamic> userData= {
+          'patientId': use.patientId,
+          'firstname': use.firstname,
+          'surname': use.surname,
+          'email': use.email,
+          'dob': use.dob,
+          'token': token
+        };
+        User user = User.fromJson(userData);*/
+      Provider.of<UserProvider>(context, listen: false).setUser(user);
+
+      Future.delayed(Duration(milliseconds: 4000)).then(
+              (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
+      //
+    } else {
+      print('response');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: const Duration(seconds: 5),
+        content: Text(auth.failure.toString()),
+      ));
+    }
+  }*/
+  // User wants to remain logged in app
+  bool _stayLoggedIn = true;
+
+  bool get stayLogged => _stayLoggedIn;
+
+  bool stayLoggedIn(value) {
+    _stayLoggedIn = value;
+    notifyListeners();
+    return _stayLoggedIn;
   }
+
+  // Text field auto validation
+  bool _autoValidate = false;
+
+  bool get autoValidate => _autoValidate;
+
+  bool autoValidated() {
+    _autoValidate = true;
+    notifyListeners();
+    return _autoValidate;
+  }
+
+  delay() {
+    _registeredInStatus = Status.NotRegistered;
+    notifyListeners();
+  }
+
+  delayLogin() {
+    _loggedInStatus = Status.NotLoggedIn;
+    notifyListeners();
+  }
+
+  delayOtp() {
+    _verifiedStatus = Status.Initial;
+    notifyListeners();
+  }
+
+// Image variable
+/*File _image;
+  final picker = ImagePicker();
+
+  String _dropdownValue = 'One';
+  String get dropDownValue => _dropdownValue;
+
+  // variable to check if file was uploaded
+  bool _isFileUploaded = false;
+  bool get isFileUploaded => _isFileUploaded;
+  // Method to get image from user
+  Future getImage() async {
+    final pickedFile = _dropdownValue == 'Camera'
+        ? await picker.getImage(source: ImageSource.camera)
+        : await picker.getImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        _isFileUploaded = true;
+      } else {
+        print('No image selected.');
+      }
+    notifyListeners();
+  }*/
 }

@@ -1,12 +1,16 @@
 import 'dart:async';
 
 import 'package:e_care_mobile/providers/user_provider.dart';
+import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/userData/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
 
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'login.dart';
 
 class SplashScreen extends StatefulWidget {
   final User user;
@@ -22,10 +26,10 @@ class _SplashScreenState extends State<SplashScreen>
   //animation
   Animation<double> _animation;
   AnimationController _animationController;
-
   //Init State function/method
   @override
   void initState() {
+    //Provider.of<UserProvider>(context, listen: false).setUser(widget.user);
     Timer(Duration(seconds: 3), route);
     super.initState();
     _animationController = AnimationController(
@@ -56,14 +60,37 @@ class _SplashScreenState extends State<SplashScreen>
     _animationController.dispose();
   }
 
+  checkLoginStatus() async {
+    if (widget.user.token == null) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, 'onboarding');
+      }
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (BuildContext context) => PatientDashboard()),
+          (Route<dynamic> route) => false);
+    }
+  }
+
   //function to navigate to the on-boarding screen
   route() {
-    Navigator.pushReplacementNamed(context, 'onboarding');
+    //Navigator.pushReplacementNamed(context, 'onboarding');
+    checkLoginStatus();
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<UserProvider>(context).setUser(widget.user);
+    //Provider.of<UserProvider>(context).setUser(widget.user);
+    //auth = Provider.of<UserProvider>(context);
+    //auth.setUser(widget.user);
+    //_buildLoginForm(context);
+    /* Future.delayed(Duration.zero, () async {
+      Provider.of<UserProvider>(context, listen: false).setUser(widget.user);
+    });*/
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserProvider>(context, listen: false).setUser(widget.user);
+    });
     return Scaffold(
       body: MainImage(
         animation: _animation,
