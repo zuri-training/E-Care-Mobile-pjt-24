@@ -1,20 +1,14 @@
 import 'dart:ui';
 
-import 'package:dio/dio.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
-import 'package:e_care_mobile/services/api.dart';
+import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/userData/user.dart';
-import 'package:e_care_mobile/util/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'signup.dart';
 import 'reset_password.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'patient_dashboard.dart';
 import 'package:e_care_mobile/providers/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:e_care_mobile/util/widgets.dart';
@@ -27,17 +21,6 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final formKey = new GlobalKey<FormState>();
   static const double figureHeight = 250;
-
-  // Network request ongoing
-  bool _isLoading = false;
-
-  bool _hasLoaded = false;
-
-  // User wants to remain logged in app
-  bool _stayLoggedIn = true;
-
-  // auto validate text fields
-  bool _autoValidate = false;
 
   // Text form field controllers
   final TextEditingController _emailController = TextEditingController();
@@ -64,64 +47,37 @@ class _LoginState extends State<Login> {
   // Text field box shadow
   Color _textFieldShadow = Color.fromRGBO(0, 0, 0, 0.5);
 
+  // TODO CHANGE TO PROVIDER
   // Hide password
   bool _obscureText = true;
-
-  //To check fields during submit
-  checkFields() {
-    final form = formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      return true;
-    }
-    setState(() {
-      _autoValidate = true;
-    });
-    return false;
-  }
-
-  //To Validate email
-  String validateEmail(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value))
-      return 'Enter a Valid Email';
-    else
-      return null;
-  }
 
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
-    final snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
-    // TODO: implement build
+
     return Scaffold(
         body: Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: AnimatedSwitcher(
         duration: const Duration(seconds: 1),
-        child: auth.state ==
-                Status.Loading //auth.loggedInStatus == Status.Authenticating
+        child: auth.loggedInStatus == Status.Authenticating
             ? Center(child: CircularProgressIndicator())
-            : auth.state ==
-                    Status.Completed //auth.loggedInStatus == Status.LoggedIn
+            : auth.loggedInStatus == Status.LoggedIn
                 ? Center(
                     child: onComplete("Login Success", Icons.check_circle,
                         Colors.green.shade700))
-                : auth.state ==
-                        Status.Error //auth.loggedInStatus == Status.Error
-                    ? Center(
-                        child: Form(
-                            key: formKey,
-                            autovalidateMode: _autoValidate
-                                ? AutovalidateMode.always
-                                : AutovalidateMode.disabled,
-                            child: _buildLoginForm(context)))
+                : auth.loggedInStatus == Status.Error
+                    ? Form(
+                        // TODO SOLVE THIS
+                        key: formKey,
+                        autovalidateMode: auth.autoValidate
+                            ? AutovalidateMode.always
+                            : AutovalidateMode.disabled,
+                        child: _buildLoginForm(context))
                     : Form(
                         key: formKey,
-                        autovalidateMode: _autoValidate
+                        autovalidateMode: auth.autoValidate
                             ? AutovalidateMode.always
                             : AutovalidateMode.disabled,
                         child: _buildLoginForm(context)),
@@ -132,42 +88,55 @@ class _LoginState extends State<Login> {
   _buildLoginForm(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
 
-    var usersLogin = () async {
-      //var authService = new AuthService();
+    // Ensure correct data was entered
+    checkFields() {
+      final form = formKey.currentState;
+      if (form.validate()) {
+        form.save();
+        return true;
+      }
+      // Set auto validate to true
+      auth.autoValidated();
+      return false;
+    }
+
+    // Login
+    var login = () async {
+      // Login Request
       final response = await auth.signIn(
         _emailController.text,
         _passwordController.text,
       );
-      print('response: $response');
-
+      // Check if there's response
       if (response != null) {
+        // true
         User user = response['user'];
-        /*String token = response['user'];
-        User use = Provider.of<UserProvider>(context, listen: false).user;
-        Map<String, dynamic> userData= {
-          'patientId': use.patientId,
-          'firstname': use.firstname,
-          'surname': use.surname,
-          'email': use.email,
-          'dob': use.dob,
-          'token': token
-        };
-        User user = User.fromJson(userData);*/
         Provider.of<UserProvider>(context, listen: false).setUser(user);
-        //print(user.token);
-        //print(user.email);
-
         Future.delayed(Duration(milliseconds: 4000)).then(
             (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
-        //
+        /*Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (BuildContext context) => PatientDashboard(user: response['user'],)),
+                (Route<dynamic> route) => false));*/
+        //Provider.of<UserProvider>(context).setUser(response['user']);
       } else {
+        // false
         print('response');
+        // Snackbar to display error message
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: const Duration(seconds: 5),
           content: Text(auth.failure.toString()),
         ));
+        Future.delayed(Duration(milliseconds: 4000))
+            .then((value) => auth.delayLogin());
       }
     };
+    // Stay logged in
+    var stayLogged = (value) {
+      final response = auth.stayLoggedIn(value);
+      return response;
+    };
+
     var loading = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -175,6 +144,7 @@ class _LoginState extends State<Login> {
         Text(" Authenticating ... Please wait")
       ],
     );
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24.0, 24, 24.0, 24.0),
@@ -199,6 +169,7 @@ class _LoginState extends State<Login> {
                 data: Theme.of(context).copyWith(primaryColor: _purple),
                 child: TextFormField(
                   controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: buildDecoration(_purple, _textFieldBorderWidth,
                       _textSize, Icons.email, 'myemail@gmail.com', false),
                   validator: (value) => validateEmail(value),
@@ -248,8 +219,8 @@ class _LoginState extends State<Login> {
                 validator: (value) => value.isEmpty
                     ? 'Password is required'
                     : value.length < 6
-                    ? 'Password must be at least 6 characters'
-                    : null,
+                        ? 'Password must be at least 6 characters'
+                        : null,
                 textAlign: TextAlign.start,
                 maxLines: 1,
                 maxLength: 20,
@@ -262,12 +233,9 @@ class _LoginState extends State<Login> {
               child: Checkbox(
                   checkColor: Colors.white,
                   activeColor: _purple,
-                  value: _stayLoggedIn,
+                  value: auth.stayLogged,
                   onChanged: (bool newValue) {
-                    setState(() {
-                      print(newValue);
-                      _stayLoggedIn = newValue;
-                    });
+                    stayLogged(newValue);
                   }),
             ),
             Expanded(
@@ -279,40 +247,16 @@ class _LoginState extends State<Login> {
             ),
           ]),
           SizedBox(height: 40.0),
-          auth.loggedInStatus == Status.Authenticating
-              ? loading
-              : GestureDetector(
-                  onTap: () {
-                    print(_emailController.text);
-                    print(_passwordController.text);
-                    if (/*_emailController.text != '' &&
-                    _passwordController.text != ''*/
-                        checkFields()) {
-                      /*setState(() {
-                    _isLoading = true;
-                  });*/
-
-                      //loginUser(_emailController.text, _passwordController.text);
-                      // userLogin();
-                      usersLogin();
-                    }
-                  },
-                  /*child: Container(
-                          height: 48.0,
-                          child: Material(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  bottomRight: Radius.circular(8)),
-                              color: _purple,
-                              elevation: 7.0,
-                              child: Center(
-                                  child: Text('SIGN IN',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: _textSize,
-                                          fontWeight: FontWeight.w500))))),*/
-                  child: signButton(_textFieldHeight, _textFieldShadow,
-                      _textSize, 'SIGN IN')),
+          GestureDetector(
+              onTap: () {
+                print(_emailController.text);
+                print(_passwordController.text);
+                if (checkFields()) {
+                  login();
+                }
+              },
+              child: signButton(
+                  _textFieldHeight, _textFieldShadow, _textSize, 'SIGN IN')),
           SizedBox(height: 30.0),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text('Forgot Password?',
@@ -348,7 +292,7 @@ class _LoginState extends State<Login> {
                       context,
                       PageTransition(
                           child: Signup(),
-                          duration: Duration(seconds: 3),
+                          duration: Duration(seconds: 0),
                           type: PageTransitionType.rightToLeftWithFade));
                 },
                 child: Text('Sign up',
@@ -360,86 +304,6 @@ class _LoginState extends State<Login> {
         ]),
       ),
     );
-  }
-
-  loginUser(String email, String password) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    var dio = Dio();
-    var formData = FormData.fromMap({
-      'email': email,
-      'password': password,
-    });
-    dio.options.connectTimeout = 50000;
-    dio.options.receiveTimeout = 30000;
-    dio.options.sendTimeout = 30000;
-
-    var response = await dio.post(
-        'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/login',
-        data: {
-          'email': email,
-          'password': password,
-        });
-    var jsonResponse;
-
-    if (response.statusCode == 200) {
-      //print('Response status: ${response.statusCode}');
-      //print('Response body: ${response.body}');
-      jsonResponse = response.data;
-      if (jsonResponse != null) {
-        setState(() {
-          _isLoading = false;
-        });
-        print(jsonResponse['data']['token']);
-
-        if (_stayLoggedIn == true) {
-          // Store token in shared prefs to keep user signed in
-          sharedPreferences.setString("token", jsonResponse['data']['token']);
-          sharedPreferences.setString(
-              "patientId", jsonResponse['data']['patientId']);
-        }
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-                builder: (BuildContext context) => PatientDashboard()),
-            (Route<dynamic> route) => false);
-      } else {
-        // TODO HANDLE ERROR AND DISPLAY MESSAGE TO UI
-        setState(() {
-          _isLoading = false;
-        });
-        print(response.data);
-      }
-    }
-  }
-
-  userLogin() async {
-    var authService = new AuthService();
-
-    // login user request
-    var response = await authService.login(
-      _emailController.text,
-      _passwordController.text,
-    );
-    // Shared preference instance
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    // if there is response
-    if (response != null) {
-      setState(() {
-        _isLoading = false;
-      });
-      print(response['data']['token']);
-
-      if (_stayLoggedIn == true) {
-        // Store token in shared prefs to keep user signed in
-        sharedPreferences.setString("token", response['data']['token']);
-        sharedPreferences.setString("patientId", response['data']['patientId']);
-      }
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) => PatientDashboard()),
-          (Route<dynamic> route) => false);
-    }
   }
 }
 

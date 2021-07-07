@@ -5,7 +5,7 @@ class AppException implements Exception {
   AppException([this._message, this._prefix]);
 
   String toString() {
-    return "$_prefix$_message";
+    return _message; //"$_prefix$_message";
   }
 }
 
@@ -24,4 +24,10 @@ class UnauthorisedException extends AppException {
 
 class InvalidInputException extends AppException {
   InvalidInputException([String message]) : super(message, "Invalid Input: ");
+}
+
+class TimeException extends AppException {
+  TimeException([String message])
+      : super('Connection Timeout: \n Please try again',
+            "Error During Communication: ");
 }

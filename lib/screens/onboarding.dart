@@ -1,12 +1,10 @@
 import 'package:e_care_mobile/models/onboarding_model.dart';
-import 'package:e_care_mobile/screens/book_appointment.dart';
-import 'package:e_care_mobile/screens/medical_history_form.dart';
+import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
-import 'package:e_care_mobile/screens/request_medical_advice.dart';
-import 'package:e_care_mobile/screens/reset_password.dart';
-import 'package:e_care_mobile/util/api_service.dart';
+import 'package:e_care_mobile/userData/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
 import 'signup.dart';
@@ -76,6 +74,9 @@ class _OnboardingState extends State<Onboarding> {
 
   @override
   Widget build(BuildContext context) {
+    User use = Provider.of<UserProvider>(context).user;
+    var as = use.firstname;
+    print('widg: $as');
     return Scaffold(
       body: Column(
         children: [
@@ -132,7 +133,7 @@ class _OnboardingState extends State<Onboarding> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 contents.length,
-                (index) => buildDots(index, context),
+                    (index) => buildDots(index, context),
               ),
             ),
           ),
@@ -150,9 +151,9 @@ class _OnboardingState extends State<Onboarding> {
               onPressed: () {
                 if (currentIndex == contents.length - 1) {
                   //AuthService().handleAuthStr();
-                  /*Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Signup()));*/
-                  checkLoginStatus();
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => Signup()));
+                  //checkLoginStatus();
                 }
                 _controller.nextPage(
                   duration: Duration(
