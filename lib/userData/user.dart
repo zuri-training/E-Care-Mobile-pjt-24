@@ -4,6 +4,7 @@ class User {
   String surname;
   String email;
   String dob;
+  //bool isVerified;
   String token;
 
   User({
@@ -12,16 +13,18 @@ class User {
     this.surname,
     this.email,
     this.dob,
+    //this.isVerified,
     this.token,
   });
 
   factory User.fromJson(Map<String, dynamic> responseData) {
     return User(
-      patientId: responseData['patientId'],
+      patientId: responseData['_id'],
       firstname: responseData['firstname'],
-      surname: responseData['surname'],
+      surname: responseData['lastname'],
       email: responseData['email'],
       dob: responseData['dob'],
+      //isVerified: responseData['isVerified'],
       token: responseData['token'],
     );
   }

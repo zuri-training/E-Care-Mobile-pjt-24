@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 class SplashScreen extends StatefulWidget {
   final User user;
@@ -32,6 +33,7 @@ class _SplashScreenState extends State<SplashScreen>
     //Provider.of<UserProvider>(context, listen: false).setUser(widget.user);
     Timer(Duration(seconds: 3), route);
     super.initState();
+
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(
@@ -61,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   checkLoginStatus() async {
-    if (widget.user.token == null) {
+    if (widget.user.token == '' || widget.user.token == null) {
       if (mounted) {
         Navigator.pushReplacementNamed(context, 'onboarding');
       }

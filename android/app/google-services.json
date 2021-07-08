@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "102002653884",
+    "project_id": "e-care-8b984",
+    "storage_bucket": "e-care-8b984.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102002653884:android:82fea125875252c0ba6eb9",
+        "android_client_info": {
+          "package_name": "zuritraining.pjt24.e_care_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "102002653884-ibqh86c2080p1k1vo5ds3v48uui8bfip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8QP6BdTdvLCE1aOqECtPGQDMg5NukcdM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "102002653884-ibqh86c2080p1k1vo5ds3v48uui8bfip.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

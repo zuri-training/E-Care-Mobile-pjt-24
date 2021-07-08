@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:e_care_mobile/screens/login.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
@@ -335,10 +336,6 @@ class AuthService {
                   'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/create'),
               body: data)
           .timeout(Duration(seconds: 30));
-      /*var aa = response.body;
-      var bb = jsonDecode(response.body);
-      var kl = bb['err'];
-      print('api res $kl');*/
 
       // TODO Implement _returnResponse for register
       return _returnResponse(response);
@@ -346,19 +343,33 @@ class AuthService {
       throw FetchDataException('No Internet connection');
     } on TimeoutException {
       throw TimeException();
+    } finally {}
+  }
+
+  Future<dynamic> uploadFirestore(_id, firstname, surname, email, dob) async {
+    try {
+      await FirebaseFirestore.instance.collection('patients').doc(_id).set({
+        'firstName': firstname,
+        'surname': surname,
+        'email': email,
+        'dob': dob
+      });
+    } on FirebaseException catch (e) {
+      throw FireStoreException(e.message);
     }
   }
 
   /// Get patient data
-  Future<dynamic> getPatients(patientId) async {
+  Future<dynamic> getPatients(token) async {
     try {
-      var response = await http
-          .get(
-            Uri.parse(
-                'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/activate-patient-account/$patientId'),
-          )
-          .timeout(Duration(seconds: 30));
-      print('api: $response');
+      var response = await http.get(
+          Uri.parse(
+              'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/get-patient/single'),
+          headers: {
+            'Authorization': 'Bearer $token',
+          }).timeout(Duration(seconds: 30));
+      var res = response.body;
+      print('api: $res');
       return _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');

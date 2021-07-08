@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:e_care_mobile/Authentication/authentication.dart';
+import 'package:e_care_mobile/Authentication/error_handler.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/services/api.dart';
 import 'package:e_care_mobile/util/AppException.dart';
+import 'package:firebase_auth/firebase_auth.dart' as users;
 
 import 'package:flutter/material.dart';
 import 'package:e_care_mobile/userData/user.dart';
@@ -206,21 +210,30 @@ class AuthProvider with ChangeNotifier {
       // Login Request with email and password
       var response = await authService.login(email, password);
       print('auth response: $response');
-      // Store token from response
+      // Get token from response
       var token = response['data']['token'];
 
+      // Retrieve patient info using token
+      var info = await getPatient(token);
+      // Patient id
+      var patientId = info['data']['_id'];
+      // Patient email
+      var userEmail = info['data']['email'];
+      // Patient first name
+      var firstname = info['data']['firstname'];
+      // Patient surname
+      var surname = info['data']['lastname'];
+      // Patient date of birth
+      var dob = info['data']['dob'];
+
       print('auth.dart:  $token');
-      User user = UserProvider().user;
-      var dd = user.email;
-      print('user $user');
-      print('user email: $dd');
 
       Map<String, dynamic> userData = {
-        'patientId': 'qwerty', //user.patientId,
-        'firstname': 'alex', //user.firstname,
-        'surname': 'okani', //user.surname,
-        'email': 'aconalexx@gmail.com', //user.email,
-        'dob': '12 July, 2018', //user.dob,
+        '_id': patientId, //user.patientId,
+        'firstname': firstname, //user.firstname,
+        'lastname': surname, //user.surname,
+        'email': userEmail, //user.email,
+        'dob': dob, //user.dob,
         'token': token
       };
 
@@ -256,6 +269,18 @@ class AuthProvider with ChangeNotifier {
     //return result;
   }
 
+  /// Get single patient data
+  Future<Map<String, dynamic>> getPatient(token) async {
+    try {
+      // Request
+      var info = await authService.getPatients(token);
+      print('info $info');
+      return info;
+    } on AppException catch (e) {
+      _setFailure(e);
+    }
+  }
+
   Future<Map<String, dynamic>> signUp(String email, String password,
       String firstname, String surname, String dob) async {
     var result;
@@ -269,24 +294,28 @@ class AuthProvider with ChangeNotifier {
       //print('auth.dart json:  $responseJson');
       print('res: $response');
 
-      var patientId = response['data'];
+      var patientId = response['data']['patientId'];
 
       print('auth.dart:  $patientId');
 
       Map<String, dynamic> userData = {
-        'patientId': patientId.toString(),
+        '_id': patientId.toString(),
         'firstname': firstname,
-        'surname': surname,
+        'lastname': surname,
         'email': email,
         'dob': dob,
+        'token': ''
       };
 
       // store user data in user object
       User authUser = User.fromJson(userData);
+      print(authUser.email);
       //print('token $(authUser.token)');
       // save using shared prefs
       //print('auth user $authUser');
-      UserPreferences().saveUser(authUser);
+      await UserPreferences().saveUser(authUser);
+      var uu = await UserPreferences().getUser();
+      print(uu.token);
       //Provider.of<UserProvider>(context, listen: false).setUser(user);
 
       _registeredInStatus = Status.Registered;
@@ -297,7 +326,6 @@ class AuthProvider with ChangeNotifier {
         'message': 'Successfully registered',
         'user': authUser
       };
-
       return result;
     } on AppException catch (e) {
       _setFailure(e);
@@ -315,6 +343,13 @@ class AuthProvider with ChangeNotifier {
     //return result;
   }
 
+  /*var response = await authService
+      .activateUser(otp)
+      .then((value) async => await uploadData(user.patientId,
+  user.firstname, user.surname, user.email, user.dob))
+      .catchError((e) {
+  _setFailure(e);
+  });*/
   Future<Map<String, dynamic>> activate(String otp) async {
     var result;
     print('ok o');
@@ -322,22 +357,25 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     try {
       print('im here');
+      var user = await UserPreferences().getUser();
       var response = await authService.activateUser(otp);
-      //var responseJson = json.decode(response['data']);
-      //print('auth.dart json:  $responseJson');
+      print('otp: $response');
+      await uploadData(
+          user.patientId, user.firstname, user.surname, user.email, user.dob);
 
-      var token = response['data'].toString();
+      var token = response['data']['token'].toString();
 
       print('auth.dart:  $token');
-      User user = UserProvider().user;
+      //User user = UserProvider().user;
       var userEmail = user.email;
+      print('iser $userEmail');
       /*print('user $user');
       print('user email: $dd');*/
 
       Map<String, dynamic> userData = {
-        'patientId': user.patientId.toString(),
+        '_id': user.patientId.toString(),
         'firstname': user.firstname,
-        'surname': user.surname,
+        'lastname': user.surname,
         'email': user.email,
         'dob': user.dob,
         'token': token.toString()
@@ -345,11 +383,9 @@ class AuthProvider with ChangeNotifier {
 
       // store user data in user object
       User authUser = User.fromJson(userData);
-      print(authUser.firstname);
-      print(authUser.token);
 
       // save using shared prefs
-      UserPreferences().saveUser(authUser);
+      await UserPreferences().saveUser(authUser);
       /*// Shared preference instance
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       // Save token in shared prefs
@@ -362,8 +398,9 @@ class AuthProvider with ChangeNotifier {
       result = {
         'status': true,
         'message': 'Successfully verified',
-        'email': userEmail
+        'user': authUser
       };
+
       return result;
     } on AppException catch (e) {
       _setFailure(e);
@@ -449,6 +486,15 @@ class AuthProvider with ChangeNotifier {
       _resetPasswordStatus = Status.Error;
       // Notify Listeners
       notifyListeners();
+    }
+  }
+
+  Future uploadData(patientId, firstname, surname, email, dob) async {
+    try {
+      await authService.uploadFirestore(
+          patientId, firstname, surname, email, dob);
+    } on AppException catch (e) {
+      _setFailure(e);
     }
   }
 
@@ -608,5 +654,149 @@ class AuthProvider with ChangeNotifier {
         print('No image selected.');
       }
     notifyListeners();
+  }*/
+/*Future<Map<String, dynamic>> login(String email, String password, context) async {
+    var result;
+    // Set login status to authenticating
+    _loggedInStatus = Status.Authenticating;
+
+    // Notify Listeners
+    notifyListeners();
+    try {
+      // Login Request with email and password
+      var response = await Authentication.login(email, password, context);
+      //print('auth response: $response');
+      // Store token from response
+      //var token = response['data']['token'];
+
+      //print('auth.dart:  $token');
+      User user = UserProvider().user;
+      var dd = user.email;
+      print('user $user');
+      print('user email: $dd');
+
+      Map<String, dynamic> userData = {
+        'patientId': 'qwerty', //user.patientId,
+        'firstname': 'alex', //user.firstname,
+        'surname': 'okani', //user.surname,
+        'email': 'aconalexx@gmail.com', //user.email,
+        'dob': '12 July, 2018', //user.dob,
+        'token': 'token'
+      };
+
+      // store user data in user object
+      User authUser = User.fromJson(userData);
+      if (_stayLoggedIn) {
+        // save using shared prefs
+        //UserPreferences().saveUser(authUser);
+      }
+
+      // Change login status to logged in
+      _loggedInStatus = Status.LoggedIn;
+      //_state = Status.Completed;
+
+      // Notify Listeners
+      notifyListeners();
+      //print(responseJson);
+      result = {'status': true, 'message': 'Successful', 'user': authUser};
+      return result;
+    } catch (e) {
+      //_setFailure(e);
+      print(e);
+      _loggedInStatus = Status.Error;
+      //_state = Status.Error;
+      notifyListeners();
+      ErrorHandler().errorDialog(context, e);
+    }
+
+    //return result;
+  }
+
+  Future<Map<String, dynamic>> create(String email, String password,
+      String firstname, String surname, String dob, context) async {
+    var result;
+    _registeredInStatus = Status.Registering;
+    notifyListeners();
+    try {
+      print('im here');
+      var response =
+      await Authentication.signUp(email, password, firstname, surname, dob,  context);
+     /* print('ppp $response');
+      users.User user = response as users.User;
+
+      Map<String, dynamic> userData = {
+        'patientId': user.uid,
+        'firstname': firstname,
+        'surname': surname,
+        'email': email,
+        'dob': dob,
+        'isVerified': user.emailVerified,
+      };
+      // store user data in user object
+      User authUser = User.fromJson(userData);
+      //print('token $(authUser.token)');
+      // save using shared prefs
+      //print('auth user $authUser');
+      UserPreferences().saveUser(authUser);*/
+      //Provider.of<UserProvider>(context, listen: false).setUser(user);
+
+      _registeredInStatus = Status.Registered;
+      notifyListeners();
+      print('registerstatus: $_registeredInStatus');
+      result = {
+        'status': true,
+        'message': 'Successfully registered',
+        //'user': authUser
+      };
+
+      return result;
+    } catch (e) {
+      print('eee $e');
+      //_setFailure(e);
+      /*result = {
+        'status': false,
+        'message': e,
+        //'data': responseData
+      };
+      print('result: $result');
+      print('failure: $failure');*/
+      _registeredInStatus = Status.Error;
+      notifyListeners();
+      ErrorHandler().errorDialog(context, e);
+    }
+
+    //return result;
+  }
+
+  Future<Map<String, dynamic>> verify() async {
+    var result;
+
+
+      users.User user = users.FirebaseAuth.instance.currentUser;
+      print('asss $user.emailVerified');
+      if (user!= null && user.emailVerified) {
+        // save using shared prefs
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isVerified', user.emailVerified);
+        User userData = await UserPreferences().getUser();
+        result = {
+          'status': true,
+          'message': 'Successfully registered',
+          'user': userData
+        };
+
+        // Verification Successful
+        _verifiedStatus = Status.Completed;
+        // Notify Listeners
+        notifyListeners();
+        return result;
+      } else {
+        result = {
+          'status': false,
+          'message': 'Successfully registered',
+        };
+        return result;
+      }
+
   }*/
 }

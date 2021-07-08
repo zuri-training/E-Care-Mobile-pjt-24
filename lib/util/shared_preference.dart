@@ -11,6 +11,7 @@ class UserPreferences {
     prefs.setString("surname", user.surname);
     prefs.setString("email", user.email);
     prefs.setString("dob", user.dob);
+    //prefs..setBool("isVerified", user.isVerified);
     prefs.setString("token", user.token);
 
     print("object prefere");
@@ -27,6 +28,7 @@ class UserPreferences {
     String surname = prefs.getString("surname");
     String email = prefs.getString("email");
     String dob = prefs.getString("dob");
+    bool isVerified = prefs.getBool("isVerified");
     String token = prefs.getString("token");
 
     return User(
@@ -35,6 +37,7 @@ class UserPreferences {
       surname: surname,
       email: email,
       dob: dob,
+      //isVerified: isVerified,
       token: token,
     );
   }
@@ -47,6 +50,7 @@ class UserPreferences {
     prefs.remove("surname");
     prefs.remove("email");
     prefs.remove("dob");
+    //prefs.remove('isVerified');
     prefs.remove("token");
   }
 

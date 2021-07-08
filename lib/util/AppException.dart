@@ -31,3 +31,8 @@ class TimeException extends AppException {
       : super('Connection Timeout: \n Please try again',
             "Error During Communication: ");
 }
+
+class FireStoreException extends AppException {
+  FireStoreException([String message])
+      : super(message, "Error During Communication: ");
+}

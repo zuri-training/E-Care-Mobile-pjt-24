@@ -4,6 +4,7 @@ import 'package:e_care_mobile/screens/book_appointment.dart';
 import 'package:e_care_mobile/screens/profile/profile_page.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:e_care_mobile/userData/user.dart';
+import 'package:e_care_mobile/util/shared_preference.dart';
 import 'package:flutter/material.dart';
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -22,11 +23,13 @@ class PatientDashboard extends StatefulWidget {
 class _PatientDashboardState extends State<PatientDashboard> {
   @override
   Widget build(BuildContext context) {
-    User user = Provider
+    /*User user = Provider
         .of<UserProvider>(context)
-        .user;
-    var as = user.firstname;
-    print('widg: $as');
+        .user;*/
+    UserProvider userDat = Provider.of<UserProvider>(context);
+    //var as = user.firstname;
+    var userFirstname = userDat.user.firstname;
+    print('widg: $userFirstname');
     return Scaffold(
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -81,7 +84,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                   Row(
                     children: [
                       Text(
-                        user.firstname,
+                        userFirstname,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
@@ -558,6 +561,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
   }
 
   void _requestmedic() {
+    //UserPreferences().removeUser();
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => RequestMedicalAdvice()));
   }

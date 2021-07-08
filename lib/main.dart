@@ -1,9 +1,11 @@
 import 'package:e_care_mobile/providers/auth.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
+import 'package:e_care_mobile/screens/checkyouremail.dart';
 import 'package:e_care_mobile/screens/otp_form.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/screens/signup.dart';
 import 'package:e_care_mobile/screens/splashscreen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,7 @@ import 'package:e_care_mobile/userData/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -90,6 +93,8 @@ class MyApp extends StatelessWidget {
               '/dashboard': (context) => PatientDashboard(),
               '/otpForm': (context) => OtpForm(),
               '/signUp': (context) => Signup(),
+              '/checkEmail': (context) => CheckYourEmail(),
+              '/verifyEmail': (context) => VerifyEmail(),
             }));
   }
 }
