@@ -1,5 +1,6 @@
 import 'package:e_care_mobile/chat/chart_page.dart';
 import 'package:e_care_mobile/medical/view_medical_advice.dart';
+import 'package:e_care_mobile/screens/allappointments.dart';
 import 'package:e_care_mobile/screens/book_appointment.dart';
 import 'package:e_care_mobile/screens/profile/profile_page.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
@@ -45,10 +46,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         backgroundColor: Color(0xffF8B25A),
                       ),
                       SizedBox(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width / 1.5,
+                        width: MediaQuery.of(context).size.width / 1.5,
                       ),
                       // IconButton(
                       //   icon: Icon(
@@ -152,7 +150,6 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     child: Row(
                       children: [
                         GestureDetector(
-
                           onTap: () {
                             _move();
                           },
@@ -242,10 +239,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     ],
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height / 20,
+                    height: MediaQuery.of(context).size.height / 20,
                   ),
                   DoctorsList(),
                   /*SingleChildScrollView(
@@ -557,7 +551,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
 
   void _move() {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => BookAppointment()));
+        .push(MaterialPageRoute(builder: (context) => AllAppointments()));
   }
 
   void _requestmedic() {

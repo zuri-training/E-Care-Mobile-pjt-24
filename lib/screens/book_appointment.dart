@@ -1,6 +1,11 @@
 import 'package:carbon_icons/carbon_icons.dart';
+import 'package:e_care_mobile/database/book.dart';
+import 'package:e_care_mobile/providers/user_provider.dart';
+import 'package:e_care_mobile/screens/allappointments.dart';
+import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BookAppointment extends StatefulWidget {
   const BookAppointment({Key key}) : super(key: key);
@@ -12,6 +17,7 @@ class BookAppointment extends StatefulWidget {
 class _BookAppointmentState extends State<BookAppointment> {
   TextEditingController textEditingController = TextEditingController();
   DateTime _selectedDate;
+  TextEditingController reasonController = TextEditingController();
   List<String> _doctors = [
     'Dr. Emma',
     'Dr. Johns',
@@ -19,6 +25,9 @@ class _BookAppointmentState extends State<BookAppointment> {
   String _selectedDoctors; // Option 2
   @override
   Widget build(BuildContext context) {
+    UserProvider userDat = Provider.of<UserProvider>(context);
+    //var as = user.firstname;
+    String userid = userDat.user.patientId;
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -120,139 +129,12 @@ class _BookAppointmentState extends State<BookAppointment> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 30,
                 ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 12),
-                    ),
-                    Text(
-                      'Time',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 80,
                 ),
                 new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    new Flexible(
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(right: 10, left: 10, top: 0),
-                        child: new TextField(
-                            decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color(0xff6305B1), width: 4.0),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color(0xff6305B1), width: 3.0),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color(0xff6305B1),
-                                    width: 4.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                contentPadding: EdgeInsets.all(20))),
-                      ),
-                    ),
-                    new Flexible(
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(right: 10, left: 10, top: 0),
-                        child: new TextField(
-                            decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color(0xff6305B1), width: 4.0),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color(0xff6305B1), width: 3.0),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: BorderSide(
-                                    color: Color(0xff6305B1),
-                                    width: 4.0,
-                                  ),
-                                ),
-                                contentPadding: EdgeInsets.all(20))),
-                      ),
-                    ),
-                    new Flexible(
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(right: 10, left: 10, top: 0),
-                        child: new TextField(
-                            decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color(0xff6305B1), width: 4.0),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color(0xff6305B1), width: 3.0),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: BorderSide(
-                                    color: Color(0xff6305B1),
-                                    width: 4.0,
-                                  ),
-                                ),
-                                contentPadding: EdgeInsets.all(20))),
-                      ),
-                    ),
-                    new Flexible(
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(right: 10, left: 10, top: 0),
-                        child: new TextField(
-                            decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color(0xff6305B1), width: 4.0),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color(0xff6305B1), width: 3.0),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: BorderSide(
-                                    color: Color(0xff6305B1),
-                                    width: 4.0,
-                                  ),
-                                ),
-                                contentPadding: EdgeInsets.all(20))),
-                      ),
-                    ),
-                    new Flexible(
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(right: 40, left: 0, top: 0),
-                        child: Text(
-                          'HRS',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height / 30,
+                  children: <Widget>[],
                 ),
                 Row(
                   children: [
@@ -365,6 +247,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height / 14,
                         child: TextField(
+                          controller: reasonController,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
@@ -410,7 +293,23 @@ class _BookAppointmentState extends State<BookAppointment> {
                           ),
                           primary: Color(0xff6305B1),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          await Book().bookAppt(
+                              userid,
+                              _selectedDate.toString(),
+                              _selectedDoctors.toString(),
+                              reasonController.text);
+
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Color.fromRGBO(99, 5, 177, 1),
+                              content: Text(
+                                'we will get back to you shortly!',
+                                style: TextStyle(fontSize: 22),
+                              )));
+
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => PatientDashboard()));
+                        },
                         child: Text(
                           'Book Appointment',
                           style: TextStyle(
