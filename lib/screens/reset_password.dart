@@ -1,5 +1,6 @@
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:e_care_mobile/screens/checkyouremail.dart';
+import 'package:e_care_mobile/services/api.dart';
 import 'package:flutter/material.dart';
 
 class ResetPassword extends StatefulWidget {
@@ -198,5 +199,29 @@ class _ResetPasswordState extends State<ResetPassword> {
         ),
       ),
     );
+  }
+
+  // TODO ADD THIS TO SEND INSTRUCTION BUTTON TO MAKE REQUEST TO SERVER
+  forgotPassword(String email) async {
+    AuthService authInfo = AuthService();
+    //SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var response = await authInfo.forgotPassword(email);
+    print(response);
+    if (response != null) {
+      setState(() {
+        //_isLoading = false;
+      });
+      print(response['data']['token']);
+
+      /*if (_stayLoggedIn == true) {
+          // Store token in shared prefs to keep user signed in
+          sharedPreferences.setString("token", jsonResponse['data']['token']);
+        }*/
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (BuildContext context) => CheckYourEmail()),
+          (Route<dynamic> route) => false);
+    }
   }
 }

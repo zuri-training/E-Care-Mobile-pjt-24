@@ -1,12 +1,17 @@
 import 'package:e_care_mobile/chat/chart_page.dart';
 import 'package:e_care_mobile/medical/view_medical_advice.dart';
 import 'package:e_care_mobile/screens/book_appointment.dart';
+import 'package:e_care_mobile/screens/profile/profile_page.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
+import 'package:e_care_mobile/userData/user.dart';
+import 'package:e_care_mobile/util/shared_preference.dart';
 import 'package:flutter/material.dart';
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:e_care_mobile/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class PatientDashboard extends StatefulWidget {
   const PatientDashboard({Key key}) : super(key: key);
@@ -18,13 +23,20 @@ class PatientDashboard extends StatefulWidget {
 class _PatientDashboardState extends State<PatientDashboard> {
   @override
   Widget build(BuildContext context) {
+    /*User user = Provider
+        .of<UserProvider>(context)
+        .user;*/
+    UserProvider userDat = Provider.of<UserProvider>(context);
+    //var as = user.firstname;
+    var userFirstname = userDat.user.firstname;
+    print('widg: $userFirstname');
     return Scaffold(
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: SafeArea(
           child: Container(
             child: Padding(
-              padding: const EdgeInsets.only(left: 26, top: 40),
+              padding: const EdgeInsets.only(left: 16, top: 24, bottom: 16),
               child: Column(
                 children: [
                   Row(
@@ -33,15 +45,20 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         backgroundColor: Color(0xffF8B25A),
                       ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 1.5,
                       ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.menu,
-                          size: MediaQuery.of(context).size.width / 10,
-                        ),
-                        onPressed: () {},
-                      ),
+                      // IconButton(
+                      //   icon: Icon(
+                      //     Icons.menu,
+                      //     size: MediaQuery.of(context).size.width / 10,
+                      //   ),
+                      //   onPressed: () {
+                      //
+                      //   },
+                      // ),
                     ],
                   ),
                   SizedBox(
@@ -67,7 +84,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                   Row(
                     children: [
                       Text(
-                        'Susan',
+                        userFirstname,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
@@ -101,6 +118,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                   color: Colors.black,
                                 ),
                               ),
+                              contentPadding: EdgeInsets.all(10.0),
                               hintText: 'search your symptoms..',
                               hintStyle: TextStyle(
                                 fontWeight: FontWeight.w300,
@@ -134,6 +152,14 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     child: Row(
                       children: [
                         GestureDetector(
+
+                          onTap: () {
+                            _move();
+                          },
+                          child: card('Book an Appointment',
+                              CarbonIcons.reminder_medical),
+                        ),
+                        /*GestureDetector(
                           child: helpbuilder(
                             context,
                             IconButton(
@@ -159,65 +185,27 @@ class _PatientDashboardState extends State<PatientDashboard> {
                               ),
                             ),
                           ),
+                        ),*/
+                        SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _requestmedic();
+                          },
+                          child: card('Request Medical Advice',
+                              FontAwesomeIcons.handHoldingMedical),
                         ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width / 20,
+                          width: 10,
                         ),
-                        helpbuilder(
-                          context,
-                          IconButton(
-                            onPressed: _requestmedic,
-                            icon: Icon(
-                              FontAwesomeIcons.handHoldingMedical,
-                              color: Color(0xff6305B1),
-                              size: 40,
-                            ),
-                          ),
-                          Text(
-                            'Request',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            'Medical Advice',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 20,
-                        ),
-                        helpbuilder(
-                          context,
-                          IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ViewMedicalAdvice()));
-                            },
-                            icon: Icon(
-                              FontAwesomeIcons.fileMedical,
-                              color: Color(0xff6305B1),
-                              size: 40,
-                            ),
-                          ),
-                          Text(
-                            'View',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            'Medical Advice',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ViewMedicalAdvice()));
+                          },
+                          child: card('View Medical Advice',
+                              FontAwesomeIcons.fileMedical),
                         ),
                       ],
                     ),
@@ -226,38 +214,41 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     height: MediaQuery.of(context).size.height / 15,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 10),
-                      ),
-                      Text(
-                        'Top Doctors',
-                        style: TextStyle(
-                          fontSize: 32,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(
+                          'Top Doctors',
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 3.9,
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'See all',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w300,
-                            color: Colors.black,
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            'See all',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height / 20,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height / 20,
                   ),
-                  SingleChildScrollView(
+                  DoctorsList(),
+                  /*SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
@@ -314,7 +305,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         ),
                       ],
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),
@@ -342,7 +333,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
               child: Icon(
                 CarbonIcons.home,
                 color: Colors.white,
-                size: MediaQuery.of(context).size.height / 20,
+                size: 24,
               ),
             ),
           ),
@@ -358,19 +349,28 @@ class _PatientDashboardState extends State<PatientDashboard> {
                 child: Icon(
                   CarbonIcons.chat_bot,
                   color: Colors.white,
-                  size: MediaQuery.of(context).size.height / 20,
+                  size: 24,
                 ),
               ),
             ),
           ),
           BottomNavigationBarItem(
             label: '',
-            icon: Container(
-              padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-              child: Icon(
-                CarbonIcons.settings,
-                color: Colors.white,
-                size: MediaQuery.of(context).size.height / 20,
+            icon: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(),
+                  ),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                child: Icon(
+                  CarbonIcons.settings,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
             ),
           ),
@@ -429,6 +429,61 @@ class _PatientDashboardState extends State<PatientDashboard> {
           ),
         ),
       ],
+    );
+  }
+
+  Card card(String text, IconData iconData) {
+    return Card(
+      elevation: 12,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+          bottomLeft: Radius.circular(16),
+          bottomRight: Radius.circular(16),
+        ),
+      ),
+      child: Container(
+          width: 120,
+          height: 112,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+              bottomLeft: Radius.circular(16),
+              bottomRight: Radius.circular(16),
+            ),
+            color: Color.fromRGBO(255, 209, 150, 0.800000011920929),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Icon(
+                      iconData,
+                      color: Color(0xff6305B1),
+                      size: 40,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Color.fromRGBO(0, 0, 0, 1),
+                          fontFamily: 'Inter',
+                          fontSize: 14,
+                          letterSpacing:
+                              0 /*percentages not used in flutter. defaulting to zero*/,
+                          fontWeight: FontWeight.normal,
+                          height: 1.1428571428571428),
+                    ),
+                  )
+                ]),
+          )),
     );
   }
 
@@ -506,7 +561,189 @@ class _PatientDashboardState extends State<PatientDashboard> {
   }
 
   void _requestmedic() {
+    //UserPreferences().removeUser();
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => RequestMedicalAdvice()));
+  }
+}
+
+final _containerHeight = 154.0;
+final _borderRadius = BorderRadius.circular(_containerHeight / 2);
+
+class DoctorsListItem extends StatelessWidget {
+  final String doctorName;
+  final IconData iconLocation;
+  final String date;
+  final ColorSwatch color;
+
+  /// Creates a [DoctorsListItem].
+  ///
+  /// A [DoctorsListItem] saves the name of the Doctor (e.g. 'Dr. Paul'), date,
+  ///  availibility of doctor, and the profile picture.
+  // While the @required checks for whether a named parameter is passed in,
+  // it doesn't check whether the object passed in is null. We check that
+  // in the assert statement.
+  const DoctorsListItem({
+    Key key,
+    @required this.doctorName,
+    @required this.iconLocation,
+    @required this.date,
+    @required this.color,
+  })  : assert(doctorName != null),
+        assert(iconLocation != null),
+        assert(date != null),
+        assert(color != null),
+        super(key: key);
+
+  /// Builds a custom widget that shows [Doctor] information.
+  ///
+  /// This information includes the icon, name, and color for the [Doctor].
+  @override
+  // This `context` parameter describes the location of this widget in the
+  // widget tree. It can be used for obtaining Theme data from the nearest
+  // Theme ancestor in the tree. Below, we obtain the display1 text theme.
+  // See https://docs.flutter.io/flutter/material/Theme-class.html
+  Widget build(BuildContext context) {
+    return Material(
+        child: Padding(
+      padding: const EdgeInsets.only(right: 16.0),
+      child: Card(
+        //margin: EdgeInsets.only(right:16.0),
+        elevation: 12,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+            bottomLeft: Radius.circular(16),
+            bottomRight: Radius.circular(16),
+          ),
+        ),
+        child: Container(
+            width: 156,
+            height: 154,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
+              ),
+              color: Color.fromRGBO(255, 209, 150, 0.800000011920929),
+            ),
+            child: InkWell(
+              borderRadius: _borderRadius,
+              highlightColor: color,
+              splashColor: color,
+              // We can use either the () => function() or the () { function(); }
+              // syntax.
+              // TODO onTap: () => _navigateToConverter(context),
+              child: Column(children: [
+                SizedBox(height: 16.0),
+                Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/images/Ellipse11.png'),
+                          fit: BoxFit.fitWidth),
+                      borderRadius: BorderRadius.all(Radius.elliptical(36, 36)),
+                    )),
+                SizedBox(height: 10.0),
+                Text(
+                  doctorName,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Color.fromRGBO(0, 0, 0, 1),
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      height: 1),
+                ),
+                SizedBox(height: 16.0),
+                Text(
+                  'Availability:',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Color.fromRGBO(0, 0, 0, 0.5),
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      letterSpacing:
+                          0 /*percentages not used in flutter. defaulting to zero*/,
+                      fontWeight: FontWeight.normal,
+                      height: 1),
+                ),
+                Text(
+                  date,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Color.fromRGBO(0, 0, 0, 1),
+                      fontSize: 14,
+                      letterSpacing:
+                          0 /*percentages not used in flutter. defaulting to zero*/,
+                      fontWeight: FontWeight.normal,
+                      height: 1.1428571428571428),
+                )
+              ]),
+            )),
+      ),
+    ));
+  }
+}
+
+class DoctorsList extends StatelessWidget {
+  const DoctorsList();
+
+  // Dummy data
+  static const _doctorNames = <String>[
+    'Dr. Paul',
+    'Dr. James',
+    'Dr. Rachel',
+    'Dr. Amaka',
+    'Dr. Tosin',
+  ];
+
+  static const _baseColors = <Color>[
+    Colors.teal,
+    Colors.orange,
+    Colors.pinkAccent,
+    Colors.blueAccent,
+    Colors.yellow,
+    Colors.greenAccent,
+    Colors.purpleAccent,
+    Colors.red,
+  ];
+
+  /// Makes the correct number of rows for the list view.
+  ///
+  /// For portrait, we use a [ListView].
+  Widget _buildCategoryWidgets(List<Widget> categories) {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (BuildContext context, int index) => categories[index],
+      itemCount: categories.length,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final categories = <DoctorsListItem>[];
+    // TODO USE CORRECT DATA
+    for (var i = 0; i < _doctorNames.length; i++) {
+      categories.add(DoctorsListItem(
+        doctorName: _doctorNames[i],
+        iconLocation: Icons.cake,
+        date: 'Tue, 26 May at 9:30',
+        color: _baseColors[i],
+      ));
+    }
+
+    final listView = Container(
+      height: 200.0,
+      //color: _backgroundColor,
+      //padding: EdgeInsets.symmetric(horizontal: 8.0),
+      child: _buildCategoryWidgets(categories),
+    );
+
+    return listView;
   }
 }
