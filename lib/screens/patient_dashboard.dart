@@ -22,9 +22,7 @@ class PatientDashboard extends StatefulWidget {
 class _PatientDashboardState extends State<PatientDashboard> {
   @override
   Widget build(BuildContext context) {
-    User user = Provider
-        .of<UserProvider>(context)
-        .user;
+    User user = Provider.of<UserProvider>(context).user;
     var as = user.firstname;
     print('widg: $as');
     return Scaffold(
@@ -42,10 +40,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         backgroundColor: Color(0xffF8B25A),
                       ),
                       SizedBox(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width / 1.5,
+                        width: MediaQuery.of(context).size.width / 1.5,
                       ),
                       // IconButton(
                       //   icon: Icon(
@@ -149,7 +144,6 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     child: Row(
                       children: [
                         GestureDetector(
-
                           onTap: () {
                             _move();
                           },
@@ -239,10 +233,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     ],
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height / 20,
+                    height: MediaQuery.of(context).size.height / 20,
                   ),
                   DoctorsList(),
                   /*SingleChildScrollView(

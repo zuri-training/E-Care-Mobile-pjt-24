@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "462086685763",
+    "project_id": "e-care-ec2e2",
+    "storage_bucket": "e-care-ec2e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462086685763:android:24e0b63cb547f3e29740f6",
+        "android_client_info": {
+          "package_name": "zuritraining.pjt24.e_care_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "462086685763-fa9un3egqficukuh2tng8ogd65rh36k1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "zuritraining.pjt24.e_care_mobile",
+            "certificate_hash": "828e8ea980a16ba370f45a4ec628717440423215"
+          }
+        },
+        {
+          "client_id": "462086685763-2nnn3ubv7iac5mjfi9d3j54j6jjoifff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxajtYic-3Utnt-8WQOy5CbTc2TJfzDNs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "462086685763-2nnn3ubv7iac5mjfi9d3j54j6jjoifff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
