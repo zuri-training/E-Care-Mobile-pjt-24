@@ -11,12 +11,12 @@ class ConversationList extends StatefulWidget {
   final bool isMessageRead;
 
   ConversationList(
-      {@required this.name,
-      @required this.messageText,
-      @required this.imageUrl,
-      @required this.time,
-      @required this.isMessageRead,
-      @required this.messageCount});
+      { this.name,
+       this.messageText,
+       this.imageUrl,
+       this.time,
+       this.isMessageRead,
+       this.messageCount});
 
   @override
   _ConversationListState createState() => _ConversationListState();

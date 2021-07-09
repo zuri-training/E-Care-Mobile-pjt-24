@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'models/chatMessageModel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_care_mobile/providers/user_provider.dart';
+import 'package:provider/provider.dart';
+
+final _firestore = FirebaseFirestore.instance;
 
 class ChatDetailPage extends StatefulWidget {
   @override
@@ -9,6 +14,8 @@ class ChatDetailPage extends StatefulWidget {
 }
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
+  final messageTextController = TextEditingController();
+  String messageText;
   /// list of messages to display in chat screen
   List<ChatMessage> messages = [
     ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
@@ -21,8 +28,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         messageContent: "Is there any thing wrong?", messageType: "sender"),
   ];
 
-  @override
+   @override
   Widget build(BuildContext context) {
+    UserProvider userDat = Provider.of<UserProvider>(context);
+    //var as = user.firstname;
+    var loggedInUserEmail = userDat.user.email;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -87,6 +97,42 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         padding: const EdgeInsets.all(8.0),
         child: Stack(
           children: <Widget>[
+            StreamBuilder<QuerySnapshot>(
+        stream: _firestore.collection('messages').snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.lightBlueAccent,
+                ),
+              );
+            }
+            final messages = snapshot.data.docs;
+            List<MessageBubble> messageBubbles = [];
+            for (var message in messages) {
+              final messageText = message.get('text');
+              final messageSender = message.get('sender');
+              final currentUser = loggedInUserEmail;
+
+              final messageBubble = MessageBubble(
+                sender: messageSender,
+                text: messageText,
+                isMe: currentUser == messageSender,
+              );
+              messageBubbles.add(messageBubble);
+            }
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 14, right: 14, top: 14, bottom: 35),
+                child: ListView(
+                  reverse: true,
+                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+                  children: messageBubbles,
+                ),
+              ),
+            );
+          }
+      ),
             /*Container(
                 width: 336,
                 height: 32,
@@ -149,36 +195,36 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     ]
                 )
             ),*/
-            ListView.builder(
-              itemCount: messages.length,
-              shrinkWrap: true,
-              padding: EdgeInsets.only(top: 10, bottom: 10),
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Container(
-                  padding:
-                      EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
-                  child: Align(
-                    alignment: (messages[index].messageType == "receiver"
-                        ? Alignment.topLeft
-                        : Alignment.topRight),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: (messages[index].messageType == "receiver"
-                            ? Colors.grey.shade200
-                            : HexColor("#FFE5C4")),
-                      ),
-                      padding: EdgeInsets.all(16),
-                      child: Text(
-                        messages[index].messageContent,
-                        style: TextStyle(fontSize: 15),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+            // ListView.builder(
+            //   itemCount: messages.length,
+            //   shrinkWrap: true,
+            //   padding: EdgeInsets.only(top: 10, bottom: 10),
+            //   physics: NeverScrollableScrollPhysics(),
+            //   itemBuilder: (context, index) {
+            //     return Container(
+            //       padding:
+            //           EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
+            //       child: Align(
+            //         alignment: (messages[index].messageType == "receiver"
+            //             ? Alignment.topLeft
+            //             : Alignment.topRight),
+            //         child: Container(
+            //           decoration: BoxDecoration(
+            //             borderRadius: BorderRadius.circular(20),
+            //             color: (messages[index].messageType == "receiver"
+            //                 ? Colors.grey.shade200
+            //                 : HexColor("#FFE5C4")),
+            //           ),
+            //           padding: EdgeInsets.all(16),
+            //           child: Text(
+            //             messages[index].messageContent,
+            //             style: TextStyle(fontSize: 15),
+            //           ),
+            //         ),
+            //       ),
+            //     );
+            //   },
+            // ),
             /*Align(
               alignment: Alignment.bottomCenter,
               child: ListView.builder(
@@ -348,6 +394,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     ),
                     Expanded(
                       child: TextField(
+                        controller: messageTextController,
+                        onChanged: (value){
+                          messageText = value;
+                        },
                         decoration: InputDecoration(
                             hintText: "Write message...",
                             hintStyle: TextStyle(color: Colors.black54),
@@ -358,7 +408,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       width: 15,
                     ),
                     FloatingActionButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        messageTextController.clear();
+                        _firestore.collection('messages').add({
+                          'sender': loggedInUserEmail,
+                          'text': messageText,
+                        });
+                      },
                       child: Icon(
                         Icons.send,
                         color: Colors.white,
@@ -373,6 +429,42 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+
+
+class MessageBubble extends StatelessWidget {
+  MessageBubble({this.sender, this.text, this.isMe});
+
+  final String sender;
+  final String text;
+  final bool isMe;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Material(
+            borderRadius: BorderRadius.circular(20.0),
+            elevation: 5.0,
+            color: isMe ? HexColor("#FFE5C4") : Colors.grey.shade200,
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                '$text',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15.0,
+                ),
+              ),
+            )
+          ),
+        ],
       ),
     );
   }
