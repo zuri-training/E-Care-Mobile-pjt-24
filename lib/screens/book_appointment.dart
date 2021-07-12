@@ -3,6 +3,7 @@ import 'package:e_care_mobile/database/book.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/allappointments.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
+import 'package:e_care_mobile/util/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -78,7 +79,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                       width: MediaQuery.of(context).size.width / 1.2,
                       child: Card(
                         elevation: 10,
-                        color: Color(0xff6305B1),
+                        color: lightgreen,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -291,21 +292,24 @@ class _BookAppointmentState extends State<BookAppointment> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(22),
                           ),
-                          primary: Color(0xff6305B1),
+                          primary: lightgreen,
                         ),
                         onPressed: () async {
-                          await Book().bookAppt(
-                              userid,
-                              _selectedDate.toString(),
-                              _selectedDoctors.toString(),
-                              reasonController.text);
+                          await Book()
+                              .bookAppt(
+                                  userid,
+                                  _selectedDate.toString(),
+                                  _selectedDoctors.toString(),
+                                  reasonController.text)
+                              .then((value) => CircularProgressIndicator());
+
+                          CircularProgressIndicator();
 
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              backgroundColor: Color.fromRGBO(99, 5, 177, 1),
                               content: Text(
-                                'we will get back to you shortly!',
-                                style: TextStyle(fontSize: 22),
-                              )));
+                            'we will get back to you shortly!',
+                            style: TextStyle(fontSize: 22),
+                          )));
 
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => PatientDashboard()));
