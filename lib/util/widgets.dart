@@ -1,6 +1,10 @@
 import 'package:delayed_display/delayed_display.dart';
+
 import 'package:e_care_mobile/providers/auth.dart';
 import 'package:e_care_mobile/util/colors.dart';
+
+import 'package:e_care_mobile/animation/infinite_animation.dart';
+import 'package:e_care_mobile/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -130,6 +134,7 @@ Widget onComplete(String info, IconData iconData, Color color, heightValue,
                 style: TextStyle(color: HexColor('#4BA54D'), fontSize: 20),
               ),
             ),
+
           ),
         ),
         Expanded(
@@ -139,6 +144,17 @@ Widget onComplete(String info, IconData iconData, Color color, heightValue,
                 delay: Duration(seconds: 3), child: loadingSpinner(40.0, 2.0)),
           ),
         ),
+
+          ),
+        ),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(bottom: 8.0),
+            child: DelayedDisplay(
+                delay: Duration(seconds: 3), child: loadingSpinner(40.0, 2.0)),
+          ),
+        ),
+
       ],
     ),
     /*child: Stack(
@@ -229,6 +245,15 @@ Padding textHeaders(String title) {
     padding: const EdgeInsets.only(bottom: 8.0),
     child: Text(title,
         style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500)),
+  );
+}
+
+
+InfiniteAnimation loadingIndicator() {
+  return InfiniteAnimation(
+    durationInSeconds: 2, //
+    child: SvgPicture.asset('assets/images/loader.svg',
+        height: 50, width: 50, semanticsLabel: 'ellipse27'),
   );
 }
 
