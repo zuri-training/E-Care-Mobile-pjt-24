@@ -1,8 +1,10 @@
 import 'dart:ui';
 
+import 'package:e_care_mobile/Authentication/error_handler.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/userData/user.dart';
+import 'package:e_care_mobile/util/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
@@ -50,7 +52,9 @@ class _LoginState extends State<Login> {
   // TODO CHANGE TO PROVIDER
   // Hide password
   bool _obscureText = true;
+  double heightValue = 120;
 
+  // TODO DISPOSE CONTROLLERS
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
@@ -59,28 +63,48 @@ class _LoginState extends State<Login> {
         body: Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      child: AnimatedSwitcher(
-        duration: const Duration(seconds: 1),
-        child: auth.loggedInStatus == Status.Authenticating
-            ? Center(child: CircularProgressIndicator())
-            : auth.loggedInStatus == Status.LoggedIn
-                ? Center(
-                    child: onComplete("Login Success", Icons.check_circle,
-                        Colors.green.shade700))
-                : auth.loggedInStatus == Status.Error
-                    ? Form(
-                        // TODO SOLVE THIS
-                        key: formKey,
-                        autovalidateMode: auth.autoValidate
-                            ? AutovalidateMode.always
-                            : AutovalidateMode.disabled,
-                        child: _buildLoginForm(context))
-                    : Form(
-                        key: formKey,
-                        autovalidateMode: auth.autoValidate
-                            ? AutovalidateMode.always
-                            : AutovalidateMode.disabled,
-                        child: _buildLoginForm(context)),
+      child: Stack(
+        children: [
+          Opacity(
+            opacity: auth.loggedInStatus == Status.Authenticating ||
+                    auth.loggedInStatus == Status.LoggedIn
+                ? 0.4
+                : 1,
+            child: AbsorbPointer(
+                absorbing: auth.loggedInStatus == Status.Authenticating ||
+                    auth.loggedInStatus == Status.LoggedIn,
+                child: Form(
+                    key: formKey,
+                    autovalidateMode: auth.autoValidate
+                        ? AutovalidateMode.always
+                        : AutovalidateMode.disabled,
+                    child: _buildLoginForm(context))),
+          ),
+          Opacity(
+            opacity: 1,
+            child: AnimatedSwitcher(
+                duration: const Duration(seconds: 1),
+                child: auth.loggedInStatus == Status.Authenticating
+                    ? Center(child: loadingSpinner(48.0, 2.0))
+                    : auth.loggedInStatus == Status.LoggedIn
+                        ? Center(
+                            child: onComplete(
+                                "Login Success",
+                                Icons.check_circle,
+                                Colors.green.shade700,
+                                heightValue,
+                                context))
+                        /*: auth.loggedInStatus == Status.Error
+                        ? Form(
+                            // TODO SOLVE THIS
+                            key: formKey,
+                            autovalidateMode: auth.autoValidate
+                                ? AutovalidateMode.always
+                                : AutovalidateMode.disabled,
+                            child: _buildLoginForm(context))*/
+                        : null),
+          )
+        ],
       ),
     ));
   }
@@ -110,8 +134,14 @@ class _LoginState extends State<Login> {
         // true
         User user = response['user'];
         Provider.of<UserProvider>(context, listen: false).setUser(user);
-        Future.delayed(Duration(milliseconds: 4000)).then(
+        Future.delayed(Duration(milliseconds: 6000)).then(
             (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
+        Future.delayed(Duration(seconds: 1), () {
+          setState(() {
+            heightValue = 200.0;
+            //bottom = 100;
+          });
+        });
         /*Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
                 builder: (BuildContext context) => PatientDashboard(user: response['user'],)),
@@ -120,13 +150,15 @@ class _LoginState extends State<Login> {
       } else {
         // false
         print('response');
+        // Error Alert dialog
+        ErrorHandler().errorDialog(context, auth.failure.toString());
         // Snackbar to display error message
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: const Duration(seconds: 5),
           content: Text(auth.failure.toString()),
         ));
         Future.delayed(Duration(milliseconds: 4000))
-            .then((value) => auth.delayLogin());
+            .then((value) => auth.delayLogin());*/
       }
     };
     // Stay logged in
@@ -147,12 +179,13 @@ class _LoginState extends State<Login> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24.0, 24, 24.0, 24.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(height: 32.0),
-          Center(
-            child: Text('Sign In',
-                textAlign: TextAlign.start,
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 56)),
-          ),
+          SizedBox(height: 60.0),
+          Text('Welcome back',
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 36,
+                  color: lightgreen)),
           SizedBox(height: 60.0),
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
@@ -164,16 +197,17 @@ class _LoginState extends State<Login> {
               //height: _textFieldHeight,
               decoration: boxDecoration(),
               child: Theme(
-                data: Theme.of(context).copyWith(primaryColor: _purple),
+                data: Theme.of(context).copyWith(primaryColor: lightgreen),
                 child: TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: buildDecoration(_purple, _textFieldBorderWidth,
+                  textInputAction: TextInputAction.next,
+                  decoration: buildDecoration(lightgreen, _textFieldBorderWidth,
                       _textSize, Icons.email, 'myemail@gmail.com', false),
                   validator: (value) => validateEmail(value),
                   textAlign: TextAlign.start,
                   maxLines: 1,
-                  maxLength: 30,
+                  maxLength: 40,
                 ),
               )),
           SizedBox(height: 25.0),
@@ -187,9 +221,11 @@ class _LoginState extends State<Login> {
             //height: _textFieldHeight,
             decoration: boxDecoration(),
             child: Theme(
-              data: Theme.of(context).copyWith(primaryColor: _purple),
+              data: Theme.of(context).copyWith(primaryColor: lightgreen),
               child: TextFormField(
                 controller: _passwordController,
+                keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.done,
                 obscureText: _obscureText,
                 enableSuggestions: false,
                 autocorrect: false,
@@ -230,7 +266,7 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.all(0.0),
               child: Checkbox(
                   checkColor: Colors.white,
-                  activeColor: _purple,
+                  activeColor: lightgreen,
                   value: auth.stayLogged,
                   onChanged: (bool newValue) {
                     stayLogged(newValue);
@@ -241,8 +277,18 @@ class _LoginState extends State<Login> {
                   style: TextStyle(
                       fontSize: _textSize,
                       fontWeight: FontWeight.w500,
-                      color: _purple)),
+                      color: lightgreen)),
             ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ResetPassword()));
+              },
+              child: Text(
+                'forgot password',
+                style: TextStyle(color: black),
+              ),
+            )
           ]),
           SizedBox(height: 40.0),
           GestureDetector(
@@ -255,29 +301,7 @@ class _LoginState extends State<Login> {
               },
               child: signButton(
                   _textFieldHeight, _textFieldShadow, _textSize, 'SIGN IN')),
-          SizedBox(height: 30.0),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('Forgot Password?',
-                style: TextStyle(
-                  fontSize: _textSize,
-                )),
-            SizedBox(width: 5.0),
-            InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          child: ResetPassword(),
-                          duration: Duration(seconds: 3),
-                          type: PageTransitionType.bottomToTop));
-                },
-                child: Text('Here',
-                    style: TextStyle(
-                      color: _purple,
-                      fontSize: _textSize,
-                    )))
-          ]),
-          SizedBox(height: 20.0),
+          SizedBox(height: 25.0),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text('Do not have an account?',
                 style: TextStyle(
@@ -295,65 +319,13 @@ class _LoginState extends State<Login> {
                 },
                 child: Text('Sign up',
                     style: TextStyle(
-                      color: _purple,
+                      color: lightgreen,
                       fontSize: _textSize,
                     )))
           ])
         ]),
       ),
     );
-  }
-}
-
-class CurvePainter extends CustomPainter {
-  CurvePainter({@required this.figureHeight});
-
-  static const double _margin = 6;
-
-  final double figureHeight;
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint = Paint();
-    paint.color = Color.fromRGBO(99, 5, 177, 1); //Colors.green[800];
-    paint.style = PaintingStyle.fill; // Change this to fill
-    final colors = [HexColor("#4C15D3"), HexColor("#6305B1")];
-    final gradient = LinearGradient(
-        begin: Alignment(6.123234262925839e-17, 1),
-        end: Alignment(-1, 6.123234262925839e-17),
-        //stops: [0.0,0.2,0.3],
-        colors: [HexColor("#4C15D3"), HexColor("#6305B1")]);
-    paint
-      ..shader = gradient.createShader(Rect.fromCircle(
-        center: Offset(0, 2 * 5 / 7),
-        radius: 2 / 9,
-      ));
-    var path = Path();
-
-    path.moveTo(0, size.height * 0.125);
-    path.quadraticBezierTo(
-        size.width / 1.6, figureHeight, size.width, size.height * 0.0625);
-    path.lineTo(size.width, 0);
-    path.lineTo(0, 0);
-
-    canvas.drawPath(path, paint);
-
-    // draw text
-    final paragraphStyle = ParagraphStyle(textAlign: TextAlign.center);
-    final textStyle = TextStyle(
-        color: Colors.white, fontSize: 48, fontWeight: FontWeight.w700);
-    final paragraphBuilder = ParagraphBuilder(paragraphStyle)
-      ..pushStyle(textStyle.getTextStyle())
-      ..addText('Sign In');
-    final paragraph = paragraphBuilder.build()
-      ..layout(ParagraphConstraints(width: 250));
-    canvas.drawParagraph(
-        paragraph, Offset(paragraph.width * 2, paragraph.height));
-    print(size.height);
-  }
-
-  @override
-  bool shouldRepaint(CurvePainter oldDelegate) {
-    return false;
   }
 }
 

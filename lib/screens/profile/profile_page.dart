@@ -56,7 +56,7 @@ class ProfilePage extends StatelessWidget {
             Map<String, dynamic> data =
                 snapshot.data.data() as Map<String, dynamic>;
             TextEditingController fname =
-                TextEditingController(text: data['firstname']);
+                TextEditingController(text: data['firstName']);
             TextEditingController lname =
                 TextEditingController(text: data['surname']);
             TextEditingController dob =
@@ -67,6 +67,7 @@ class ProfilePage extends StatelessWidget {
                 TextEditingController(text: data['number']);
             TextEditingController gender =
                 TextEditingController(text: data['gender']);
+
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: ListView(

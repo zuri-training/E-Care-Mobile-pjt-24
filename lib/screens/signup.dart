@@ -1,5 +1,7 @@
+import 'package:e_care_mobile/Authentication/error_handler.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/userData/user.dart';
+import 'package:e_care_mobile/util/colors.dart';
 import 'package:e_care_mobile/util/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -78,9 +80,9 @@ class _SignupState extends State<Signup> {
   // TextEditingController Instances
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _patientFirstNameController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _patientSurnameController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -110,6 +112,7 @@ class _SignupState extends State<Signup> {
 
   // variable to store if password is visible or not
   bool _obscureText = true;
+  double heightValue = 120;
 
   @override
   void initState() {
@@ -136,32 +139,50 @@ class _SignupState extends State<Signup> {
         body: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            child: AnimatedSwitcher(
-                duration: const Duration(seconds: 1),
-                child: auth.registeredInStatus == Status.Registering
-                    ? Center(child: CircularProgressIndicator())
-                    : auth.registeredInStatus == Status.Registered
-                    ? Center(
-                    child: onComplete("SignUp Success",
-                        Icons.check_circle, Colors.green.shade700))
-                    : auth.registeredInStatus == Status.Error
-                    ? /*Form(
-                                key: formKey,
-                                autovalidateMode:
-                                    auth.autoValidate //_autoValidate
-                                        ? AutovalidateMode.always
-                                        : AutovalidateMode.disabled,
-                                child: _buildSignupForm(context))*/
-                Center(
-                    child: onFailure(auth.failure.toString(),
-                        Icons.cancel, Colors.red.shade700))
-                    : Form(
-                    key: formKey,
-                    autovalidateMode:
-                    auth.autoValidate //_autoValidate
-                        ? AutovalidateMode.always
-                        : AutovalidateMode.disabled,
-                    child: _buildSignupForm(context)))));
+            child: Stack(
+              children: [
+                Opacity(
+                  opacity: auth.loggedInStatus == Status.Authenticating ||
+                          auth.loggedInStatus == Status.LoggedIn
+                      ? 0.4
+                      : 1,
+                  child: AbsorbPointer(
+                    absorbing: auth.loggedInStatus == Status.Authenticating ||
+                        auth.loggedInStatus == Status.LoggedIn,
+                    child: Form(
+                        key: formKey,
+                        autovalidateMode: auth.autoValidate //_autoValidate
+                            ? AutovalidateMode.always
+                            : AutovalidateMode.disabled,
+                        child: _buildSignupForm(context)),
+                  ),
+                ),
+                AnimatedSwitcher(
+                  duration: const Duration(seconds: 1),
+                  child: auth.registeredInStatus == Status.Registering
+                      ? Center(child: loadingSpinner(48.0, 2.0))
+                      : auth.registeredInStatus == Status.Registered
+                          ? Center(
+                              child: onComplete(
+                                  "SignUp Success",
+                                  Icons.check_circle,
+                                  Colors.green.shade700,
+                                  heightValue))
+                          /*: auth.registeredInStatus == Status.Error
+                      ? Center(
+                      child: onFailure(auth.failure.toString(),
+                          Icons.cancel, Colors.red.shade700))*/
+                          : /*Form(
+                      key: formKey,
+                      autovalidateMode:
+                      auth.autoValidate //_autoValidate
+                          ? AutovalidateMode.always
+                          : AutovalidateMode.disabled,
+                      child: _buildSignupForm(context))*/
+                          null,
+                )
+              ],
+            )));
   }
 
   _buildSignupForm(BuildContext context) {
@@ -193,15 +214,23 @@ class _SignupState extends State<Signup> {
         Future.delayed(Duration.zero, () async {
           Provider.of<UserProvider>(context, listen: false).setUser(user);
         });
-        Future.delayed(Duration(milliseconds: 4000)).then(
+        Future.delayed(Duration(milliseconds: 6000)).then(
             (value) => Navigator.pushReplacementNamed(context, '/otpForm'));
+        Future.delayed(Duration(seconds: 1), () {
+          setState(() {
+            heightValue = 200.0;
+            //bottom = 100;
+          });
+        });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        // Error Alert dialog
+        ErrorHandler().errorDialog(context, auth.failure.toString());
+        /*ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: const Duration(seconds: 5),
           content: Text(auth.failure.toString()),
         ));
         Future.delayed(Duration(milliseconds: 4000)).then(
-                (value) => auth.delay());
+                (value) => auth.delay());*/
       }
     };
     return SingleChildScrollView(
@@ -214,11 +243,12 @@ class _SignupState extends State<Signup> {
         padding: const EdgeInsets.fromLTRB(24.0, 24, 24.0, 24.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(height: 32.0),
-          Center(
-            child: Text('Sign Up',
-                textAlign: TextAlign.start,
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 56)),
-          ),
+          Text('Sign Up',
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                  color: lightgreen,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 40)),
           SizedBox(height: 40.0),
           textHeaders('First Name'),
           textSection('e.g Amaks', _patientFirstNameController, 'First name'),
@@ -251,7 +281,7 @@ class _SignupState extends State<Signup> {
                           fontFamily: 'Inter',
                           fontSize: 16,
                           letterSpacing:
-                          0 /*percentages not used in flutter. defaulting to zero*/,
+                              0 /*percentages not used in flutter. defaulting to zero*/,
                           fontWeight: FontWeight.w500,
                           height: 1),
                     ),
@@ -264,57 +294,57 @@ class _SignupState extends State<Signup> {
                             child: DropdownButton<String>(
                               hint: _isFileUploaded
                                   ? Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(4),
-                                      topRight: Radius.circular(4),
-                                      bottomLeft: Radius.circular(4),
-                                      bottomRight: Radius.circular(4),
-                                    ),
-                                    color:
-                                    Color.fromRGBO(206, 205, 205, 1)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text('Change Photo',
-                                      //textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Color.fromRGBO(
-                                              23, 43, 77, 1),
-                                          fontFamily: 'Poppins',
-                                          fontSize: 14,
-                                          letterSpacing:
-                                          0 /*percentages not used in flutter. defaulting to zero*/,
-                                          fontWeight: FontWeight.normal,
-                                          height: 1)),
-                                ),
-                              )
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(4),
+                                            topRight: Radius.circular(4),
+                                            bottomLeft: Radius.circular(4),
+                                            bottomRight: Radius.circular(4),
+                                          ),
+                                          color:
+                                              Color.fromRGBO(206, 205, 205, 1)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text('Change Photo',
+                                            //textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    23, 43, 77, 1),
+                                                fontFamily: 'Poppins',
+                                                fontSize: 14,
+                                                letterSpacing:
+                                                    0 /*percentages not used in flutter. defaulting to zero*/,
+                                                fontWeight: FontWeight.normal,
+                                                height: 1)),
+                                      ),
+                                    )
                                   : Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(4),
-                                      topRight: Radius.circular(4),
-                                      bottomLeft: Radius.circular(4),
-                                      bottomRight: Radius.circular(4),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(4),
+                                            topRight: Radius.circular(4),
+                                            bottomLeft: Radius.circular(4),
+                                            bottomRight: Radius.circular(4),
+                                          ),
+                                          color:
+                                              Color.fromRGBO(206, 205, 205, 1)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'Choose a photo',
+                                          //textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color:
+                                                  Color.fromRGBO(23, 43, 77, 1),
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                              letterSpacing:
+                                                  0 /*percentages not used in flutter. defaulting to zero*/,
+                                              fontWeight: FontWeight.normal,
+                                              height: 1),
+                                        ),
+                                      ),
                                     ),
-                                    color:
-                                    Color.fromRGBO(206, 205, 205, 1)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Choose a photo',
-                                    //textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color:
-                                        Color.fromRGBO(23, 43, 77, 1),
-                                        fontFamily: 'Poppins',
-                                        fontSize: 14,
-                                        letterSpacing:
-                                        0 /*percentages not used in flutter. defaulting to zero*/,
-                                        fontWeight: FontWeight.normal,
-                                        height: 1),
-                                  ),
-                                ),
-                              ),
                               iconSize: 0,
                               isExpanded: true,
                               elevation: 16,
@@ -365,16 +395,16 @@ class _SignupState extends State<Signup> {
               ),
               _isFileUploaded
                   ? Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: CircleAvatar(
-                  backgroundImage: FileImage(_image),
-                  backgroundColor: Colors.transparent,
-                  radius: 64,
-                ),
-              )
+                      padding: const EdgeInsets.all(16.0),
+                      child: CircleAvatar(
+                        backgroundImage: FileImage(_image),
+                        backgroundColor: Colors.transparent,
+                        radius: 64,
+                      ),
+                    )
                   : SizedBox(
-                height: 0,
-              )
+                      height: 0,
+                    )
             ],
           ),
           SizedBox(height: _isFileUploaded ? 30.0 : 48.0),
@@ -399,11 +429,11 @@ class _SignupState extends State<Signup> {
                           offset: Offset(0, 4),
                           blurRadius: 4)
                     ],
-                    color: Color.fromRGBO(99, 5, 177, 1),
-                    gradient: LinearGradient(
-                        begin: Alignment(6.123234262925839e-17, 1),
-                        end: Alignment(-1, 6.123234262925839e-17),
-                        colors: [HexColor("#4C15D3"), HexColor("#6305B1")]),
+                    color: lightgreen,
+                    // gradient: LinearGradient(
+                    //     begin: Alignment(6.123234262925839e-17, 1),
+                    //     end: Alignment(-1, 6.123234262925839e-17),
+                    //     colors: [HexColor("#4C15D3"), HexColor("#6305B1")]),
                   ),
                   child: Center(
                       child: Text('SIGN UP',
@@ -429,7 +459,7 @@ class _SignupState extends State<Signup> {
                 },
                 child: Text('Sign in',
                     style: TextStyle(
-                      color: _purple,
+                      color: lightgreen,
                       fontSize: _textSize,
                       //decoration: TextDecoration.underline
                     )))
@@ -440,22 +470,24 @@ class _SignupState extends State<Signup> {
   }
 
   // Container for patient's full name
-  Container textSection(String hintText, TextEditingController controller, String title) {
+  Container textSection(
+      String hintText, TextEditingController controller, String title) {
     return Container(
         decoration: boxDecoration(),
         child: Align(
           alignment: Alignment.centerLeft,
           child: Theme(
-            data: Theme.of(context).copyWith(primaryColor: _purple),
+            data: Theme.of(context).copyWith(primaryColor: lightgreen),
             child: TextFormField(
               controller: controller,
               keyboardType: TextInputType.name,
-              decoration: buildDecoration(_purple, _textFieldBorderWidth,
+              textInputAction: TextInputAction.next,
+              decoration: buildDecoration(lightgreen, _textFieldBorderWidth,
                   _textSize, Icons.person, hintText, false),
               validator: (value) =>
-              value.isNotEmpty && value.contains(new RegExp(r'^[a-zA-Z]+$'))
-                  ? null
-                  : '$title is required',
+                  value.isNotEmpty && value.contains(new RegExp(r'^[a-zA-Z]+$'))
+                      ? null
+                      : '$title is required',
               /*value.isEmpty ? 'Name is required' : value.contains(
                   new RegExp(r'^[a-zA-Z\-\s]+$')) ? null : "Enter a valid name",*/
               textAlign: TextAlign.start,
@@ -478,6 +510,7 @@ class _SignupState extends State<Signup> {
             child: TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
               decoration: buildDecoration(_purple, _textFieldBorderWidth,
                   _textSize, Icons.email, 'myemail@gmail.com', false),
               validator: (value) => validateEmail(value),
@@ -497,6 +530,7 @@ class _SignupState extends State<Signup> {
       decoration: boxDecoration(),
       child: TextFormField(
         controller: _passwordController,
+        textInputAction: TextInputAction.done,
         obscureText: _obscureText,
         enableSuggestions: false,
         autocorrect: false,
@@ -524,8 +558,8 @@ class _SignupState extends State<Signup> {
         validator: (value) => value.isEmpty
             ? 'Password is required'
             : value.length < 6
-            ? 'Password must be at least 6 characters'
-            : null,
+                ? 'Password must be at least 6 characters'
+                : null,
         textAlign: TextAlign.start,
         maxLines: 1,
         maxLength: 20,
@@ -537,14 +571,16 @@ class _SignupState extends State<Signup> {
   // Container for date field
   Container dateField() {
     return Container(
-      //height: _textFieldHeight,
+        //height: _textFieldHeight,
         width: MediaQuery.of(context).size.width,
         decoration: boxDecoration(),
         child: Align(
           alignment: Alignment.centerLeft,
           child: TextFormField(
-            focusNode: AlwaysDisabledFocusNode(),
+            //focusNode: AlwaysDisabledFocusNode(),
             controller: _dateController,
+            keyboardType: TextInputType.datetime,
+            textInputAction: TextInputAction.next,
             decoration: buildDecoration(_purple, _textFieldBorderWidth,
                 _textSize, Icons.date_range, 'e.g 2021-June-19', false),
             onTap: () {
@@ -554,7 +590,7 @@ class _SignupState extends State<Signup> {
               this._dob = value as DateTime;
             },
             validator: (value) =>
-            value.isEmpty ? 'Date of Birth is required' : null,
+                value.isEmpty ? 'Date of Birth is required' : null,
             textAlign: TextAlign.start,
             maxLines: 1,
             maxLength: 20,
@@ -569,11 +605,11 @@ class _SignupState extends State<Signup> {
         showTitleActions: true,
         minTime: DateTime(1900, 1, 1),
         maxTime: DateTime.now(), onChanged: (date) {
-          print('change $date');
-        }, onConfirm: (date) {
-          _dob = date;
-          print('confirm $date');
-        }, currentTime: DateTime.now(), locale: LocaleType.en);
+      print('change $date');
+    }, onConfirm: (date) {
+      _dob = date;
+      print('confirm $date');
+    }, currentTime: DateTime.now(), locale: LocaleType.en);
 
     print(newSelectedDate);
     if (newSelectedDate != null) {
