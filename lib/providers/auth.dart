@@ -243,15 +243,14 @@ class AuthProvider with ChangeNotifier {
         // save using shared prefs
         UserPreferences().saveUser(authUser);
       }
-
+      result = {'status': true, 'message': 'Successful', 'user': authUser};
       // Change login status to logged in
       _loggedInStatus = Status.LoggedIn;
       //_state = Status.Completed;
-
       // Notify Listeners
       notifyListeners();
-      //print(responseJson);
-      result = {'status': true, 'message': 'Successful', 'user': authUser};
+
+
       return result;
     } on AppException catch (e) {
       _setFailure(e);
@@ -451,6 +450,7 @@ class AuthProvider with ChangeNotifier {
       // Notify Listeners
       notifyListeners();
     }
+    return result;
   }
 
   Future<Map<String, dynamic>> changePassword(

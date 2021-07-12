@@ -45,6 +45,8 @@ dependencies:
   google_sign_in: ^5.0.4
   cloud_firestore: ^2.3.0
   firebase_dynamic_links: ^2.0.6
+  url_launcher: ^6.0.9
+  lottie: ^1.1.0
 
 
 dev_dependencies:
@@ -60,6 +62,9 @@ flutter:
  
   assets:
     - assets/images/
+    - assets/lottie/
+    - assets/lottie/onComplete.json
+    - assets/lottie/on_complete.json
 
 
 
