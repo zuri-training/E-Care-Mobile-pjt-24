@@ -2,12 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_care_mobile/chat/chart_page.dart';
 import 'package:e_care_mobile/medical/view_medical_advice.dart';
 import 'package:e_care_mobile/screens/allappointments.dart';
+import 'package:e_care_mobile/screens/availabledocs.dart';
 import 'package:e_care_mobile/screens/book_appointment.dart';
+import 'package:e_care_mobile/screens/healtharticle.dart';
 import 'package:e_care_mobile/screens/profile/profile_page.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:e_care_mobile/userData/user.dart';
 import 'package:e_care_mobile/util/colors.dart';
 import 'package:e_care_mobile/util/shared_preference.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -38,301 +41,303 @@ class _PatientDashboardState extends State<PatientDashboard> {
     var userFirstname = userDat.user.firstname;
     print('widg: $userFirstname');
     return Scaffold(
-      body: FutureBuilder(
-        future: doc,
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text("Something went wrong");
-          }
+      body: SingleChildScrollView(
+        child: FutureBuilder(
+          future: doc,
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text("Something went wrong");
+            }
 
-          if (snapshot.hasData && !snapshot.data.exists) {
-            return Text("Document does not exist");
-          }
+            if (snapshot.hasData && !snapshot.data.exists) {
+              return Text("Document does not exist");
+            }
 
-          if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data.data() as Map<String, dynamic>;
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SafeArea(
-                child: Container(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16, top: 24, bottom: 16),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: Color(0xffF8B25A),
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 1.5,
-                            ),
-                            // IconButton(
-                            //   icon: Icon(
-                            //     Icons.menu,
-                            //     size: MediaQuery.of(context).size.width / 10,
-                            //   ),
-                            //   onPressed: () {
-                            //
-                            //   },
-                            // ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 20,
-                        ),
-                        Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: 5,
+            if (snapshot.connectionState == ConnectionState.done) {
+              Map<String, dynamic> data =
+                  snapshot.data.data() as Map<String, dynamic>;
+              return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SafeArea(
+                  child: Container(
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(left: 16, top: 24, bottom: 16),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Color(0xffF8B25A),
                               ),
-                            ),
-                            Text(
-                              'Hello,',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w300,
-                                color: black,
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 1.5,
                               ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              data['firstname'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                                color: black,
+                              // IconButton(
+                              //   icon: Icon(
+                              //     Icons.menu,
+                              //     size: MediaQuery.of(context).size.width / 10,
+                              //   ),
+                              //   onPressed: () {
+                              //
+                              //   },
+                              // ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 20,
+                          ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  left: 5,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 20,
-                        ),
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 30),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height / 14,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(40),
-                                    ),
-                                    prefixIcon: Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 1,
+                              Text(
+                                'Hello,',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w300,
+                                  color: black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                '${data['firstName']}!',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30,
+                                  color: black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 20,
+                          ),
+                          HealthArticles(),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 20,
+                          ),
+                          Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 30, left: 10),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height / 14,
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(40),
                                       ),
-                                      child: Icon(
-                                        Icons.search_sharp,
-                                        size: 27,
-                                        color: Colors.black,
+                                      prefixIcon: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 1,
+                                        ),
+                                        child: Icon(
+                                          Icons.search_sharp,
+                                          size: 27,
+                                          color: lightgreen,
+                                        ),
                                       ),
-                                    ),
-                                    contentPadding: EdgeInsets.all(10.0),
-                                    hintText: 'search your symptoms..',
-                                    hintStyle: TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 20,
+                                      contentPadding: EdgeInsets.all(10.0),
+                                      hintText: 'How can i help you?',
+                                      hintStyle: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 20,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 12,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'How can we help you?',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 20,
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
+                            ],
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 12,
+                          ),
+                          Row(
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  _move();
-                                },
-                                child: card('Book an Appointment',
-                                    CarbonIcons.reminder_medical),
-                              ),
-                              /*GestureDetector(
-                            child: helpbuilder(
-                              context,
-                              IconButton(
-                                icon: Icon(
-                                  CarbonIcons.reminder_medical,
-                                  size: 40,
-                                ),
-                                onPressed: _move,
-                                color: Color(0xff6305B1),
-                              ),
                               Text(
-                                'Book an',
+                                'What do you need?',
                                 style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                              ),
-                              Text(
-                                'Appointment',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ),
-                          ),*/
-                              SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  _requestmedic();
-                                },
-                                child:
-                                    card('Request Medical Advice', Icons.chat),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          ViewMedicalAdvice()));
-                                },
-                                child: card('View Medical Advice',
-                                    FontAwesomeIcons.fileMedical),
                               ),
                             ],
                           ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 20,
+                          ),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    _move();
+                                  },
+                                  child: card('Book an Appointment',
+                                      CarbonIcons.reminder_medical),
+                                ),
+                                /*GestureDetector(
+                              child: helpbuilder(
+                                context,
+                                IconButton(
+                                  icon: Icon(
+                                    CarbonIcons.reminder_medical,
+                                    size: 40,
+                                  ),
+                                  onPressed: _move,
+                                  color: Color(0xff6305B1),
+                                ),
+                                Text(
+                                  'Book an',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                Text(
+                                  'Appointment',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ),*/
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    _requestmedic();
+                                  },
+                                  child: card(
+                                      'Request Medical Advice', Icons.chat),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ViewMedicalAdvice()));
+                                  },
+                                  child: card('View Medical Advice',
+                                      FontAwesomeIcons.calendar),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 15,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Available Doctors',
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 20,
+                          ),
+                          AvailableDocs(),
+
+                          /*SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
                           children: [
-                            Expanded(
-                              child: Text(
-                                'Top Doctors',
+                            doctorsbuilder(
+                              context,
+                              Text(
+                                'Dr. Paul',
                                 style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'Availability :',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              Text(
+                                'Tue, 28 May at 9:30',
+                                style: TextStyle(
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            Expanded(
-                              child: TextButton(
-                                onPressed: () {},
-                                child: Text(
-                                  'See all',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black,
-                                  ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 40,
+                            ),
+                            doctorsbuilder(
+                              context,
+                              Text(
+                                'Dr. Racheal',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'Availability :',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              Text(
+                                'Wed, 14 July at 12:15',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 20,
-                        ),
-                        DoctorsList(),
-                        /*SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          doctorsbuilder(
-                            context,
-                            Text(
-                              'Dr. Paul',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              'Availability :',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                            Text(
-                              'Tue, 28 May at 9:30',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 40,
-                          ),
-                          doctorsbuilder(
-                            context,
-                            Text(
-                              'Dr. Racheal',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              'Availability :',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                            Text(
-                              'Wed, 14 July at 12:15',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+                      ),*/
                         ],
                       ),
-                    ),*/
-                      ],
                     ),
                   ),
                 ),
-              ),
-            );
-          }
+              );
+            }
 
-          return Center(child: CircularProgressIndicator());
-        },
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 300),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          },
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -355,7 +360,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
               child: Icon(
                 CarbonIcons.home,
                 color: Colors.white,
-                size: 24,
+                size: 30,
               ),
             ),
           ),
@@ -369,9 +374,9 @@ class _PatientDashboardState extends State<PatientDashboard> {
               child: Container(
                 padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                 child: Icon(
-                  CarbonIcons.chat_bot,
+                  CupertinoIcons.chat_bubble,
                   color: Colors.white,
-                  size: 24,
+                  size: 30,
                 ),
               ),
             ),
@@ -391,7 +396,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                 child: Icon(
                   CarbonIcons.settings,
                   color: Colors.white,
-                  size: 24,
+                  size: 30,
                 ),
               ),
             ),
@@ -579,7 +584,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
 
   void _move() {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => AllAppointments()));
+        .push(MaterialPageRoute(builder: (context) => BookAppointment()));
   }
 
   void _requestmedic() {
@@ -740,7 +745,7 @@ class DoctorsList extends StatelessWidget {
   /// For portrait, we use a [ListView].
   Widget _buildCategoryWidgets(List<Widget> categories) {
     return ListView.builder(
-      scrollDirection: Axis.horizontal,
+      scrollDirection: Axis.vertical,
       itemBuilder: (BuildContext context, int index) => categories[index],
       itemCount: categories.length,
     );

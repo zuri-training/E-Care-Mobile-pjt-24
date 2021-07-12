@@ -12,7 +12,7 @@ class UserProfile {
     _db
         .doc(_id)
         .set({
-          'firstname': firstname,
+          'firstName': firstname,
           'surname': surname,
           'gender': gender,
           'location': location,

@@ -33,7 +33,7 @@ class _AllAppointmentsState extends State<AllAppointments> {
         builder:
             // ignore: missing_return
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.hasError) {
+          if (!snapshot.hasData) {
             return SnackBar(content: Text('No Appointments to Load'));
           }
 

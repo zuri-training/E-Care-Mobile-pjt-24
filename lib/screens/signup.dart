@@ -1,6 +1,7 @@
 import 'package:e_care_mobile/Authentication/error_handler.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/userData/user.dart';
+import 'package:e_care_mobile/util/colors.dart';
 import 'package:e_care_mobile/util/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -242,11 +243,12 @@ class _SignupState extends State<Signup> {
         padding: const EdgeInsets.fromLTRB(24.0, 24, 24.0, 24.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(height: 32.0),
-          Center(
-            child: Text('Sign Up',
-                textAlign: TextAlign.start,
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 56)),
-          ),
+          Text('Sign Up',
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                  color: lightgreen,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 40)),
           SizedBox(height: 40.0),
           textHeaders('First Name'),
           textSection('e.g Amaks', _patientFirstNameController, 'First name'),
@@ -427,11 +429,11 @@ class _SignupState extends State<Signup> {
                           offset: Offset(0, 4),
                           blurRadius: 4)
                     ],
-                    color: Color.fromRGBO(99, 5, 177, 1),
-                    gradient: LinearGradient(
-                        begin: Alignment(6.123234262925839e-17, 1),
-                        end: Alignment(-1, 6.123234262925839e-17),
-                        colors: [HexColor("#4C15D3"), HexColor("#6305B1")]),
+                    color: lightgreen,
+                    // gradient: LinearGradient(
+                    //     begin: Alignment(6.123234262925839e-17, 1),
+                    //     end: Alignment(-1, 6.123234262925839e-17),
+                    //     colors: [HexColor("#4C15D3"), HexColor("#6305B1")]),
                   ),
                   child: Center(
                       child: Text('SIGN UP',
@@ -457,7 +459,7 @@ class _SignupState extends State<Signup> {
                 },
                 child: Text('Sign in',
                     style: TextStyle(
-                      color: _purple,
+                      color: lightgreen,
                       fontSize: _textSize,
                       //decoration: TextDecoration.underline
                     )))
@@ -475,12 +477,16 @@ class _SignupState extends State<Signup> {
         child: Align(
           alignment: Alignment.centerLeft,
           child: Theme(
-            data: Theme.of(context).copyWith(primaryColor: _purple),
+            data: Theme.of(context).copyWith(primaryColor: lightgreen),
             child: TextFormField(
               controller: controller,
               keyboardType: TextInputType.name,
               textInputAction: TextInputAction.next,
+
+              decoration: buildDecoration(lightgreen, _textFieldBorderWidth,
+
               decoration: buildDecoration(_purple, _textFieldBorderWidth,
+
                   _textSize, Icons.person, hintText, false),
               validator: (value) =>
                   value.isNotEmpty && value.contains(new RegExp(r'^[a-zA-Z]+$'))
@@ -569,7 +575,7 @@ class _SignupState extends State<Signup> {
   // Container for date field
   Container dateField() {
     return Container(
-      //height: _textFieldHeight,
+        //height: _textFieldHeight,
         width: MediaQuery.of(context).size.width,
         decoration: boxDecoration(),
         child: Align(

@@ -4,6 +4,7 @@ import 'package:e_care_mobile/Authentication/error_handler.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/userData/user.dart';
+import 'package:e_care_mobile/util/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
@@ -137,8 +138,12 @@ class _LoginState extends State<Login> {
         User user = response['user'];
         Provider.of<UserProvider>(context, listen: false).setUser(user);
         Future.delayed(Duration(milliseconds: 6000)).then(
+
+            (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
+
                 (value) =>
                 Navigator.pushReplacementNamed(context, '/dashboard'));
+
         Future.delayed(Duration(seconds: 1), () {
           setState(() {
             heightValue = 200.0;
@@ -182,12 +187,13 @@ class _LoginState extends State<Login> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24.0, 24, 24.0, 24.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(height: 32.0),
-          Center(
-            child: Text('Sign In',
-                textAlign: TextAlign.start,
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 56)),
-          ),
+          SizedBox(height: 60.0),
+          Text('Welcome back',
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 36,
+                  color: lightgreen)),
           SizedBox(height: 60.0),
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
@@ -199,17 +205,21 @@ class _LoginState extends State<Login> {
               //height: _textFieldHeight,
               decoration: boxDecoration(),
               child: Theme(
-                data: Theme.of(context).copyWith(primaryColor: _purple),
+                data: Theme.of(context).copyWith(primaryColor: lightgreen),
                 child: TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
+
+                  decoration: buildDecoration(lightgreen, _textFieldBorderWidth,
+
                   decoration: buildDecoration(_purple, _textFieldBorderWidth,
+
                       _textSize, Icons.email, 'myemail@gmail.com', false),
                   validator: (value) => validateEmail(value),
                   textAlign: TextAlign.start,
                   maxLines: 1,
-                  maxLength: 30,
+                  maxLength: 40,
                 ),
               )),
           SizedBox(height: 25.0),
@@ -223,7 +233,7 @@ class _LoginState extends State<Login> {
             //height: _textFieldHeight,
             decoration: boxDecoration(),
             child: Theme(
-              data: Theme.of(context).copyWith(primaryColor: _purple),
+              data: Theme.of(context).copyWith(primaryColor: lightgreen),
               child: TextFormField(
                 controller: _passwordController,
                 keyboardType: TextInputType.visiblePassword,
@@ -268,7 +278,7 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.all(0.0),
               child: Checkbox(
                   checkColor: Colors.white,
-                  activeColor: _purple,
+                  activeColor: lightgreen,
                   value: auth.stayLogged,
                   onChanged: (bool newValue) {
                     stayLogged(newValue);
@@ -279,8 +289,18 @@ class _LoginState extends State<Login> {
                   style: TextStyle(
                       fontSize: _textSize,
                       fontWeight: FontWeight.w500,
-                      color: _purple)),
+                      color: lightgreen)),
             ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ResetPassword()));
+              },
+              child: Text(
+                'forgot password',
+                style: TextStyle(color: black),
+              ),
+            )
           ]),
           SizedBox(height: 40.0),
           GestureDetector(
@@ -293,29 +313,7 @@ class _LoginState extends State<Login> {
               },
               child: signButton(
                   _textFieldHeight, _textFieldShadow, _textSize, 'SIGN IN')),
-          SizedBox(height: 30.0),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('Forgot Password?',
-                style: TextStyle(
-                  fontSize: _textSize,
-                )),
-            SizedBox(width: 5.0),
-            InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          child: ResetPassword(),
-                          duration: Duration(seconds: 3),
-                          type: PageTransitionType.bottomToTop));
-                },
-                child: Text('Here',
-                    style: TextStyle(
-                      color: _purple,
-                      fontSize: _textSize,
-                    )))
-          ]),
-          SizedBox(height: 20.0),
+          SizedBox(height: 25.0),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text('Do not have an account?',
                 style: TextStyle(
@@ -333,7 +331,7 @@ class _LoginState extends State<Login> {
                 },
                 child: Text('Sign up',
                     style: TextStyle(
-                      color: _purple,
+                      color: lightgreen,
                       fontSize: _textSize,
                     )))
           ])

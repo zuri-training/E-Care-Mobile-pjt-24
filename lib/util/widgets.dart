@@ -1,4 +1,8 @@
 import 'package:delayed_display/delayed_display.dart';
+
+import 'package:e_care_mobile/providers/auth.dart';
+import 'package:e_care_mobile/util/colors.dart';
+
 import 'package:e_care_mobile/animation/infinite_animation.dart';
 import 'package:e_care_mobile/providers/auth.dart';
 import 'package:flutter/material.dart';
@@ -31,21 +35,21 @@ InputDecoration buildDecoration(Color _purple, double _textFieldBorderWidth,
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
         borderSide: BorderSide(
-            color: _purple,
+            color: lightgreen,
             style: BorderStyle.solid,
             width: _textFieldBorderWidth)),
     focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
         borderSide: BorderSide(
-            color: _purple,
+            color: lightgreen,
             style: BorderStyle.solid,
             width: _textFieldBorderWidth)),
     enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
         borderSide: BorderSide(
-            color: _purple,
+            color: lightgreen,
             style: BorderStyle.solid,
             width: _textFieldBorderWidth)),
   );
@@ -66,11 +70,11 @@ Container signButton(double _textFieldHeight, Color _textFieldShadow,
           BoxShadow(
               color: _textFieldShadow, offset: Offset(0, 4), blurRadius: 4)
         ],
-        color: Color.fromRGBO(99, 5, 177, 1),
-        gradient: LinearGradient(
-            begin: Alignment(6.123234262925839e-17, 1),
-            end: Alignment(-1, 6.123234262925839e-17),
-            colors: [HexColor("#4C15D3"), HexColor("#6305B1")]),
+        color: lightgreen,
+        // gradient: LinearGradient(
+        //     begin: Alignment(6.123234262925839e-17, 1),
+        //     end: Alignment(-1, 6.123234262925839e-17),
+        //     colors: [HexColor("#4C15D3"), HexColor("#6305B1")]),
       ),
       child: Center(
           child: Text(text,
@@ -130,6 +134,7 @@ Widget onComplete(String info, IconData iconData, Color color, heightValue,
                 style: TextStyle(color: HexColor('#4BA54D'), fontSize: 20),
               ),
             ),
+
           ),
         ),
         Expanded(
@@ -139,6 +144,17 @@ Widget onComplete(String info, IconData iconData, Color color, heightValue,
                 delay: Duration(seconds: 3), child: loadingSpinner(40.0, 2.0)),
           ),
         ),
+
+          ),
+        ),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(bottom: 8.0),
+            child: DelayedDisplay(
+                delay: Duration(seconds: 3), child: loadingSpinner(40.0, 2.0)),
+          ),
+        ),
+
       ],
     ),
     /*child: Stack(
@@ -231,6 +247,7 @@ Padding textHeaders(String title) {
         style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500)),
   );
 }
+
 
 InfiniteAnimation loadingIndicator() {
   return InfiniteAnimation(

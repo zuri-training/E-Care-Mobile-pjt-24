@@ -20,7 +20,7 @@ class EditProfile extends StatelessWidget {
     UserProvider userDat = Provider.of<UserProvider>(context);
     var userid = userDat.user.patientId;
     TextEditingController fname =
-        TextEditingController(text: datas['firstname']);
+        TextEditingController(text: datas['firstName']);
     TextEditingController lname = TextEditingController(text: datas['surname']);
     TextEditingController dob = TextEditingController(text: datas['dob']);
     TextEditingController location =
@@ -28,6 +28,7 @@ class EditProfile extends StatelessWidget {
     TextEditingController nextofkin =
         TextEditingController(text: datas['number']);
     TextEditingController gender = TextEditingController(text: datas['gender']);
+    TextEditingController email = TextEditingController(text: datas['gender']);
     return Scaffold(
       appBar: buildAppBarTwo(context),
       body: Padding(
@@ -102,8 +103,14 @@ class EditProfile extends StatelessWidget {
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () async {
-                await UserProfile().updateUserProfile(userid, fname.text,
-                    lname.text, gender.text, location.text, nextofkin.text);
+                await UserProfile().updateUserProfile(
+                  userid,
+                  fname.text,
+                  lname.text,
+                  gender.text,
+                  location.text,
+                  nextofkin.text,
+                );
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Your Profile has been updated')));
                 Navigator.of(context).push(MaterialPageRoute(
