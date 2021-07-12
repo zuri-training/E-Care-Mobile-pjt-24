@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:e_care_mobile/Authentication/error_handler.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/userData/user.dart';
@@ -50,7 +51,9 @@ class _LoginState extends State<Login> {
   // TODO CHANGE TO PROVIDER
   // Hide password
   bool _obscureText = true;
+  double heightValue = 120;
 
+  // TODO DISPOSE CONTROLLERS
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
@@ -59,28 +62,48 @@ class _LoginState extends State<Login> {
         body: Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      child: AnimatedSwitcher(
-        duration: const Duration(seconds: 1),
-        child: auth.loggedInStatus == Status.Authenticating
-            ? Center(child: CircularProgressIndicator())
-            : auth.loggedInStatus == Status.LoggedIn
-                ? Center(
-                    child: onComplete("Login Success", Icons.check_circle,
-                        Colors.green.shade700))
-                : auth.loggedInStatus == Status.Error
-                    ? Form(
-                        // TODO SOLVE THIS
-                        key: formKey,
-                        autovalidateMode: auth.autoValidate
-                            ? AutovalidateMode.always
-                            : AutovalidateMode.disabled,
-                        child: _buildLoginForm(context))
-                    : Form(
-                        key: formKey,
-                        autovalidateMode: auth.autoValidate
-                            ? AutovalidateMode.always
-                            : AutovalidateMode.disabled,
-                        child: _buildLoginForm(context)),
+      child: Stack(
+        children: [
+          Opacity(
+            opacity: auth.loggedInStatus == Status.Authenticating ||
+                    auth.loggedInStatus == Status.LoggedIn
+                ? 0.4
+                : 1,
+            child: AbsorbPointer(
+                absorbing: auth.loggedInStatus == Status.Authenticating ||
+                    auth.loggedInStatus == Status.LoggedIn,
+                child: Form(
+                    key: formKey,
+                    autovalidateMode: auth.autoValidate
+                        ? AutovalidateMode.always
+                        : AutovalidateMode.disabled,
+                    child: _buildLoginForm(context))),
+          ),
+          Opacity(
+            opacity: 1,
+            child: AnimatedSwitcher(
+                duration: const Duration(seconds: 1),
+                child: auth.loggedInStatus == Status.Authenticating
+                    ? Center(child: loadingSpinner(48.0, 2.0))
+                    : auth.loggedInStatus == Status.LoggedIn
+                        ? Center(
+                            child: onComplete(
+                                "Login Success",
+                                Icons.check_circle,
+                                Colors.green.shade700,
+                                heightValue,
+                                context))
+                        /*: auth.loggedInStatus == Status.Error
+                        ? Form(
+                            // TODO SOLVE THIS
+                            key: formKey,
+                            autovalidateMode: auth.autoValidate
+                                ? AutovalidateMode.always
+                                : AutovalidateMode.disabled,
+                            child: _buildLoginForm(context))*/
+                        : null),
+          )
+        ],
       ),
     ));
   }
@@ -103,16 +126,22 @@ class _LoginState extends State<Login> {
     // Login
     var login = () async {
       // Login Request
-      final response = await auth.signIn(
-        _emailController.text,
-        _passwordController.text);
+      final response =
+      await auth.signIn(_emailController.text, _passwordController.text);
       // Check if there's response
       if (response != null) {
         // true
         User user = response['user'];
         Provider.of<UserProvider>(context, listen: false).setUser(user);
-        Future.delayed(Duration(milliseconds: 4000)).then(
-            (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
+        Future.delayed(Duration(milliseconds: 6000)).then(
+                (value) =>
+                Navigator.pushReplacementNamed(context, '/dashboard'));
+        Future.delayed(Duration(seconds: 1), () {
+          setState(() {
+            heightValue = 200.0;
+            //bottom = 100;
+          });
+        });
         /*Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
                 builder: (BuildContext context) => PatientDashboard(user: response['user'],)),
@@ -121,13 +150,15 @@ class _LoginState extends State<Login> {
       } else {
         // false
         print('response');
+        // Error Alert dialog
+        ErrorHandler().errorDialog(context, auth.failure.toString());
         // Snackbar to display error message
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: const Duration(seconds: 5),
           content: Text(auth.failure.toString()),
         ));
         Future.delayed(Duration(milliseconds: 4000))
-            .then((value) => auth.delayLogin());
+            .then((value) => auth.delayLogin());*/
       }
     };
     // Stay logged in
@@ -169,6 +200,7 @@ class _LoginState extends State<Login> {
                 child: TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
                   decoration: buildDecoration(_purple, _textFieldBorderWidth,
                       _textSize, Icons.email, 'myemail@gmail.com', false),
                   validator: (value) => validateEmail(value),
@@ -191,6 +223,8 @@ class _LoginState extends State<Login> {
               data: Theme.of(context).copyWith(primaryColor: _purple),
               child: TextFormField(
                 controller: _passwordController,
+                keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.done,
                 obscureText: _obscureText,
                 enableSuggestions: false,
                 autocorrect: false,
@@ -303,58 +337,6 @@ class _LoginState extends State<Login> {
         ]),
       ),
     );
-  }
-}
-
-class CurvePainter extends CustomPainter {
-  CurvePainter({@required this.figureHeight});
-
-  static const double _margin = 6;
-
-  final double figureHeight;
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint = Paint();
-    paint.color = Color.fromRGBO(99, 5, 177, 1); //Colors.green[800];
-    paint.style = PaintingStyle.fill; // Change this to fill
-    final colors = [HexColor("#4C15D3"), HexColor("#6305B1")];
-    final gradient = LinearGradient(
-        begin: Alignment(6.123234262925839e-17, 1),
-        end: Alignment(-1, 6.123234262925839e-17),
-        //stops: [0.0,0.2,0.3],
-        colors: [HexColor("#4C15D3"), HexColor("#6305B1")]);
-    paint
-      ..shader = gradient.createShader(Rect.fromCircle(
-        center: Offset(0, 2 * 5 / 7),
-        radius: 2 / 9,
-      ));
-    var path = Path();
-
-    path.moveTo(0, size.height * 0.125);
-    path.quadraticBezierTo(
-        size.width / 1.6, figureHeight, size.width, size.height * 0.0625);
-    path.lineTo(size.width, 0);
-    path.lineTo(0, 0);
-
-    canvas.drawPath(path, paint);
-
-    // draw text
-    final paragraphStyle = ParagraphStyle(textAlign: TextAlign.center);
-    final textStyle = TextStyle(
-        color: Colors.white, fontSize: 48, fontWeight: FontWeight.w700);
-    final paragraphBuilder = ParagraphBuilder(paragraphStyle)
-      ..pushStyle(textStyle.getTextStyle())
-      ..addText('Sign In');
-    final paragraph = paragraphBuilder.build()
-      ..layout(ParagraphConstraints(width: 250));
-    canvas.drawParagraph(
-        paragraph, Offset(paragraph.width * 2, paragraph.height));
-    print(size.height);
-  }
-
-  @override
-  bool shouldRepaint(CurvePainter oldDelegate) {
-    return false;
   }
 }
 

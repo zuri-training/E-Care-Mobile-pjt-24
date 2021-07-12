@@ -1,0 +1,14 @@
+<svg fill="none" preserveAspectRatio="x400Y400 meet" viewBox="0 0 200 200"
+    xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear" x1="-12" x2="100" y1="14"
+            y2="414">
+            <stop stop-color="#E1CB54" />
+            <stop offset="1" stop-color="#E1CB54" stop-opacity="0" />
+        </linearGradient>
+    </defs>
+    <path
+        d="M200 100C200 155.228 155.228 200 100 200C44.7715 200 0 155.228 0 100C0 44.7715 44.7715 0 100 0C155.228 0 200 44.7715 200 100ZM10 100C10 149.706 50.2944 190 100 190C149.706 190 190 149.706 190 100C190 50.2944 149.706 10 100 10C50.2944 10 10 50.2944 10 100Z"
+        fill="url(#paint0_linear)" />
+
+</svg>

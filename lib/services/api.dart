@@ -225,7 +225,8 @@ class AuthService {
     try {
       var response = await http
           .get(
-            Uri.parse(url),
+            Uri.parse(
+                'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/patient-forgot-password/$email'),
           )
           .timeout(Duration(seconds: 30));
       return _returnResponse(response);
@@ -262,7 +263,7 @@ class AuthService {
               Uri.parse(
                   'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/login'),
               body: data)
-          .timeout(Duration(seconds: 30));
+          .timeout(Duration(seconds: 60));
       var res = response.body;
       print('ddasd; $res');
       //return response?.body;
@@ -272,29 +273,6 @@ class AuthService {
     } on TimeoutException {
       throw TimeException();
     }
-    /*Map data = {
-      'email': email,
-      'password': password
-    };
-    var response = await http.post(
-      Uri.parse(ApiUrl.login),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'email': email,
-        'password': password,
-      }),
-    );
-    if (response.statusCode == 201) {
-      // If the server did return a 201 CREATED response,
-      // then parse the JSON.
-      return json.decode(response?.body);
-    } else {
-      // If the server did not return a 201 CREATED response,
-      // then throw an exception.
-      throw Exception('Failed to create album.');
-    }*/
   }
 
   dynamic _returnResponse(http.Response response) {
@@ -335,7 +313,7 @@ class AuthService {
               Uri.parse(
                   'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/create'),
               body: data)
-          .timeout(Duration(seconds: 30));
+          .timeout(Duration(seconds: 60));
 
       // TODO Implement _returnResponse for register
       return _returnResponse(response);
@@ -356,6 +334,8 @@ class AuthService {
       });
     } on FirebaseException catch (e) {
       throw FireStoreException(e.message);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
     }
   }
 
@@ -367,7 +347,7 @@ class AuthService {
               'https://harvest-rigorous-bambiraptor.glitch.me/api/v1/patient/get-patient/single'),
           headers: {
             'Authorization': 'Bearer $token',
-          }).timeout(Duration(seconds: 30));
+          }).timeout(Duration(seconds: 60));
       var res = response.body;
       print('api: $res');
       return _returnResponse(response);
