@@ -103,9 +103,8 @@ class _LoginState extends State<Login> {
     // Login
     var login = () async {
       // Login Request
-      final response = await auth.signIn(
-        _emailController.text,
-        _passwordController.text);
+      final response =
+          await auth.signIn(_emailController.text, _passwordController.text);
       // Check if there's response
       if (response != null) {
         // true
@@ -162,7 +161,7 @@ class _LoginState extends State<Login> {
                     fontSize: _textSize, fontWeight: FontWeight.w500)),
           ),
           Container(
-            //height: _textFieldHeight,
+              //height: _textFieldHeight,
               decoration: boxDecoration(),
               child: Theme(
                 data: Theme.of(context).copyWith(primaryColor: _purple),
@@ -174,7 +173,7 @@ class _LoginState extends State<Login> {
                   validator: (value) => validateEmail(value),
                   textAlign: TextAlign.start,
                   maxLines: 1,
-                  maxLength: 20,
+                  maxLength: 30,
                 ),
               )),
           SizedBox(height: 25.0),
