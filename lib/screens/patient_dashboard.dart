@@ -583,7 +583,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
   }
 
   void _requestmedic() {
-    //UserPreferences().removeUser();
+    UserPreferences().removeUser();
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => RequestMedicalAdvice()));
   }
