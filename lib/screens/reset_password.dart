@@ -291,7 +291,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (BuildContext context) => CheckYourEmail()),
-              (Route<dynamic> route) => false);
+          (Route<dynamic> route) => false);
     }
   }
 }
