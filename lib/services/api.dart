@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:e_care_mobile/models/healthmodel.dart';
 import 'package:e_care_mobile/screens/login.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:flutter/cupertino.dart';
@@ -336,6 +337,24 @@ class AuthService {
       throw FireStoreException(e.message);
     } on SocketException {
       throw FetchDataException('No Internet connection');
+    }
+  }
+
+  Future<List<Articles>> getHealthNews() async {
+    try {
+      final response = await http.get(Uri.parse(
+          'https://newsapi.org/v2/top-headlines?country=ng&category=health&apiKey=88bda9e925a348e482f080af0c244bec'));
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        return HealthNews.fromJson(json).articles;
+      } else if (response.statusCode != 200) {
+        throw Exception('please check url');
+      }
+    } on SocketException {
+      throw Exception("you're not connected to the internet");
+    } catch (e) {
+      throw Exception("An unknown error has occured");
     }
   }
 

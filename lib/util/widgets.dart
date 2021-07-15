@@ -1,6 +1,7 @@
 import 'package:delayed_display/delayed_display.dart';
 import 'package:e_care_mobile/providers/auth.dart';
 import 'package:e_care_mobile/util/colors.dart';
+import 'package:e_care_mobile/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -94,34 +95,34 @@ BoxDecoration boxDecoration() {
 Widget onComplete(String info, IconData iconData, Color color, heightValue,
     [context]) {
   return AnimatedContainer(
-    duration: const Duration(milliseconds: 600),
-    height: heightValue,
-    width: heightValue,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8.0),
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          blurRadius: 2.0,
-          spreadRadius: 0.0,
-          offset: Offset(2.0, 2.0), // shadow direction: bottom right
-        )
-      ],
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Lottie.asset(
-          'assets/lottie/on_complete.json',
-          width: 112,
-          height: 112,
-          repeat: false,
-          fit: BoxFit.fill,
-        ),
-        Expanded(
-          child: Container(
+      duration: const Duration(milliseconds: 600),
+      height: heightValue,
+      width: heightValue,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            blurRadius: 2.0,
+            spreadRadius: 0.0,
+            offset: Offset(2.0, 2.0), // shadow direction: bottom right
+          )
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Lottie.asset(
+            'assets/lottie/on_complete.json',
+            width: 112,
+            height: 112,
+            repeat: false,
+            fit: BoxFit.fill,
+          ),
+          Expanded(
+              child: Container(
             child: DelayedDisplay(
               delay: Duration(seconds: 1),
               child: Text(
@@ -130,86 +131,27 @@ Widget onComplete(String info, IconData iconData, Color color, heightValue,
                 style: TextStyle(color: HexColor('#4BA54D'), fontSize: 20),
               ),
             ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            margin: EdgeInsets.only(bottom: 8.0),
-            child: DelayedDisplay(
-                delay: Duration(seconds: 3), child: loadingSpinner(40.0, 2.0)),
-          ),
-        ),
-      ],
-    ),
-    /*child: Stack(
-      alignment: Alignment.center,
-      clipBehavior: Clip.none,
-      children: <Widget>[
-        Positioned(
-          bottom: bottom,
-        child:Lottie.asset(
-          'assets/lottie/on_complete.json',
-          width: 120,
-          height: 120,
-          repeat: false,
-          fit: BoxFit.fill,
-        ),),
-    Positioned(
-      top: 150,
-      child: Center(
-        child: DelayedDisplay(
-            delay: Duration(seconds: 2), child: loadingSpinner(40.0, 2.0)),
-      ),
-    ),
-
-        Positioned(
-          top: 100,
-
-          child: DelayedDisplay(
-            delay: Duration(seconds: 1),
-            child: Text(
-              info,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: HexColor('#4BA54D'), fontSize: 20),
+          )),
+          SizedBox(height: 12),
+          ClipRect(
+            child: SizedBox(
+              //width: 150,
+              child: Opacity(
+                  opacity: 1,
+                  child: Text(
+                    info,
+                    textAlign: TextAlign.center,
+                  )),
             ),
           ),
-        ),
-      ],
-    ),*/
-  );
-}
-
-Widget onFailure(String info, IconData iconData, Color color) {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: <Widget>[
-      Icon(
-        iconData,
-        size: 88,
-        color: color,
-      ),
-      SizedBox(height: 12),
-      ClipRect(
-        child: SizedBox(
-          //width: 150,
-          child: Opacity(
-              opacity: 1,
-              child: Text(
-                info,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: color, fontSize: 24),
-              )),
-        ),
-      ),
-      /*SizedBox(height: 16),
+          /*SizedBox(height: 16),
       Text(
         'Try another email',
         textAlign: TextAlign.center,
         style: TextStyle(color: color, fontSize: 24),
       )*/
-    ],
-  );
+        ],
+      ));
 }
 
 //To Validate email

@@ -19,6 +19,8 @@ import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'articlescreen.dart';
+
 class PatientDashboard extends StatefulWidget {
   const PatientDashboard({Key key}) : super(key: key);
 

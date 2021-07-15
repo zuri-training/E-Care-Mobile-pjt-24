@@ -129,6 +129,8 @@ class _LoginState extends State<Login> {
       // Login Request
       final response =
           await auth.signIn(_emailController.text, _passwordController.text);
+      await auth.signIn(_emailController.text, _passwordController.text);
+
       // Check if there's response
       if (response != null) {
         // true
