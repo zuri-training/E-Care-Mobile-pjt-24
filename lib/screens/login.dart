@@ -308,7 +308,7 @@ class _LoginState extends State<Login> {
                       context,
                       PageTransition(
                           child: ResetPassword(),
-                          duration: Duration(seconds: 3),
+                          duration: Duration(seconds: 0),
                           type: PageTransitionType.bottomToTop));
                 },
                 child: Text('Here',

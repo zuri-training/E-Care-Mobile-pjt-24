@@ -4,7 +4,9 @@ import 'package:e_care_mobile/screens/profile/utils/user_pref.dart';
 import 'package:e_care_mobile/screens/profile/widgets/appbar_widget.dart';
 import 'package:e_care_mobile/screens/profile/widgets/button_widget.dart';
 import 'package:e_care_mobile/screens/profile/widgets/profile_widget.dart';
+import 'package:e_care_mobile/util/shared_preference.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../login.dart';
@@ -18,6 +20,9 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final patient = UserPref.patient;
+
+  // Colors
+  Color _green = HexColor("#4BA54D");
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
 Widget buildLogOut(BuildContext context) => ButtonWidget(
       text: 'Logout',
       onClicked: () async {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.remove('email');
+        UserPreferences().removeUser();
         Navigator.push(
             context, MaterialPageRoute(builder: (BuildContext ctx) => Login()));
       },

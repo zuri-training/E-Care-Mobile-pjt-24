@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/userData/user.dart';
+import 'package:e_care_mobile/util/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
@@ -113,7 +114,7 @@ class MainImage extends AnimatedWidget {
     return Transform.rotate(
       angle: animation.value,
       child: Scaffold(
-        backgroundColor: Color(0xff6305B1),
+        backgroundColor: lightgreen,
         body: Center(
           child: Image.asset('assets/images/splash.png'),
         ),

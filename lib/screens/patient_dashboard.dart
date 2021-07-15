@@ -31,12 +31,31 @@ class PatientDashboard extends StatefulWidget {
 }
 
 class _PatientDashboardState extends State<PatientDashboard> {
+  // Colors
+  Color _green = HexColor("#4BA54D");
+
   @override
   Widget build(BuildContext context) {
     UserProvider userDat = Provider.of<UserProvider>(context);
     //var as = user.firstname;
     var userFirstname = userDat.user.firstname;
-    print('widg: $userFirstname');
+    int _selectedIndex = 0;
+    void _onItemTapped(int index) {
+      setState(() {
+        _selectedIndex = index;
+      });
+      if (index == 0) {
+        /*Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => PatientDashboard()));*/
+      } else if (index == 1) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ChatPage()));
+      } else {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ProfilePage()));
+      }
+    }
+
     return Scaffold(
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -47,27 +66,27 @@ class _PatientDashboardState extends State<PatientDashboard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Color(0xffF8B25A),
-                      ),
-                      SizedBox(width: MediaQuery.of(context).size.width / 1.5),
-                      // IconButton(
-                      //   icon: Icon(
-                      //     Icons.menu,
-                      //     size: MediaQuery.of(context).size.width / 10,
-                      //   ),
-                      //   onPressed: () {
-                      //
-                      //   },
-                      // ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
+                  // Row(
+                  //   children: [
+                  //     CircleAvatar(
+                  //       radius: 30,
+                  //       backgroundColor: Color(0xffF8B25A),
+                  //     ),
+                  //     SizedBox(width: MediaQuery.of(context).size.width / 1.5),
+                  //     // IconButton(
+                  //     //   icon: Icon(
+                  //     //     Icons.menu,
+                  //     //     size: MediaQuery.of(context).size.width / 10,
+                  //     //   ),
+                  //     //   onPressed: () {
+                  //     //
+                  //     //   },
+                  //     // ),
+                  //   ],
+                  // ),
+                  // SizedBox(
+                  //   height: 30,
+                  // ),
                   Text(
                     'Hello,',
                     textAlign: TextAlign.start,
@@ -90,7 +109,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                   ),
                   SizedBox(height: 24),
                   HealthArticles(),
-                  SizedBox(height: 36),
+                  /*SizedBox(height: 36),
                   Container(
                     height: 40,
                     margin: EdgeInsets.only(right: 16.0),
@@ -131,7 +150,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                 height: 1),
                           )
                         ]),
-                  ),
+                  ),*/
                   SizedBox(height: 60),
                   Text(
                     'What do you need?',
@@ -205,8 +224,10 @@ class _PatientDashboardState extends State<PatientDashboard> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        onTap: _onItemTapped,
+        currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Color(0xff6305B1),
+        backgroundColor: _green,
         selectedLabelStyle: TextStyle(
           fontSize: 16,
         ),
@@ -231,45 +252,30 @@ class _PatientDashboardState extends State<PatientDashboard> {
           ),
           BottomNavigationBarItem(
             label: '',
-            icon: GestureDetector(
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => ChatPage()));
-              },
-              child: Container(
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                child: Icon(
-                  CarbonIcons.chat_bot,
-                  color: Colors.white,
-                  size: 24,
-                ),
+            icon: Container(
+              padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: Icon(
+                CarbonIcons.chat_bot,
+                color: Colors.white,
+                size: 24,
               ),
             ),
           ),
           BottomNavigationBarItem(
             label: '',
-            icon: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(),
-                  ),
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                child: Icon(
-                  CarbonIcons.settings,
-                  color: Colors.white,
-                  size: 24,
-                ),
+            icon: Container(
+              padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: Icon(
+                CarbonIcons.settings,
+                color: Colors.white,
+                size: 24,
               ),
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color.fromRGBO(99, 5, 177, 1),
+        backgroundColor: _green,
         child: Icon(
           Icons.chat,
         ),
@@ -321,7 +327,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                           fontFamily: 'Inter',
                           fontSize: 14,
                           letterSpacing:
-                              0 /*percentages not used in flutter. defaulting to zero*/,
+                          0 /*percentages not used in flutter. defaulting to zero*/,
                           fontWeight: FontWeight.normal,
                           height: 1.1428571428571428),
                     ),

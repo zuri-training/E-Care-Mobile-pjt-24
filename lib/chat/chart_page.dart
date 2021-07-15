@@ -1,14 +1,12 @@
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:e_care_mobile/chat/widgets/chat_page_body.dart';
-import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
+import 'package:e_care_mobile/screens/profile/profile_page.dart';
 import 'package:e_care_mobile/util/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'api/chat_api.dart';
-import 'models/chatUsersModel.dart';
 import 'models/convo.dart';
-import 'widgets/conversationList.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -16,37 +14,28 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  /*List<ChatUsers> chatUsers = [
-    //Placeholder values pending actual data
-    ChatUsers(
-        name: "Dr. Paul",
-        messageText: "Hello! How can i help you?",
-        imageURL: "assets/images/ellipse14.png",
-        time: "14:22",
-        messageCount: 2),
-    ChatUsers(
-        name: "Dr. Rachel",
-        messageText: "Thank you for visiting",
-        imageURL: "assets/images/ellipse14.png",
-        time: "14:22",
-        messageCount: 0),
-    ChatUsers(
-        name: "Dr. James",
-        messageText: "I have a bad headache",
-        imageURL: "assets/images/ellipse14.png",
-        time: "14:22",
-        messageCount: 1),
-    ChatUsers(
-        name: "Dr. Peter",
-        messageText: "What was your last meal?",
-        imageURL: "assets/images/ellipse14.png",
-        time: "14:22",
-        messageCount: 0),
-  ];*/
+// Colors
+  Color _green = HexColor("#4BA54D");
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userData = Provider.of<UserProvider>(context);
+    int _selectedIndex = 0;
+    void _onItemTapped(int index) {
+      setState(() {
+        _selectedIndex = index;
+      });
+      if (index == 0) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => PatientDashboard()));
+      } else if (index == 1) {
+        /*Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ChatPage()));*/
+      } else {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ProfilePage()));
+      }
+    }
+
     return Scaffold(
       body: StreamBuilder<List<Convo>>(
           stream: FirebaseApi.getUsers('60e714688bc25500be0dfa0c'),
@@ -75,8 +64,10 @@ class _ChatPageState extends State<ChatPage> {
             }
           }),
       bottomNavigationBar: BottomNavigationBar(
+        onTap: _onItemTapped,
+        currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Color(0xff6305B1),
+        backgroundColor: _green,
         selectedLabelStyle: TextStyle(
           fontSize: 16,
         ),
@@ -90,35 +81,23 @@ class _ChatPageState extends State<ChatPage> {
         items: [
           BottomNavigationBarItem(
             label: '',
-            icon: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PatientDashboard()));
-              },
-              child: Container(
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                child: Icon(
-                  CarbonIcons.home,
-                  color: Colors.white,
-                  size: MediaQuery.of(context).size.height / 20,
-                ),
+            icon: Container(
+              padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: Icon(
+                CarbonIcons.home,
+                color: Colors.white,
+                size: 24,
               ),
             ),
           ),
           BottomNavigationBarItem(
             label: '',
-            icon: GestureDetector(
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => ChatPage()));
-              },
-              child: Container(
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                child: Icon(
-                  CarbonIcons.chat_bot,
-                  color: Colors.white,
-                  size: MediaQuery.of(context).size.height / 20,
-                ),
+            icon: Container(
+              padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: Icon(
+                CarbonIcons.chat_bot,
+                color: Colors.white,
+                size: 24,
               ),
             ),
           ),
@@ -129,7 +108,7 @@ class _ChatPageState extends State<ChatPage> {
               child: Icon(
                 CarbonIcons.settings,
                 color: Colors.white,
-                size: MediaQuery.of(context).size.height / 20,
+                size: 24,
               ),
             ),
           ),

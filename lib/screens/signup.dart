@@ -432,7 +432,7 @@ class _SignupState extends State<Signup> {
                       context,
                       PageTransition(
                           child: Login(),
-                          duration: Duration(seconds: 3),
+                          duration: Duration(seconds: 0),
                           type: PageTransitionType.bottomToTop));
                 },
                 child: Text('Sign in',

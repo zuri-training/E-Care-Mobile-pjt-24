@@ -55,20 +55,6 @@ class _OnboardingState extends State<Onboarding> {
     super.dispose();
   }
 
-  checkLoginStatus() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString("token") == null) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => Login()),
-          (Route<dynamic> route) => false);
-    } else {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) => PatientDashboard()),
-          (Route<dynamic> route) => false);
-    }
-  }
-
   int currentIndex = 0;
   PageController _controller;
 
@@ -152,7 +138,7 @@ class _OnboardingState extends State<Onboarding> {
                 if (currentIndex == contents.length - 1) {
                   //AuthService().handleAuthStr();
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Signup()));
+                      .push(MaterialPageRoute(builder: (context) => Login()));
                   //checkLoginStatus();
                 }
                 _controller.nextPage(
