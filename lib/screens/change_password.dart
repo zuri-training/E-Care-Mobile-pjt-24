@@ -1,5 +1,6 @@
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({Key key}) : super(key: key);
@@ -9,6 +10,8 @@ class ChangePassword extends StatefulWidget {
 }
 
 class _ChangePasswordState extends State<ChangePassword> {
+  Color _green = HexColor("#4BA54D");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,10 +88,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                 children: [
                   Padding(
                       padding: EdgeInsets.only(
-                    left: 10,
-                    right: 20,
-                    top: 10,
-                  )),
+                        left: 10,
+                        right: 20,
+                        top: 10,
+                      )),
                   Flexible(
                     child: Text(
                       'Password',
@@ -124,16 +127,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                       decoration: InputDecoration(
                         hintText: 'Enter New Password',
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0xff6305B1), width: 1.0),
+                          borderSide: BorderSide(color: _green, width: 1.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0xff6305B1), width: 1.0),
+                          borderSide: BorderSide(color: _green, width: 1.0),
                         ),
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Color(0xff6305B1),
+                            color: _green,
                             width: 2,
                           ),
                         ),
@@ -150,10 +151,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                 children: [
                   Padding(
                       padding: EdgeInsets.only(
-                    left: 10,
-                    right: 20,
-                    top: 10,
-                  )),
+                        left: 10,
+                        right: 20,
+                        top: 10,
+                      )),
                   Flexible(
                     child: Text(
                       'Must at least be 8 characters.',
@@ -175,10 +176,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                 children: [
                   Padding(
                       padding: EdgeInsets.only(
-                    left: 10,
-                    right: 20,
-                    top: 10,
-                  )),
+                        left: 10,
+                        right: 20,
+                        top: 10,
+                      )),
                   Flexible(
                     child: Text(
                       'Confirm Password',
@@ -214,16 +215,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                       decoration: InputDecoration(
                         hintText: 'Confirm New Password',
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0xff6305B1), width: 1.0),
+                          borderSide: BorderSide(color: _green, width: 1.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0xff6305B1), width: 1.0),
+                          borderSide: BorderSide(color: _green, width: 1.0),
                         ),
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Color(0xff6305B1),
+                            color: _green,
                             width: 2,
                           ),
                         ),
@@ -240,10 +239,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                 children: [
                   Padding(
                       padding: EdgeInsets.only(
-                    left: 10,
-                    right: 20,
-                    top: 10,
-                  )),
+                        left: 10,
+                        right: 20,
+                        top: 10,
+                      )),
                   Flexible(
                     child: Text(
                       'Both passwords must match.',
@@ -273,7 +272,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        primary: Color(0xff6305B1),
+                        primary: _green,
                       ),
                       onPressed: () {},
                       child: Text(

@@ -114,12 +114,9 @@ class MainImage extends AnimatedWidget {
     return Transform.rotate(
       angle: animation.value,
       child: Scaffold(
-        backgroundColor: lemon,
-        body: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Center(
-            child: Image.asset('assets/images/Logo.png'),
-          ),
+        backgroundColor: lightgreen,
+        body: Center(
+          child: Image.asset('assets/images/splash.png'),
         ),
       ),
     );

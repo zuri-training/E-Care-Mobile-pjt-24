@@ -56,8 +56,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
-          ChangeNotifierProvider(create: (_) => UserProvider()),
-          // ChangeNotifierProvider(create: (_) => ChatProvider()),
+          ChangeNotifierProvider(create: (_) => UserProvider())
         ],
         child: MaterialApp(
             theme: ThemeData(
@@ -81,7 +80,7 @@ class MyApp extends StatelessWidget {
                         return Text('Error: ${snapshot.error}');
                       else
                         /*if (snapshot.data.token == null)*/
-                        return Login(); //SplashScreen(user: snapshot.data);
+                        return SplashScreen(user: snapshot.data);
                     /*else
                         UserPreferences().removeUser();
                       return PatientDashboard();*/

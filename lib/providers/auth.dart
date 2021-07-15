@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:e_care_mobile/Authentication/authentication.dart';
 import 'package:e_care_mobile/Authentication/error_handler.dart';
+import 'package:e_care_mobile/models/doctors._model.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/services/api.dart';
 import 'package:e_care_mobile/util/AppException.dart';
@@ -799,4 +800,16 @@ class AuthProvider with ChangeNotifier {
       }
 
   }*/
+  static Stream<List<Doctors>> getDoctors() {
+    return FirebaseFirestore.instance
+        .collection('doctors')
+        //.orderBy(UserField.lastMessageTime, descending: true)
+        //.orderBy('lastMessage.lastMessageTime', descending: true)
+        //.where('users', arrayContains: userId)
+        .snapshots()
+        //.transform(Utils.transformer(ChatUsers.fromJson));
+        .map((QuerySnapshot list) => list.docs
+            .map((DocumentSnapshot doc) => Doctors.fromFireStore(doc))
+            .toList());
+  }
 }

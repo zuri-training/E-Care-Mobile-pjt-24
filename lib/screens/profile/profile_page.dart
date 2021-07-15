@@ -1,174 +1,94 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:e_care_mobile/providers/user_provider.dart';
+import 'package:e_care_mobile/models/patient_profile.dart';
+import 'package:e_care_mobile/screens/profile/edit_profile.dart';
+import 'package:e_care_mobile/screens/profile/utils/user_pref.dart';
 import 'package:e_care_mobile/screens/profile/widgets/appbar_widget.dart';
-import 'package:e_care_mobile/util/colors.dart';
+import 'package:e_care_mobile/screens/profile/widgets/button_widget.dart';
+import 'package:e_care_mobile/screens/profile/widgets/profile_widget.dart';
+import 'package:e_care_mobile/util/shared_preference.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'edit_profile.dart';
-import 'widgets/profilehead.dart';
+import '../login.dart';
 
-class ProfilePage extends StatelessWidget {
-  final Map<String, dynamic> datas;
-  const ProfilePage({Key key, this.datas}) : super(key: key);
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key key}) : super(key: key);
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final patient = UserPref.patient;
+
+  // Colors
+  Color _green = HexColor("#4BA54D");
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userDat = Provider.of<UserProvider>(context);
-    var userid = userDat.user.patientId;
-
-    // Image variable
-    File _image;
-    final picker = ImagePicker();
-
-    String dropdownValue = 'One';
-
-    // variable to check if file was uploaded
-    bool _isFileUploaded = false;
-
-    // Method to get image from user
-    Future getImage() async {
-      final pickedFile = dropdownValue == 'Camera'
-          ? await picker.getImage(source: ImageSource.camera)
-          : await picker.getImage(source: ImageSource.gallery);
-    }
-
-    final CollectionReference _db =
-        FirebaseFirestore.instance.collection('patients');
     return Scaffold(
       appBar: buildAppBar(context),
-      body: FutureBuilder<DocumentSnapshot>(
-        future: _db.doc(userid).get(),
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text("Something went wrong");
-          }
-
-          if (snapshot.hasData && !snapshot.data.exists) {
-            return Text("Document does not exist");
-          }
-
-          if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data.data() as Map<String, dynamic>;
-            TextEditingController fname =
-                TextEditingController(text: data['firstName']);
-            TextEditingController lname =
-                TextEditingController(text: data['surname']);
-            TextEditingController dob =
-                TextEditingController(text: data['dob']);
-            TextEditingController location =
-                TextEditingController(text: data['location']);
-            TextEditingController nextofkin =
-                TextEditingController(text: data['number']);
-            TextEditingController gender =
-                TextEditingController(text: data['gender']);
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: ListView(
-                children: [
-                  ProfileHead(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  CircleAvatar(
-                    minRadius: 40,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Center(
-                      child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Change Profile Picture',
-                      style: TextStyle(fontSize: 17),
-                    ),
-                  )),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    controller: fname,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6),
-                            borderSide:
-                                BorderSide(color: lightgreen, width: 2))),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    controller: lname,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6),
-                            borderSide:
-                                BorderSide(color: lightgreen, width: 2))),
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    readOnly: true,
-                    controller: gender,
-                    decoration: InputDecoration(
-                        hintText: 'gender',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6),
-                            borderSide:
-                                BorderSide(color: lightgreen, width: 2))),
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    controller: location,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                        hintText: 'Location',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6),
-                            borderSide:
-                                BorderSide(color: lightgreen, width: 2))),
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    controller: nextofkin,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                        hintText: 'phonenumber',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6),
-                            borderSide:
-                                BorderSide(color: lightgreen, width: 2))),
-                  ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => EditProfile(datas: data)));
-                    },
-                    child: Text(
-                      'Edit',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      primary: lightgreen,
-                    ),
-                  )
-                ],
-              ),
-            );
-          }
-
-          return Center(child: CircularProgressIndicator());
-        },
+      body: ListView(
+        physics: BouncingScrollPhysics(),
+        children: [
+          ProfileWidget(
+            imagePath: patient.imagePath,
+            onClicked: () async {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => EditProfile()));
+            },
+          ),
+          SizedBox(
+            height: 25,
+          ),
+          buildName(patient),
+          SizedBox(
+            height: 16,
+          ),
+          buildStatus(patient),
+          SizedBox(
+            height: 20,
+          ),
+          Center(child: buildLogOut(context)),
+        ],
       ),
     );
   }
+
+  Widget buildName(PatientProfile patient) => Column(
+        children: [
+          Text(
+            patient.name,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      );
+
+  Widget buildStatus(PatientProfile patient) => Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text(
+              patient.status,
+              style: TextStyle(
+                fontSize: 17,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ],
+      );
 }
+
+Widget buildLogOut(BuildContext context) => ButtonWidget(
+      text: 'Logout',
+      onClicked: () async {
+        UserPreferences().removeUser();
+        Navigator.push(
+            context, MaterialPageRoute(builder: (BuildContext ctx) => Login()));
+      },
+    );
