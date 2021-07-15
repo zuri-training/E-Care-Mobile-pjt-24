@@ -5,6 +5,7 @@ import 'package:e_care_mobile/models/doctors._model.dart';
 import 'package:e_care_mobile/providers/auth.dart';
 import 'package:e_care_mobile/screens/allappointments.dart';
 import 'package:e_care_mobile/screens/book_appointment.dart';
+import 'package:e_care_mobile/screens/healtharticle.dart';
 import 'package:e_care_mobile/screens/profile/profile_page.dart';
 import 'package:e_care_mobile/screens/request_medical_advice.dart';
 import 'package:e_care_mobile/userData/user.dart';
@@ -19,6 +20,8 @@ import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
+
+import 'articlescreen.dart';
 
 class PatientDashboard extends StatefulWidget {
   const PatientDashboard({Key key}) : super(key: key);
@@ -86,88 +89,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     ),
                   ),
                   SizedBox(height: 24),
-                  Container(
-                    margin: EdgeInsets.only(right: 16.0),
-                    width: MediaQuery.of(context).size.width,
-                    height: 194,
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(15.207182884216309)),
-                      color: Color.fromRGBO(75, 165, 77, 1),
-                    ),
-                    child: Stack(clipBehavior: Clip.none, children: [
-                      //AssetImage('assets/images/littlegirl.png),
-                      Positioned(
-                        top: 0,
-                        bottom: 0,
-                        left: -32,
-                        child: Container(
-                            width: 226,
-                            height: 226,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/littlegirl.png'),
-                                  fit: BoxFit.fitHeight),
-                            )
-                            //child: AssetImage('assets/images/littlegirl.png')
-                            ),
-                      ),
-                      Positioned(
-                        top: 194 / 4,
-                        left: MediaQuery.of(context).size.width / 2.75,
-                        child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                fit: FlexFit.loose,
-                                child: Container(
-                                  width: 160,
-                                  //color:Colors.yellow,
-                                  child: Text(
-                                    'Health Articles',
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      color: Color.fromRGBO(246, 246, 246, 1),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: Container(
-                                      width: 160,
-                                      child: Text(
-                                        'Stay up to date.\nRead the lastest health development in Nigeria',
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          color:
-                                              Color.fromRGBO(246, 246, 246, 1),
-                                          fontFamily: 'Inter',
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Colors.white,
-                                    size: 12,
-                                  )
-                                ],
-                              ),
-                            ]),
-                      ),
-                    ]),
-                  ),
+                  HealthArticles(),
                   SizedBox(height: 36),
                   Container(
                     height: 40,

@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
                         return Text('Error: ${snapshot.error}');
                       else
                         /*if (snapshot.data.token == null)*/
-                        return Login(); //SplashScreen(user: snapshot.data);
+                        return SplashScreen(user: snapshot.data);
                     /*else
                         UserPreferences().removeUser();
                       return PatientDashboard();*/
