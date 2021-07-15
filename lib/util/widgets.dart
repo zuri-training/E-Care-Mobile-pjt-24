@@ -1,14 +1,11 @@
 import 'package:delayed_display/delayed_display.dart';
-<<<<<<< HEAD
 import 'package:e_care_mobile/providers/auth.dart';
 import 'package:e_care_mobile/util/colors.dart';
-=======
 
 import 'package:e_care_mobile/providers/auth.dart';
 import 'package:e_care_mobile/util/colors.dart';
 
 import 'package:e_care_mobile/animation/infinite_animation.dart';
->>>>>>> 823da3d046761197a5f254e7731da7dbbbe97fb3
 import 'package:e_care_mobile/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -139,7 +136,7 @@ Widget onComplete(String info, IconData iconData, Color color, heightValue,
                 style: TextStyle(color: HexColor('#4BA54D'), fontSize: 20),
               ),
             ),
-<<<<<<< HEAD
+
           )),
           SizedBox(height: 12),
           ClipRect(
@@ -151,7 +148,15 @@ Widget onComplete(String info, IconData iconData, Color color, heightValue,
                     info,
                     textAlign: TextAlign.center,
                   )),
-=======
+          ),
+        ),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(bottom: 8.0),
+            child: DelayedDisplay(
+                delay: Duration(seconds: 3), child: loadingSpinner(40.0, 2.0)),
+          ),
+        ),
 
           ),
         ),
@@ -205,7 +210,6 @@ Widget onComplete(String info, IconData iconData, Color color, heightValue,
               info,
               textAlign: TextAlign.center,
               style: TextStyle(color: HexColor('#4BA54D'), fontSize: 20),
->>>>>>> 823da3d046761197a5f254e7731da7dbbbe97fb3
             ),
           ),
           /*SizedBox(height: 16),
@@ -238,9 +242,6 @@ Padding textHeaders(String title) {
   );
 }
 
-<<<<<<< HEAD
-=======
-
 InfiniteAnimation loadingIndicator() {
   return InfiniteAnimation(
     durationInSeconds: 2, //
@@ -249,7 +250,6 @@ InfiniteAnimation loadingIndicator() {
   );
 }
 
->>>>>>> 823da3d046761197a5f254e7731da7dbbbe97fb3
 SizedBox loadingSpinner(size, strokeWidth) {
   return SizedBox(
       width: size,
