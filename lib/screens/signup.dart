@@ -482,7 +482,15 @@ class _SignupState extends State<Signup> {
               controller: controller,
               keyboardType: TextInputType.name,
               textInputAction: TextInputAction.next,
+<<<<<<< HEAD
               decoration: buildDecoration(_purple, _textFieldBorderWidth,
+=======
+
+              decoration: buildDecoration(lightgreen, _textFieldBorderWidth,
+
+              decoration: buildDecoration(_purple, _textFieldBorderWidth,
+
+>>>>>>> 823da3d046761197a5f254e7731da7dbbbe97fb3
                   _textSize, Icons.person, hintText, false),
               validator: (value) =>
                   value.isNotEmpty && value.contains(new RegExp(r'^[a-zA-Z]+$'))

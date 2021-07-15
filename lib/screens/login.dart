@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:e_care_mobile/Authentication/error_handler.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
@@ -137,7 +136,12 @@ class _LoginState extends State<Login> {
         User user = response['user'];
         Provider.of<UserProvider>(context, listen: false).setUser(user);
         Future.delayed(Duration(milliseconds: 6000)).then(
+
             (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
+
+                (value) =>
+                Navigator.pushReplacementNamed(context, '/dashboard'));
+
         Future.delayed(Duration(seconds: 1), () {
           setState(() {
             heightValue = 200.0;
@@ -204,7 +208,11 @@ class _LoginState extends State<Login> {
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
+
                   decoration: buildDecoration(lightgreen, _textFieldBorderWidth,
+
+                  decoration: buildDecoration(_purple, _textFieldBorderWidth,
+
                       _textSize, Icons.email, 'myemail@gmail.com', false),
                   validator: (value) => validateEmail(value),
                   textAlign: TextAlign.start,
