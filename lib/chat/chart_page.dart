@@ -1,7 +1,13 @@
 import 'package:carbon_icons/carbon_icons.dart';
+import 'package:e_care_mobile/chat/widgets/chat_page_body.dart';
+import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
+import 'package:e_care_mobile/util/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'api/chat_api.dart';
 import 'models/chatUsersModel.dart';
+import 'models/convo.dart';
 import 'widgets/conversationList.dart';
 
 class ChatPage extends StatefulWidget {
@@ -10,7 +16,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<ChatUsers> chatUsers = [
+  /*List<ChatUsers> chatUsers = [
     //Placeholder values pending actual data
     ChatUsers(
         name: "Dr. Paul",
@@ -36,64 +42,38 @@ class _ChatPageState extends State<ChatPage> {
         imageURL: "assets/images/ellipse14.png",
         time: "14:22",
         messageCount: 0),
-  ];
+  ];*/
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userData = Provider.of<UserProvider>(context);
     return Scaffold(
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(left: 16, right: 16, top: 24),
-                child: Text(
-                  "Chats",
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Search...",
-                  hintStyle: TextStyle(color: Colors.grey.shade600),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.grey.shade600,
-                    size: 20,
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  contentPadding: EdgeInsets.all(8),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: Colors.grey.shade100)),
-                ),
-              ),
-            ),
-            ListView.builder(
-              itemCount: chatUsers.length,
-              shrinkWrap: true,
-              padding: EdgeInsets.only(top: 16),
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return ConversationList(
-                  name: chatUsers[index].name,
-                  messageText: chatUsers[index].messageText,
-                  imageUrl: chatUsers[index].imageURL,
-                  time: chatUsers[index].time,
-                  messageCount: chatUsers[index].messageCount,
-                  isMessageRead: (index == 0 || index == 3) ? true : false,
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+      body: StreamBuilder<List<Convo>>(
+          stream: FirebaseApi.getUsers('60e714688bc25500be0dfa0c'),
+          //userData.user.patientId),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Center(child: loadingSpinner(48.0, 2.0));
+              default:
+                if (snapshot.hasError) {
+                  print(snapshot.error);
+                  return buildText('Something Went Wrong Try later');
+                } else {
+                  final chatUsers = snapshot.data;
+                  var chat =
+                      chatUsers[0].lastMessage['isMessageRead']; //[''].name;
+                  print('chatUSers: $chat');
+
+                  if (chatUsers.isEmpty) {
+                    return buildText('No Chat Found');
+                  } else
+                    return ChatPageBody(
+                      chatUsers: chatUsers,
+                    );
+                }
+            }
+          }),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Color(0xff6305B1),

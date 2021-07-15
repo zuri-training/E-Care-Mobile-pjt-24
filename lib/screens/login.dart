@@ -4,7 +4,6 @@ import 'package:e_care_mobile/Authentication/error_handler.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/userData/user.dart';
-import 'package:e_care_mobile/util/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
@@ -29,7 +28,7 @@ class _LoginState extends State<Login> {
   final TextEditingController _passwordController = TextEditingController();
 
   // Colors
-  Color _purple = HexColor("#6305B1");
+  Color _green = HexColor("#4BA54D");
   Color _purpleText = HexColor("#8237C1");
   Color _gold = HexColor("#F8B25A");
   Color _lightGold = HexColor("#FFE5C4");
@@ -41,7 +40,7 @@ class _LoginState extends State<Login> {
   double _textFieldHeight = 48;
 
   // Thickness of Text fields
-  double _textFieldBorderWidth = 2;
+  double _textFieldBorderWidth = 1;
 
   // Text size
   double _textSize = 14;
@@ -128,22 +127,15 @@ class _LoginState extends State<Login> {
     var login = () async {
       // Login Request
       final response =
-
-          await auth.signIn(_emailController.text, _passwordController.text);
       await auth.signIn(_emailController.text, _passwordController.text);
- 
       // Check if there's response
       if (response != null) {
         // true
         User user = response['user'];
         Provider.of<UserProvider>(context, listen: false).setUser(user);
         Future.delayed(Duration(milliseconds: 6000)).then(
-
-            (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
-
                 (value) =>
                 Navigator.pushReplacementNamed(context, '/dashboard'));
-
         Future.delayed(Duration(seconds: 1), () {
           setState(() {
             heightValue = 200.0;
@@ -187,14 +179,18 @@ class _LoginState extends State<Login> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24.0, 24, 24.0, 24.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(height: 60.0),
-          Text('Welcome back',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 36,
-                  color: lightgreen)),
-          SizedBox(height: 60.0),
+          SizedBox(height: 40.0),
+          Text(
+            'Welcome back',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: Color.fromRGBO(75, 165, 77, 1),
+              fontFamily: 'Inter',
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: 40.0),
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text('Email',
@@ -205,21 +201,17 @@ class _LoginState extends State<Login> {
               //height: _textFieldHeight,
               decoration: boxDecoration(),
               child: Theme(
-                data: Theme.of(context).copyWith(primaryColor: lightgreen),
+                data: Theme.of(context).copyWith(primaryColor: _green),
                 child: TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-
-                  decoration: buildDecoration(lightgreen, _textFieldBorderWidth,
-
-                  decoration: buildDecoration(_purple, _textFieldBorderWidth,
-
+                  decoration: buildDecoration(_green, _textFieldBorderWidth,
                       _textSize, Icons.email, 'myemail@gmail.com', false),
                   validator: (value) => validateEmail(value),
                   textAlign: TextAlign.start,
                   maxLines: 1,
-                  maxLength: 40,
+                  maxLength: 20,
                 ),
               )),
           SizedBox(height: 25.0),
@@ -233,7 +225,7 @@ class _LoginState extends State<Login> {
             //height: _textFieldHeight,
             decoration: boxDecoration(),
             child: Theme(
-              data: Theme.of(context).copyWith(primaryColor: lightgreen),
+              data: Theme.of(context).copyWith(primaryColor: _green),
               child: TextFormField(
                 controller: _passwordController,
                 keyboardType: TextInputType.visiblePassword,
@@ -242,7 +234,7 @@ class _LoginState extends State<Login> {
                 enableSuggestions: false,
                 autocorrect: false,
                 decoration: buildDecoration(
-                  _purple,
+                  _green,
                   _textFieldBorderWidth,
                   _textSize,
                   Icons.lock,
@@ -278,7 +270,7 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.all(0.0),
               child: Checkbox(
                   checkColor: Colors.white,
-                  activeColor: lightgreen,
+                  activeColor: _green,
                   value: auth.stayLogged,
                   onChanged: (bool newValue) {
                     stayLogged(newValue);
@@ -289,18 +281,8 @@ class _LoginState extends State<Login> {
                   style: TextStyle(
                       fontSize: _textSize,
                       fontWeight: FontWeight.w500,
-                      color: lightgreen)),
+                      color: _green)),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => ResetPassword()));
-              },
-              child: Text(
-                'forgot password',
-                style: TextStyle(color: black),
-              ),
-            )
           ]),
           SizedBox(height: 40.0),
           GestureDetector(
@@ -313,7 +295,29 @@ class _LoginState extends State<Login> {
               },
               child: signButton(
                   _textFieldHeight, _textFieldShadow, _textSize, 'SIGN IN')),
-          SizedBox(height: 25.0),
+          SizedBox(height: 30.0),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text('Forgot Password?',
+                style: TextStyle(
+                  fontSize: _textSize,
+                )),
+            SizedBox(width: 5.0),
+            InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: ResetPassword(),
+                          duration: Duration(seconds: 3),
+                          type: PageTransitionType.bottomToTop));
+                },
+                child: Text('Here',
+                    style: TextStyle(
+                      color: _green,
+                      fontSize: _textSize,
+                    )))
+          ]),
+          SizedBox(height: 20.0),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text('Do not have an account?',
                 style: TextStyle(
@@ -331,7 +335,7 @@ class _LoginState extends State<Login> {
                 },
                 child: Text('Sign up',
                     style: TextStyle(
-                      color: lightgreen,
+                      color: _green,
                       fontSize: _textSize,
                     )))
           ])
@@ -340,96 +344,3 @@ class _LoginState extends State<Login> {
     );
   }
 }
-
-/*class Page extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(children : <Widget>[GradientAppBar("Custom Gradient App Bar"), Container()],);
-  }
-}
-
-
-/class GradientAppBar extends StatelessWidget {
-
-  final String title;
-  final double barHeight = 50.0;
-
-  GradientAppBar(this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    final double statusbarHeight = MediaQuery
-        .of(context)
-        .padding
-        .top;
-
-    return new Container(
-      padding: EdgeInsets.only(top: statusbarHeight),
-      height: statusbarHeight + barHeight,
-      child: Center(
-        child: Text(
-          title,
-          style: TextStyle(fontSize: 20.0, color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            colors: [Colors.red, Colors.blue],
-            begin: const FractionalOffset(0.0, 0.0),
-            end: const FractionalOffset(0.5, 0.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.clamp
-        ),
-      ),
-    );
-  }
-}*/
-
-/*class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: PreferredSize(
-          child: Container(
-            child: AppBar(
-              title: Text(widget.title),
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-            ),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.pinkAccent,
-                  Colors.white,
-                ],
-              ),
-            ),
-          ),
-          preferredSize: Size(MediaQuery.of(context).size.width, 45),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(top: 1200),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "Enter text",
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ));
-  }
-}*/

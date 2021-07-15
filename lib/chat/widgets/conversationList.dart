@@ -1,22 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_care_mobile/chat/api/utils.dart';
+import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_care_mobile/chat/chatDetailPage.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ConversationList extends StatefulWidget {
+  final String receiverId;
   final String name;
   final String messageText;
-  final String imageUrl;
-  final String time;
+  final String urlAvatar;
+  final Timestamp time;
   final int messageCount;
   final bool isMessageRead;
+  final String userId;
 
   ConversationList(
-      { this.name,
-       this.messageText,
-       this.imageUrl,
-       this.time,
-       this.isMessageRead,
-       this.messageCount});
+      {@required this.receiverId,
+      @required this.name,
+      @required this.messageText,
+      @required this.urlAvatar,
+      @required this.time,
+      @required this.isMessageRead,
+      @required this.messageCount,
+      @required this.userId});
 
   @override
   _ConversationListState createState() => _ConversationListState();
@@ -25,10 +34,12 @@ class ConversationList extends StatefulWidget {
 class _ConversationListState extends State<ConversationList> {
   @override
   Widget build(BuildContext context) {
+    DateTime dateTime = Utils.toDateTime(widget.time);
+    UserProvider userData = Provider.of<UserProvider>(context);
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ChatDetailPage();
+          return ChatDetailPage(receiverId: widget.receiverId);
         }));
       },
       child: Padding(
@@ -42,7 +53,7 @@ class _ConversationListState extends State<ConversationList> {
               bottomLeft: Radius.circular(16),
               bottomRight: Radius.circular(16),
             ),
-            color: HexColor("#FFE5C4"),
+            color: HexColor("#F3EF82"),
           ),
           child: Row(
             children: <Widget>[
@@ -50,7 +61,9 @@ class _ConversationListState extends State<ConversationList> {
                 child: Row(
                   children: <Widget>[
                     CircleAvatar(
-                      backgroundImage: NetworkImage(widget.imageUrl),
+                      backgroundImage: NetworkImage(
+                          'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/President_Barack_Obama.jpg/480px-President_Barack_Obama.jpg'),
+                      //widget.urlAvatar),
                       maxRadius: 24,
                     ),
                     SizedBox(
@@ -64,19 +77,41 @@ class _ConversationListState extends State<ConversationList> {
                           children: <Widget>[
                             Text(
                               widget.name,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(fontSize: 16),
                             ),
                             SizedBox(
                               height: 6,
                             ),
-                            Text(
-                              widget.messageText,
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey.shade600,
-                                  fontWeight: widget.isMessageRead
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
+                            Row(
+                              children: [
+                                Text(
+                                  'You:',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(
+                                          0, 0, 0, 0.20000000298023224),
+                                      fontFamily: 'Inter',
+                                      fontSize: widget.userId ==
+                                              userData.user.patientId
+                                          ? 14
+                                          : 0,
+                                      fontWeight: FontWeight.normal,
+                                      height: 1.1428571428571428),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    widget.messageText,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey.shade600,
+                                        fontWeight: !widget.isMessageRead
+                                            ? FontWeight.bold
+                                            : FontWeight.normal),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -90,7 +125,7 @@ class _ConversationListState extends State<ConversationList> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    widget.time,
+                    DateFormat.Hm().format(dateTime),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Color.fromRGBO(0, 0, 0, 0.699999988079071),
@@ -108,7 +143,7 @@ class _ConversationListState extends State<ConversationList> {
                       width: 16,
                       height: widget.messageCount == 0 ? 0 : 16,
                       decoration: BoxDecoration(
-                        color: Color.fromRGBO(99, 5, 177, 1),
+                        color: Color.fromRGBO(75, 165, 77, 1),
                         borderRadius:
                             BorderRadius.all(Radius.elliptical(16, 16)),
                       ),
@@ -120,7 +155,7 @@ class _ConversationListState extends State<ConversationList> {
                             fontFamily: 'Inter',
                             fontSize: 14,
                             letterSpacing:
-                                0 /*percentages not used in flutter. defaulting to zero*/,
+                            0 /*percentages not used in flutter. defaulting to zero*/,
                             fontWeight: FontWeight.normal,
                             height: 1.1428571428571428),
                       ))

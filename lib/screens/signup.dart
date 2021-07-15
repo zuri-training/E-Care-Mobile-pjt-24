@@ -1,7 +1,6 @@
 import 'package:e_care_mobile/Authentication/error_handler.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/userData/user.dart';
-import 'package:e_care_mobile/util/colors.dart';
 import 'package:e_care_mobile/util/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -90,7 +89,7 @@ class _SignupState extends State<Signup> {
 
   String dropdownValue = 'One';
 
-  Color _purple = HexColor("#6305B1");
+  Color _green = HexColor("#4BA54D");
   Color _purpleText = HexColor("#8237C1");
   Color _gold = HexColor("#F8B25A");
   Color _lightGold = HexColor("#FFE5C4");
@@ -102,7 +101,7 @@ class _SignupState extends State<Signup> {
   double _textFieldHeight = 48;
 
   // Thickness of Text fields
-  double _textFieldBorderWidth = 2;
+  double _textFieldBorderWidth = 1;
 
   // Text size
   double _textSize = 14;
@@ -242,13 +241,17 @@ class _SignupState extends State<Signup> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24.0, 24, 24.0, 24.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(height: 32.0),
-          Text('Sign Up',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                  color: lightgreen,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 40)),
+          SizedBox(height: 40.0),
+          Text(
+            'Sign up',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: Color.fromRGBO(75, 165, 77, 1),
+              fontFamily: 'Inter',
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           SizedBox(height: 40.0),
           textHeaders('First Name'),
           textSection('e.g Amaks', _patientFirstNameController, 'First name'),
@@ -266,7 +269,7 @@ class _SignupState extends State<Signup> {
           passwordField(),
           SizedBox(height: 36.0),
           // TODO Create separate component for add image
-          Column(
+          /*Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -407,40 +410,15 @@ class _SignupState extends State<Signup> {
                     )
             ],
           ),
-          SizedBox(height: _isFileUploaded ? 30.0 : 48.0),
+          SizedBox(height: _isFileUploaded ? 30.0 : 48.0),*/
           GestureDetector(
               onTap: () {
                 if (checkFields()) {
                   signUp();
                 }
               },
-              child: Container(
-                  height: _textFieldHeight,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(0),
-                      bottomLeft: Radius.circular(0),
-                      bottomRight: Radius.circular(8),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                          color: _textFieldShadow,
-                          offset: Offset(0, 4),
-                          blurRadius: 4)
-                    ],
-                    color: lightgreen,
-                    // gradient: LinearGradient(
-                    //     begin: Alignment(6.123234262925839e-17, 1),
-                    //     end: Alignment(-1, 6.123234262925839e-17),
-                    //     colors: [HexColor("#4C15D3"), HexColor("#6305B1")]),
-                  ),
-                  child: Center(
-                      child: Text('SIGN UP',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: _textSize,
-                              fontWeight: FontWeight.w500))))),
+              child: signButton(
+                  _textFieldHeight, _textFieldShadow, _textSize, 'SIGN UP')),
           SizedBox(height: 25.0),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text('Already have an account?',
@@ -459,7 +437,7 @@ class _SignupState extends State<Signup> {
                 },
                 child: Text('Sign in',
                     style: TextStyle(
-                      color: lightgreen,
+                      color: _green,
                       fontSize: _textSize,
                       //decoration: TextDecoration.underline
                     )))
@@ -477,16 +455,12 @@ class _SignupState extends State<Signup> {
         child: Align(
           alignment: Alignment.centerLeft,
           child: Theme(
-            data: Theme.of(context).copyWith(primaryColor: lightgreen),
+            data: Theme.of(context).copyWith(primaryColor: _green),
             child: TextFormField(
               controller: controller,
               keyboardType: TextInputType.name,
               textInputAction: TextInputAction.next,
-
-              decoration: buildDecoration(lightgreen, _textFieldBorderWidth,
-
-              decoration: buildDecoration(_purple, _textFieldBorderWidth,
-
+              decoration: buildDecoration(_green, _textFieldBorderWidth,
                   _textSize, Icons.person, hintText, false),
               validator: (value) =>
                   value.isNotEmpty && value.contains(new RegExp(r'^[a-zA-Z]+$'))
@@ -510,12 +484,12 @@ class _SignupState extends State<Signup> {
         child: Align(
           alignment: Alignment.centerLeft,
           child: Theme(
-            data: Theme.of(context).copyWith(primaryColor: _purple),
+            data: Theme.of(context).copyWith(primaryColor: _green),
             child: TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
-              decoration: buildDecoration(_purple, _textFieldBorderWidth,
+              decoration: buildDecoration(_green, _textFieldBorderWidth,
                   _textSize, Icons.email, 'myemail@gmail.com', false),
               validator: (value) => validateEmail(value),
               textAlign: TextAlign.start,
@@ -539,7 +513,7 @@ class _SignupState extends State<Signup> {
         enableSuggestions: false,
         autocorrect: false,
         decoration: buildDecoration(
-          _purple,
+          _green,
           _textFieldBorderWidth,
           _textSize,
           Icons.lock,
@@ -575,7 +549,7 @@ class _SignupState extends State<Signup> {
   // Container for date field
   Container dateField() {
     return Container(
-        //height: _textFieldHeight,
+      //height: _textFieldHeight,
         width: MediaQuery.of(context).size.width,
         decoration: boxDecoration(),
         child: Align(
@@ -585,7 +559,7 @@ class _SignupState extends State<Signup> {
             controller: _dateController,
             keyboardType: TextInputType.datetime,
             textInputAction: TextInputAction.next,
-            decoration: buildDecoration(_purple, _textFieldBorderWidth,
+            decoration: buildDecoration(_green, _textFieldBorderWidth,
                 _textSize, Icons.date_range, 'e.g 2021-June-19', false),
             onTap: () {
               _selectDate(context);

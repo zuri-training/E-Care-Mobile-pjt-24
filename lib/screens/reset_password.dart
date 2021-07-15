@@ -5,6 +5,7 @@ import 'package:e_care_mobile/screens/checkyouremail.dart';
 import 'package:e_care_mobile/services/api.dart';
 import 'package:e_care_mobile/util/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
 class ResetPassword extends StatefulWidget {
@@ -17,6 +18,7 @@ class ResetPassword extends StatefulWidget {
 class _ResetPasswordState extends State<ResetPassword> {
   final _email = TextEditingController();
   bool _validate = false;
+  Color _green = HexColor("#4BA54D");
 
   @override
   void dispose() {
@@ -105,9 +107,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                               children: [
                                 CircleAvatar(
                                   radius: 60,
-                                  backgroundColor: Color(0xff6305B1),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
+                                  backgroundColor: _green,
+                                  child: Center(
                                     child: Icon(
                                       CarbonIcons.locked,
                                       color: Colors.white,
@@ -208,17 +209,15 @@ class _ResetPasswordState extends State<ResetPassword> {
                                           : null,
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Color(0xff6305B1),
-                                            width: 1.0),
+                                            color: _green, width: 1.0),
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Color(0xff6305B1),
-                                            width: 1.0),
+                                            color: _green, width: 1.0),
                                       ),
                                       border: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: Color(0xff6305B1),
+                                          color: _green,
                                           width: 2,
                                         ),
                                       ),
@@ -245,7 +244,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(6),
                                       ),
-                                      primary: Color(0xff6305B1),
+                                      primary: _green,
                                     ),
                                     onPressed: () {
                                       if (_validEmail()) {
