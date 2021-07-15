@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:e_care_mobile/Authentication/error_handler.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
@@ -128,10 +127,9 @@ class _LoginState extends State<Login> {
     var login = () async {
       // Login Request
       final response =
-
           await auth.signIn(_emailController.text, _passwordController.text);
       await auth.signIn(_emailController.text, _passwordController.text);
- 
+
       // Check if there's response
       if (response != null) {
         // true

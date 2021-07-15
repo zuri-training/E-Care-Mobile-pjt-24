@@ -483,6 +483,8 @@ class _SignupState extends State<Signup> {
               keyboardType: TextInputType.name,
               textInputAction: TextInputAction.next,
 
+              decoration: buildDecoration(_purple, _textFieldBorderWidth,
+
               decoration: buildDecoration(lightgreen, _textFieldBorderWidth,
 
               decoration: buildDecoration(_purple, _textFieldBorderWidth,
