@@ -39,7 +39,8 @@ class _ConversationListState extends State<ConversationList> {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ChatDetailPage(receiverId: widget.receiverId);
+          return ChatDetailPage(
+              receiverId: widget.receiverId, doctorName: widget.name);
         }));
       },
       child: Padding(
@@ -76,7 +77,9 @@ class _ConversationListState extends State<ConversationList> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              widget.name,
+                              widget.name != null
+                                  ? 'Dr. ' + widget.name
+                                  : 'sender',
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(fontSize: 16),
                             ),

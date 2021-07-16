@@ -11,8 +11,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 class ChatDetailPage extends StatefulWidget {
   final String receiverId;
   final String doctorName;
+  final String doctorSurname;
 
-  ChatDetailPage({@required this.receiverId, this.doctorName});
+  ChatDetailPage(
+      {@required this.receiverId,
+      @required this.doctorName,
+      this.doctorSurname});
 
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
@@ -20,10 +24,23 @@ class ChatDetailPage extends StatefulWidget {
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
   String dropdownValue;
+  String firstname;
+  String surname;
+
+  @override
+  void initState() {
+    super.initState();
+    List<String> arr = widget.doctorName.split(' ');
+    String first = arr[0];
+    String last = arr[1];
+    setState(() {
+      firstname = first;
+      surname = last;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.doctorName);
     UserProvider userData = Provider.of<UserProvider>(context);
     //Provider.of<ChatProvider>(context, listen: false).setId(widget.receiverId);
     return Scaffold(
@@ -63,7 +80,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     children: <Widget>[
                       Text(
                         widget.doctorName != null
-                            ? "Dr. " + widget.doctorName
+                            ? "Dr. " + firstname
                             : 'Dr. Peter',
                         style: TextStyle(
                             fontSize: 16,
@@ -83,34 +100,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 Container(
                   child: DropdownButtonHideUnderline(
                     child:
-                        /*DropdownButton<String>(
-                //hint:
-                icon: const Icon(Icons.arrow_downward),
-                iconSize: 24,
-                isExpanded: true,
-                elevation: 16,
-                //focusColor: _lightGold,
-                style: TextStyle(color: HexColor("#172B4D")),
-                /*underline: Container(
-                              height: 2,
-                              color: Colors.deepPurpleAccent,
-                              ),*/
-                onChanged: (newValue) {
-                  setState(() {
-                    dropdownValue = newValue;
-                  });
-                },
-                items: <String>[
-                  'Close Chat',
-                  'Clear Chat',
-                  'Change Doctor',
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              )*/
                         DropdownButton<String>(
                       value: dropdownValue,
                       icon: SvgPicture.asset(
@@ -156,49 +145,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 child: MessagesWidget(
               idUser: widget.receiverId,
             )),
-
-            /*ListView.builder(
-              itemCount: messages.length,
-              shrinkWrap: true,
-              padding: EdgeInsets.only(top: 10, bottom: 10),
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Container(
-                  padding:
-                      EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
-                  child: Align(
-                    alignment: (messages[index].messageType == "receiver"
-                        ? Alignment.topLeft
-                        : Alignment.topRight),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: (messages[index].messageType == "receiver"
-                            ? Colors.grey.shade200
-                            : HexColor("#FFE5C4")),
-                      ),
-                      padding: EdgeInsets.all(16),
-                      child: Text(
-                        messages[index].messageContent,
-                        style: TextStyle(fontSize: 15),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),*/
             NewMessageWidget(
-                userId: userData.user.patientId, receiverId: widget.receiverId),
-            /*Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                height: 60,
-                width: double.infinity,
-                color: Colors.white,
-                child: NewMessageWidget(userId: userData.user.patientId),
-              ),
-            ),*/
+                userId: userData.user.patientId,
+                receiverId: widget.receiverId,
+                doctorName: widget.doctorName),
           ],
         ),
       ),

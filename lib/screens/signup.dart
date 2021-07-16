@@ -199,6 +199,7 @@ class _SignupState extends State<Signup> {
     }
 
     var signUp = () async {
+      FocusScope.of(context).unfocus();
       final response = await auth.signUp(
         _emailController.text,
         _passwordController.text,
@@ -214,7 +215,7 @@ class _SignupState extends State<Signup> {
           Provider.of<UserProvider>(context, listen: false).setUser(user);
         });
         Future.delayed(Duration(milliseconds: 6000)).then(
-            (value) => Navigator.pushReplacementNamed(context, '/otpForm'));
+                (value) => Navigator.pushReplacementNamed(context, '/otpForm'));
         Future.delayed(Duration(seconds: 1), () {
           setState(() {
             heightValue = 200.0;

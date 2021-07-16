@@ -1,10 +1,12 @@
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:e_care_mobile/chat/widgets/chat_page_body.dart';
+import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/patient_dashboard.dart';
 import 'package:e_care_mobile/screens/profile/profile_page.dart';
 import 'package:e_care_mobile/util/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import 'api/chat_api.dart';
 import 'models/convo.dart';
 
@@ -19,6 +21,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userData = Provider.of<UserProvider>(context);
     int _selectedIndex = 0;
     void _onItemTapped(int index) {
       setState(() {
@@ -38,7 +41,7 @@ class _ChatPageState extends State<ChatPage> {
 
     return Scaffold(
       body: StreamBuilder<List<Convo>>(
-          stream: FirebaseApi.getUsers('60e714688bc25500be0dfa0c'),
+          stream: FirebaseApi.getUsers(userData.user.patientId),
           //userData.user.patientId),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
@@ -51,7 +54,7 @@ class _ChatPageState extends State<ChatPage> {
                 } else {
                   final chatUsers = snapshot.data;
                   var chat =
-                      chatUsers[0].lastMessage['isMessageRead']; //[''].name;
+                  chatUsers[0].lastMessage['isMessageRead']; //[''].name;
                   print('chatUSers: $chat');
 
                   if (chatUsers.isEmpty) {

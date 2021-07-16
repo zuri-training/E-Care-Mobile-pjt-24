@@ -22,6 +22,7 @@ class _StartChatState extends State<StartChat> {
   String specialization;
   String doctorId;
   String doctorName;
+  String doctorSurname;
 
   // Thickness of Text fields
   double _textFieldBorderWidth = 1;
@@ -131,14 +132,18 @@ class _StartChatState extends State<StartChat> {
                   print(element.id);
                   setState(() {
                     doctorId = element.id;
-                    doctorName = element.data['firstname'];
+                    doctorName = element.data['name'];
+
+                    ///doctorSurname = element.data['surname'];
                   });
                 });
                 //print('ss:$bb');
                 //print(aa['specialization']);
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ChatDetailPage(
-                        receiverId: doctorId, doctorName: doctorName)));
+                        receiverId: doctorId,
+                        doctorName: doctorName,
+                        doctorSurname: doctorSurname)));
               },
               child: signButton(
                   _textFieldHeight, _textFieldShadow, _textSize, 'CHAT')),
