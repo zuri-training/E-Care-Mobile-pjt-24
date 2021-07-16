@@ -125,17 +125,17 @@ class _LoginState extends State<Login> {
 
     // Login
     var login = () async {
+      FocusScope.of(context).unfocus();
       // Login Request
       final response =
-      await auth.signIn(_emailController.text, _passwordController.text);
+          await auth.signIn(_emailController.text, _passwordController.text);
       // Check if there's response
       if (response != null) {
         // true
         User user = response['user'];
         Provider.of<UserProvider>(context, listen: false).setUser(user);
         Future.delayed(Duration(milliseconds: 6000)).then(
-                (value) =>
-                Navigator.pushReplacementNamed(context, '/dashboard'));
+            (value) => Navigator.pushReplacementNamed(context, '/dashboard'));
         Future.delayed(Duration(seconds: 1), () {
           setState(() {
             heightValue = 200.0;

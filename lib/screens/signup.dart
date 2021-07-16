@@ -199,6 +199,7 @@ class _SignupState extends State<Signup> {
     }
 
     var signUp = () async {
+      FocusScope.of(context).unfocus();
       final response = await auth.signUp(
         _emailController.text,
         _passwordController.text,
