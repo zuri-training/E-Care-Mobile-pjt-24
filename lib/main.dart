@@ -1,5 +1,4 @@
 import 'package:e_care_mobile/providers/auth.dart';
-import 'package:e_care_mobile/providers/chat_provider.dart';
 import 'package:e_care_mobile/providers/user_provider.dart';
 import 'package:e_care_mobile/screens/checkyouremail.dart';
 import 'package:e_care_mobile/screens/otp_form.dart';
@@ -57,8 +56,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
-          ChangeNotifierProvider(create: (_) => UserProvider()),
-          //ChangeNotifierProvider(create: (_) => ChatProvider()),
+          ChangeNotifierProvider(create: (_) => UserProvider())
         ],
         child: MaterialApp(
             theme: ThemeData(

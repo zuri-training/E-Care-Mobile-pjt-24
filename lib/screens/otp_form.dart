@@ -138,7 +138,7 @@ class _OtpFormState extends State<OtpForm> {
     return Scaffold(
       body: Padding(
         padding:
-        const EdgeInsets.only(left: 16, top: 32.0, right: 16, bottom: 32),
+            const EdgeInsets.only(left: 16, top: 32.0, right: 16, bottom: 32),
         child: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -162,217 +162,207 @@ class _OtpFormState extends State<OtpForm> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Icon(
-                        Icons.mark_email_unread_rounded,
-                        color: _purple,
-                        size: 128.0,
-                      ),
-                      SizedBox(height: 12),
-                      Text('Verify your email',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold)),
-                      SizedBox(height: 16),
-                      Visibility(
-                        visible: _isVisible ? false : true,
-                        child: AnimatedSwitcher(
-                          duration: const Duration(seconds: 1),
-                          child: _myWidget,
-                        ),
-                      ),
-                      Visibility(
-                        visible: _isVisible ? true : false,
-                        child: Text(
-                            'Please Enter the 5 digit code sent to $userEmail',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: HexColor("#6305B1"))),
-                      ),
-                      SizedBox(height: 24),
-                      Visibility(
-                        visible: _isVisible ? true : false,
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 60,
-                              child: TextFormField(
-                                autofocus: true,
-                                style: TextStyle(fontSize: 24),
-                                keyboardType:
-                                TextInputType.number,
-                                textAlign: TextAlign.center,
-                                decoration: otpInputDecoration,
-                                onChanged: (value) {
-                                  nextField(value, pin2FocusNode);
-                                  setState(() {
-                                    box1 = value;
-                                  });
-                                },
-                                validator: (value) =>
-                                value.isEmpty ? '' : null,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 60,
-                              child: TextFormField(
-                                focusNode: pin2FocusNode,
-                                style: TextStyle(fontSize: 24),
-                                keyboardType:
-                                TextInputType.number,
-                                textAlign: TextAlign.center,
-                                decoration: otpInputDecoration,
-                                onChanged: (value) => {
-                                  nextField(value, pin3FocusNode),
-                                  setState(() {
-                                    box2 = value;
-                                  })
-                                },
-                                validator: (value) =>
-                                value.isEmpty ? '' : null,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 60,
-                              child: TextFormField(
-                                focusNode: pin3FocusNode,
-                                style: TextStyle(fontSize: 24),
-                                keyboardType:
-                                TextInputType.number,
-                                textAlign: TextAlign.center,
-                                decoration: otpInputDecoration,
-                                onChanged: (value) => {
-                                  nextField(value, pin4FocusNode),
-                                  setState(() {
-                                    box3 = value;
-                                  })
-                                },
-                                validator: (value) =>
-                                value.isEmpty ? '' : null,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 60,
-                              child: TextFormField(
-                                focusNode: pin4FocusNode,
-                                style: TextStyle(fontSize: 24),
-                                keyboardType:
-                                TextInputType.number,
-                                textAlign: TextAlign.center,
-                                decoration: otpInputDecoration,
-                                onChanged: (value) => {
-                                  nextField(value, pin5FocusNode),
-                                  setState(() {
-                                    box4 = value;
-                                  })
-                                },
-                                validator: (value) =>
-                                value.isEmpty ? '' : null,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 60,
-                              child: TextFormField(
-                                focusNode: pin5FocusNode,
-                                style: TextStyle(fontSize: 24),
-                                keyboardType:
-                                TextInputType.number,
-                                textAlign: TextAlign.center,
-                                decoration: otpInputDecoration,
-                                onChanged: (value) {
-                                  setState(() {
-                                    box5 = value;
-                                  });
-                                  if (value.length == 1) {
-                                    pin5FocusNode.unfocus();
-                                    // Then you need to check is the code is correct or not
-                                  }
-                                },
-                                validator: (value) =>
-                                value.isEmpty ? '' : null,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 24),
-                      Visibility(
-                        visible: _isVisible ? true : false,
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
-                          children: [
-                            Text('Did not receive the code?',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12)),
-                            Text(' Resend',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: HexColor("#6305B1"))),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Visibility(
-                        visible: _isVisible ? true : false,
-                        child: Container(
-                          width:
-                          MediaQuery.of(context).size.width,
-                          child: ElevatedButton(
-                              onPressed: () {
-                                if (checkFields()) {
-                                  otpCode();
-                                  activateUser();
-                                  setState(() {
-                                    //_isVisible=false;
-                                  });
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: _purple,
-                              ),
-                              child: Text('Verify',
-                                  style:
-                                  TextStyle(fontSize: 16))),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Visibility(
-                        visible: _isVisible ? true : false,
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
-                          children: [
-                            Text('Not aconalexx@gmail.com?',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12)),
-                            GestureDetector(
-                              onTap: () {
-                                changeEmail();
-                              },
-                              child: Text(' Change email',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color:
-                                      HexColor("#6305B1"))),
-                            ),
-                          ],
-                        ),
-                      ),
+                                  Icons.mark_email_unread_rounded,
+                                  color: _purple,
+                                  size: 128.0,
+                                ),
+                                SizedBox(height: 12),
+                                Text('Verify your email',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold)),
+                                SizedBox(height: 16),
+                                Visibility(
+                                  visible: _isVisible ? false : true,
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(seconds: 1),
+                                    child: _myWidget,
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: _isVisible ? true : false,
+                                  child: Text(
+                                      'Please Enter the 5 digit code sent to $userEmail',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: HexColor("#6305B1"))),
+                                ),
+                                SizedBox(height: 24),
+                                Visibility(
+                                  visible: _isVisible ? true : false,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: 60,
+                                        child: TextFormField(
+                                          autofocus: true,
+                                          style: TextStyle(fontSize: 24),
+                                          keyboardType: TextInputType.number,
+                                          textAlign: TextAlign.center,
+                                          decoration: otpInputDecoration,
+                                          onChanged: (value) {
+                                            nextField(value, pin2FocusNode);
+                                            setState(() {
+                                              box1 = value;
+                                            });
+                                          },
+                                          validator: (value) =>
+                                              value.isEmpty ? '' : null,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 60,
+                                        child: TextFormField(
+                                          focusNode: pin2FocusNode,
+                                          style: TextStyle(fontSize: 24),
+                                          keyboardType: TextInputType.number,
+                                          textAlign: TextAlign.center,
+                                          decoration: otpInputDecoration,
+                                          onChanged: (value) => {
+                                            nextField(value, pin3FocusNode),
+                                            setState(() {
+                                              box2 = value;
+                                            })
+                                          },
+                                          validator: (value) =>
+                                              value.isEmpty ? '' : null,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 60,
+                                        child: TextFormField(
+                                          focusNode: pin3FocusNode,
+                                          style: TextStyle(fontSize: 24),
+                                          keyboardType: TextInputType.number,
+                                          textAlign: TextAlign.center,
+                                          decoration: otpInputDecoration,
+                                          onChanged: (value) => {
+                                            nextField(value, pin4FocusNode),
+                                            setState(() {
+                                              box3 = value;
+                                            })
+                                          },
+                                          validator: (value) =>
+                                              value.isEmpty ? '' : null,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 60,
+                                        child: TextFormField(
+                                          focusNode: pin4FocusNode,
+                                          style: TextStyle(fontSize: 24),
+                                          keyboardType: TextInputType.number,
+                                          textAlign: TextAlign.center,
+                                          decoration: otpInputDecoration,
+                                          onChanged: (value) => {
+                                            nextField(value, pin5FocusNode),
+                                            setState(() {
+                                              box4 = value;
+                                            })
+                                          },
+                                          validator: (value) =>
+                                              value.isEmpty ? '' : null,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 60,
+                                        child: TextFormField(
+                                          focusNode: pin5FocusNode,
+                                          style: TextStyle(fontSize: 24),
+                                          keyboardType: TextInputType.number,
+                                          textAlign: TextAlign.center,
+                                          decoration: otpInputDecoration,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              box5 = value;
+                                            });
+                                            if (value.length == 1) {
+                                              pin5FocusNode.unfocus();
+                                              // Then you need to check is the code is correct or not
+                                            }
+                                          },
+                                          validator: (value) =>
+                                              value.isEmpty ? '' : null,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 24),
+                                Visibility(
+                                  visible: _isVisible ? true : false,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Did not receive the code?',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 12)),
+                                      Text(' Resend',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: HexColor("#6305B1"))),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Visibility(
+                                  visible: _isVisible ? true : false,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ElevatedButton(
+                                        onPressed: () {
+                                          if (checkFields()) {
+                                            otpCode();
+                                            activateUser();
+                                            setState(() {
+                                              //_isVisible=false;
+                                            });
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          primary: _purple,
+                                        ),
+                                        child: Text('Verify',
+                                            style: TextStyle(fontSize: 16))),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Visibility(
+                                  visible: _isVisible ? true : false,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Not aconalexx@gmail.com?',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 12)),
+                                      GestureDetector(
+                                        onTap: () {
+                                          changeEmail();
+                                        },
+                                        child: Text(' Change email',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: HexColor("#6305B1"))),
+                                      ),
+                                    ],
+                                  ),
+                                ),
 
-                      // DefaultButton(
-                      //   text: "Continue",
-                      //   press: () {},
-                      // )
-                    ],
-                  ),
-                ),
-              ),
-            ),
+                                // DefaultButton(
+                                //   text: "Continue",
+                                //   press: () {},
+                                // )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
           ),
         ),
       ),
